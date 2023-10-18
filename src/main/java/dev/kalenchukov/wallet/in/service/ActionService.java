@@ -7,8 +7,7 @@
 package dev.kalenchukov.wallet.in.service;
 
 import dev.kalenchukov.wallet.entity.Action;
-import dev.kalenchukov.wallet.entity.Player;
-import dev.kalenchukov.wallet.resources.ActionType;
+import dev.kalenchukov.wallet.type.ActionType;
 
 import java.util.Set;
 

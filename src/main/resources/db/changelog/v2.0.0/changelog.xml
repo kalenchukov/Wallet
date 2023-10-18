@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright © 2023 Алексей Каленчуков
+  ~ GitHub: https://github.com/kalenchukov
+  ~ E-mail: mailto:aleksey.kalenchukov@yandex.ru
+  -->
+
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.5.xsd">
+
+    <!-- Миграции версии v2.0.0 -->
+    <changeSet context="production,test" id="add-tag-v2.0.0" author="admin">
+        <tagDatabase tag="v2.0.0"/>
+    </changeSet>
+
+    <include file="001-create-table-players.xml" relativeToChangelogFile="true"/>
+    <include file="002-insert-table-players.xml" relativeToChangelogFile="true"/>
+    <include file="003-create-table-accounts.xml" relativeToChangelogFile="true"/>
+    <include file="004-insert-table-accounts.xml" relativeToChangelogFile="true"/>
+    <include file="005-create-table-operations.xml" relativeToChangelogFile="true"/>
+    <include file="006-insert-table-operations.xml" relativeToChangelogFile="true"/>
+    <include file="007-create-table-actions.xml" relativeToChangelogFile="true"/>
+    <include file="008-insert-table-actions.xml" relativeToChangelogFile="true"/>
+
+
+</databaseChangeLog>

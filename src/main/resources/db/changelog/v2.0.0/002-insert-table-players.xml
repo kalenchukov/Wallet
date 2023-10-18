@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright © 2023 Алексей Каленчуков
+  ~ GitHub: https://github.com/kalenchukov
+  ~ E-mail: mailto:aleksey.kalenchukov@yandex.ru
+  -->
+
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.10.xsd">
+
+    <!-- Добавление игроков -->
+    <changeSet context="test" id="002-insert-table-players" author="admin">
+        <insert tableName="players">
+            <column name="name">aleksey</column>
+            <!-- password: aleksey -->
+            <column name="password">f8d07a83fff06d61529d83cf7d3fc6c6</column>
+        </insert>
+        <insert tableName="players">
+            <column name="name">ivan</column>
+            <!-- password: ivan -->
+            <column name="password">2c42e5cf1cdbafea04ed267018ef1511</column>
+        </insert>
+        <insert tableName="players">
+            <column name="name">igor</column>
+            <!-- password: igor -->
+            <column name="password">dd97813dd40be87559aaefed642c3fbb</column>
+        </insert>
+        <insert tableName="players">
+            <column name="name">vlad</column>
+            <!-- password: vlad -->
+            <column name="password">d701fde59d74f76803087b6632186caf</column>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>

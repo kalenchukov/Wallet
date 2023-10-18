@@ -1,0 +1,12 @@
+version: '3.9'
+services:
+  postgres:
+    image: 'postgres:16'
+    container_name: 'wallet-database'
+    ports:
+      - '1313:5432'
+    environment:
+      POSTGRES_USER: 'walletadmin'
+      POSTGRES_PASSWORD: 'walletadmin'
+      POSTGRES_DB: 'dbwallet'
+    restart: always

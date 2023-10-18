@@ -7,15 +7,17 @@
 package dev.kalenchukov.wallet.in.commands.handlers;
 
 import dev.kalenchukov.wallet.Wallet;
-import dev.kalenchukov.wallet.exceptions.NeedAuthCommandException;
+import dev.kalenchukov.wallet.exceptions.NeedAuthException;
 import dev.kalenchukov.wallet.in.commands.AbstractCommandHandler;
 import dev.kalenchukov.wallet.entity.Operation;
 import dev.kalenchukov.wallet.in.commands.handlers.comparators.SortOperationsByIdDescComparator;
 import dev.kalenchukov.wallet.in.service.OperationService;
-import dev.kalenchukov.wallet.in.service.OperationServiceImpl;
-import dev.kalenchukov.wallet.repository.AccountRepositoryImpl;
-import dev.kalenchukov.wallet.repository.OperationRepositoryImpl;
-import dev.kalenchukov.wallet.resources.ActionType;
+import dev.kalenchukov.wallet.in.service.impl.ActionServiceImpl;
+import dev.kalenchukov.wallet.in.service.impl.OperationServiceImpl;
+import dev.kalenchukov.wallet.repository.impl.ActionRepositoryImpl;
+import dev.kalenchukov.wallet.repository.impl.OperationRepositoryImpl;
+import dev.kalenchukov.wallet.repository.modules.DataBase;
+import dev.kalenchukov.wallet.type.ActionType;
 
 import java.io.PrintStream;
 import java.util.Collection;
@@ -34,7 +36,8 @@ public class OperationListAccountCommandHandler extends AbstractCommandHandler {
 	 * Конструирует обработчик команды.
 	 */
 	public OperationListAccountCommandHandler() {
-		this.operationService = new OperationServiceImpl(new OperationRepositoryImpl(), new AccountRepositoryImpl());
+		super(new ActionServiceImpl(new ActionRepositoryImpl(DataBase.getDataSource())));
+		this.operationService = new OperationServiceImpl(new OperationRepositoryImpl(DataBase.getDataSource()));
 	}
 
 	/**
@@ -47,10 +50,10 @@ public class OperationListAccountCommandHandler extends AbstractCommandHandler {
 	public void execute(final String[] data, final PrintStream output) {
 		Objects.requireNonNull(data);
 		Objects.requireNonNull(output);
-		this.checkCountRequireParameters(data, 2);
+		this.checkCountRequireArgs(data, 2);
 
 		if (Wallet.AUTH_PLAYER == null) {
-			throw new NeedAuthCommandException();
+			throw new NeedAuthException();
 		}
 
 		boolean success = false;
@@ -69,9 +72,9 @@ public class OperationListAccountCommandHandler extends AbstractCommandHandler {
 			for (Operation operation : operations) {
 				output.append("operationId: ").append(String.valueOf(operation.getOperationId()))
 						.append("\t|\t")
-						.append("accountId: ").append(String.valueOf(operation.getAccount().getAccountId()))
+						.append("playerId: ").append(String.valueOf(operation.getPlayerId()))
 						.append("\t|\t")
-						.append("playerId: ").append(String.valueOf(operation.getAccount().getPlayerId()))
+						.append("accountId: ").append(String.valueOf(operation.getAccountId()))
 						.append("\t|\t")
 						.append("amount: ").append(operation.getAmount().toString())
 						.append("\t|\t")

@@ -6,7 +6,7 @@
 
 package dev.kalenchukov.wallet.entity;
 
-import dev.kalenchukov.wallet.resources.ActionType;
+import dev.kalenchukov.wallet.type.ActionType;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
@@ -22,10 +22,11 @@ public class ActionTest {
 	 */
 	@Test
 	public void getPlayerId() {
+		long actionId = 1L;
 		long playerId = 99L;
 		ActionType actionType = mock(ActionType.class);
 		ActionType.Status actionTypeStatus = mock(ActionType.Status.class);
-		Action action = new Action(playerId, actionType, actionTypeStatus);
+		Action action = new Action(actionId, playerId, actionType, actionTypeStatus);
 
 		long actual = action.getPlayerId();
 
@@ -37,10 +38,11 @@ public class ActionTest {
 	 */
 	@Test
 	public void getActionType() {
+		long actionId = 1L;
 		long playerId = 99L;
 		ActionType actionType = mock(ActionType.class);
 		ActionType.Status actionTypeStatus = mock(ActionType.Status.class);
-		Action action = new Action(playerId, actionType, actionTypeStatus);
+		Action action = new Action(actionId, playerId, actionType, actionTypeStatus);
 
 		ActionType actual = action.getActionType();
 
@@ -52,10 +54,11 @@ public class ActionTest {
 	 */
 	@Test
 	public void testToString() {
+		long actionId = 1L;
 		long playerId = 99L;
 		ActionType actionType = mock(ActionType.class);
 		ActionType.Status actionTypeStatus = mock(ActionType.Status.class);
-		Action action = new Action(playerId, actionType, actionTypeStatus);
+		Action action = new Action(actionId, playerId, actionType, actionTypeStatus);
 
 		String actual = action.toString();
 
@@ -63,15 +66,15 @@ public class ActionTest {
 	}
 
 	/**
-	 * Класс проверки метода {@link Action#Action(long, ActionType, ActionType.Status)}.
+	 * Класс проверки метода {@link Action#Action(long, long, ActionType, ActionType.Status)}.
 	 */
 	@Nested
 	public class Constructor {
 		/**
-		 * Проверка метода {@link Action#Action(long, ActionType, ActionType.Status)}.
+		 * Проверка метода {@link Action#Action(long, long, ActionType, ActionType.Status)}.
 		 */
 		@Test
-		public void constructorWithValidPlayerAndActionType() {
+		public void constructor() {
 			long playerId = 99L;
 			ActionType actionType = mock(ActionType.class);
 			ActionType.Status actionTypeStatus = mock(ActionType.Status.class);
@@ -82,28 +85,45 @@ public class ActionTest {
 		}
 
 		/**
-		 * Проверка метода {@link Action#Action(long, ActionType, ActionType.Status)} с {@code null} в качестве типа действия.
+		 * Проверка метода {@link Action#Action(long, long, ActionType, ActionType.Status)} со всеми аргументами.
 		 */
 		@Test
-		public void constructorWithNullActionType() {
+		public void constructorWithAllArgs() {
+			long actionId = 1L;
 			long playerId = 99L;
+			ActionType actionType = mock(ActionType.class);
 			ActionType.Status actionTypeStatus = mock(ActionType.Status.class);
 
-			assertThatExceptionOfType(NullPointerException.class).isThrownBy(() -> {
-				new Action(playerId, null, actionTypeStatus);
+			assertThatNoException().isThrownBy(() -> {
+				new Action(actionId, playerId, actionType, actionTypeStatus);
 			});
 		}
 
 		/**
-		 * Проверка метода {@link Action#Action(long, ActionType, ActionType.Status)} с {@code null} в качестве статуса действия.
+		 * Проверка метода {@link Action#Action(long, long, ActionType, ActionType.Status)} с {@code null} в качестве типа действия.
+		 */
+		@Test
+		public void constructorWithNullActionType() {
+			long actionId = 1L;
+			long playerId = 99L;
+			ActionType.Status actionTypeStatus = mock(ActionType.Status.class);
+
+			assertThatExceptionOfType(NullPointerException.class).isThrownBy(() -> {
+				new Action(actionId, playerId, null, actionTypeStatus);
+			});
+		}
+
+		/**
+		 * Проверка метода {@link Action#Action(long, long, ActionType, ActionType.Status)} с {@code null} в качестве статуса действия.
 		 */
 		@Test
 		public void constructorWithNullActionTypeStatus() {
+			long actionId = 1L;
 			long playerId = 99L;
 			ActionType actionType = mock(ActionType.class);
 
 			assertThatExceptionOfType(NullPointerException.class).isThrownBy(() -> {
-				new Action(playerId, actionType, null);
+				new Action(actionId, playerId, actionType, null);
 			});
 		}
 	}
@@ -118,10 +138,11 @@ public class ActionTest {
 		 */
 		@Test
 		public void testEquals() {
+			long actionId = 1L;
 			long playerId = 99L;
 			ActionType actionType = mock(ActionType.class);
 			ActionType.Status actionTypeStatus = mock(ActionType.Status.class);
-			Action action1 = new Action(playerId, actionType, actionTypeStatus);
+			Action action1 = new Action(actionId, playerId, actionType, actionTypeStatus);
 			Action action2 = action1;
 
 			boolean actual = action1.equals(action2);
@@ -133,11 +154,12 @@ public class ActionTest {
 		 * Проверка метода {@link Action#equals(Object)} с {@code null} в качестве действия.
 		 */
 		@Test
-		public void testEqualsWithNullAction() {
+		public void testEqualsWithNull() {
+			long actionId = 1L;
 			long playerId = 99L;
 			ActionType actionType = mock(ActionType.class);
 			ActionType.Status actionTypeStatus = mock(ActionType.Status.class);
-			Action action1 = new Action(playerId, actionType, actionTypeStatus);
+			Action action1 = new Action(actionId, playerId, actionType, actionTypeStatus);
 			Action action2 = null;
 
 			boolean actual = action1.equals(action2);
@@ -146,54 +168,75 @@ public class ActionTest {
 		}
 
 		/**
-		 * Проверка метода {@link Action#equals(Object)}.
+		 * Проверка метода {@link Action#equals(Object)} с разными по идентификатору действия классами.
 		 */
 		@Test
-		public void testEqualsWithDifferentAction() {
+		public void testEqualsWithDifferentActionId() {
+			long actionId1 = 99L;
+			long actionId2 = 222L;
+			long playerId = 99L;
+			ActionType actionType = mock(ActionType.class);
+			ActionType.Status actionTypeStatus = mock(ActionType.Status.class);
+			Action action1 = new Action(actionId1, playerId, actionType, actionTypeStatus);
+			Action action2 = new Action(actionId2, playerId, actionType, actionTypeStatus);
+
+			boolean actual = action1.equals(action2);
+
+			assertThat(actual).isFalse();
+		}
+
+		/**
+		 * Проверка метода {@link Action#equals(Object)} с разными по идентификатору игрока классами.
+		 */
+		@Test
+		public void testEqualsWithDifferentPlayerId() {
+			long actionId = 99L;
 			long playerId1 = 99L;
 			long playerId2 = 111L;
 			ActionType actionType = mock(ActionType.class);
 			ActionType.Status actionTypeStatus = mock(ActionType.Status.class);
-			Action action1 = new Action(playerId1, actionType, actionTypeStatus);
-			Action action2 = new Action(playerId2, actionType, actionTypeStatus);
+			Action action1 = new Action(actionId, playerId1, actionType, actionTypeStatus);
+			Action action2 = new Action(actionId, playerId2, actionType, actionTypeStatus);
 
 			boolean actual = action1.equals(action2);
 
-			assertThat(actual).isFalse();
+			assertThat(actual).isTrue();
 		}
 
 		/**
-		 * Проверка метода {@link Action#equals(Object)}.
+		 * Проверка метода {@link Action#equals(Object)} с разными по типу действия классами.
 		 */
 		@Test
 		public void testEqualsWithDifferentActionType() {
+			long actionId = 1L;
 			long playerId = 99L;
 			ActionType type1 = mock(ActionType.class);
 			ActionType type2 = mock(ActionType.class);
 			ActionType.Status actionTypeStatus = mock(ActionType.Status.class);
-			Action action1 = new Action(playerId, type1, actionTypeStatus);
-			Action action2 = new Action(playerId, type2, actionTypeStatus);
+			Action action1 = new Action(actionId, playerId, type1, actionTypeStatus);
+			Action action2 = new Action(actionId, playerId, type2, actionTypeStatus);
 
 			boolean actual = action1.equals(action2);
 
-			assertThat(actual).isFalse();
+			assertThat(actual).isTrue();
 		}
 
 		/**
-		 * Проверка метода {@link Action#equals(Object)}.
+		 * Проверка метода {@link Action#equals(Object)} с разными по статусу действия классами.
 		 */
 		@Test
 		public void testEqualsWithDifferentActionTypeStatus() {
+			long actionId = 1L;
 			long playerId = 99L;
 			ActionType type = mock(ActionType.class);
 			ActionType.Status actionTypeStatus1 = mock(ActionType.Status.class);
 			ActionType.Status actionTypeStatus2 = mock(ActionType.Status.class);
-			Action action1 = new Action(playerId, type, actionTypeStatus1);
-			Action action2 = new Action(playerId, type, actionTypeStatus2);
+			Action action1 = new Action(actionId, playerId, type, actionTypeStatus1);
+			Action action2 = new Action(actionId, playerId, type, actionTypeStatus2);
 
 			boolean actual = action1.equals(action2);
 
-			assertThat(actual).isFalse();
+			assertThat(actual).isTrue();
 		}
 	}
 
@@ -207,10 +250,11 @@ public class ActionTest {
 		 */
 		@Test
 		public void testHashCode() {
+			long actionId = 1L;
 			long playerId = 99L;
 			ActionType actionType = mock(ActionType.class);
 			ActionType.Status actionTypeStatus = mock(ActionType.Status.class);
-			Action action1 = new Action(playerId, actionType, actionTypeStatus);
+			Action action1 = new Action(actionId, playerId, actionType, actionTypeStatus);
 			Action action2 = action1;
 
 			int expected = action1.hashCode();
@@ -220,16 +264,17 @@ public class ActionTest {
 		}
 
 		/**
-		 * Проверка метода {@link Action#hashCode()}.
+		 * Проверка метода {@link Action#hashCode()} с разными по идентификатору действия классами.
 		 */
 		@Test
-		public void testHashCodeWithDifferentAction() {
-			long playerId1 = 99L;
-			long playerId2 = 111L;
+		public void testHashCodeWithDifferentActionId() {
+			long actionId1 = 1L;
+			long actionId2 = 12L;
+			long playerId = 111L;
 			ActionType actionType = mock(ActionType.class);
 			ActionType.Status actionTypeStatus = mock(ActionType.Status.class);
-			Action action1 = new Action(playerId1, actionType, actionTypeStatus);
-			Action action2 = new Action(playerId2, actionType, actionTypeStatus);
+			Action action1 = new Action(actionId1, playerId, actionType, actionTypeStatus);
+			Action action2 = new Action(actionId2, playerId, actionType, actionTypeStatus);
 
 			int expected = action1.hashCode();
 			int actual = action2.hashCode();
@@ -238,21 +283,60 @@ public class ActionTest {
 		}
 
 		/**
-		 * Проверка метода {@link Action#hashCode()}.
+		 * Проверка метода {@link Action#hashCode()} с разными по идентификатору игрока классами.
 		 */
 		@Test
-		public void testHashCodeWithDifferentActionType() {
-			long playerId = 99L;
-			ActionType type = mock(ActionType.class);
-			ActionType.Status actionTypeStatus1 = mock(ActionType.Status.class);
-			ActionType.Status actionTypeStatus2 = mock(ActionType.Status.class);
-			Action action1 = new Action(playerId, type, actionTypeStatus1);
-			Action action2 = new Action(playerId, type, actionTypeStatus2);
+		public void testHashCodeWithDifferentPlayerId() {
+			long actionId = 1L;
+			long playerId1 = 99L;
+			long playerId2 = 111L;
+			ActionType actionType = mock(ActionType.class);
+			ActionType.Status actionTypeStatus = mock(ActionType.Status.class);
+			Action action1 = new Action(actionId, playerId1, actionType, actionTypeStatus);
+			Action action2 = new Action(actionId, playerId2, actionType, actionTypeStatus);
 
 			int expected = action1.hashCode();
 			int actual = action2.hashCode();
 
-			assertThat(actual).isNotEqualTo(expected);
+			assertThat(actual).isEqualTo(expected);
+		}
+
+		/**
+		 * Проверка метода {@link Action#hashCode()} с разными по типу действия классами.
+		 */
+		@Test
+		public void testHashCodeWithDifferentActionType() {
+			long actionId = 1L;
+			long playerId = 99L;
+			ActionType actionType1 = mock(ActionType.class);
+			ActionType actionType2 = mock(ActionType.class);
+			ActionType.Status actionTypeStatus = mock(ActionType.Status.class);
+			Action action1 = new Action(actionId, playerId, actionType1, actionTypeStatus);
+			Action action2 = new Action(actionId, playerId, actionType2, actionTypeStatus);
+
+			int expected = action1.hashCode();
+			int actual = action2.hashCode();
+
+			assertThat(actual).isEqualTo(expected);
+		}
+
+		/**
+		 * Проверка метода {@link Action#hashCode()} с разными по статусу типа действия классами.
+		 */
+		@Test
+		public void testHashCodeWithDifferentActionTypeStatus() {
+			long actionId = 1L;
+			long playerId = 99L;
+			ActionType type = mock(ActionType.class);
+			ActionType.Status actionTypeStatus1 = mock(ActionType.Status.class);
+			ActionType.Status actionTypeStatus2 = mock(ActionType.Status.class);
+			Action action1 = new Action(actionId, playerId, type, actionTypeStatus1);
+			Action action2 = new Action(actionId, playerId, type, actionTypeStatus2);
+
+			int expected = action1.hashCode();
+			int actual = action2.hashCode();
+
+			assertThat(actual).isEqualTo(expected);
 		}
 	}
 }

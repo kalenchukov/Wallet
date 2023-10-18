@@ -6,15 +6,12 @@
 
 package dev.kalenchukov.wallet.entity;
 
-import dev.kalenchukov.wallet.exceptions.NegativeAmountOperationException;
-import dev.kalenchukov.wallet.exceptions.OutOfAmountOperationException;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
 /**
  * Класс проверки методов класса {@link Account}.
@@ -25,8 +22,10 @@ public class AccountTest {
 	 */
 	@Test
 	public void getAccountId() {
+		long accountId = 1L;
 		long playerId = 24L;
-		Account account = new Account(playerId);
+		BigDecimal amount = BigDecimal.TEN;
+		Account account = new Account(accountId, playerId, amount);
 
 		long actual = account.getAccountId();
 
@@ -38,11 +37,13 @@ public class AccountTest {
 	 */
 	@Test
 	public void getAmount() {
+		long accountId = 1L;
 		long playerId = 24L;
-		Account account = new Account(playerId);
+		BigDecimal amount = BigDecimal.TEN;
+		Account account = new Account(accountId, playerId, amount);
 
 		BigDecimal actual = account.getAmount();
-		BigDecimal expected = BigDecimal.ZERO;
+		BigDecimal expected = BigDecimal.TEN;
 
 		assertThat(actual).isEqualTo(expected);
 	}
@@ -52,8 +53,10 @@ public class AccountTest {
 	 */
 	@Test
 	public void getPlayerId() {
+		long accountId = 1L;
 		long playerId = 24L;
-		Account account = new Account(playerId);
+		BigDecimal amount = BigDecimal.TEN;
+		Account account = new Account(accountId, playerId, amount);
 
 		long actual = account.getPlayerId();
 
@@ -65,8 +68,10 @@ public class AccountTest {
 	 */
 	@Test
 	public void testToString() {
+		long accountId = 1L;
 		long playerId = 24L;
-		Account account = new Account(playerId);
+		BigDecimal amount = BigDecimal.TEN;
+		Account account = new Account(accountId, playerId, amount);
 
 		String actual = account.toString();
 
@@ -74,131 +79,34 @@ public class AccountTest {
 	}
 
 	/**
-	 * Класс проверки метода {@link Account#Account(long)}.
+	 * Класс проверки метода {@link Account#Account(long, long, BigDecimal)}.
 	 */
 	@Nested
 	public class Constructor {
 		/**
-		 * Проверка метода {@link Account#Account(long)}.
+		 * Проверка метода {@link Account#Account(long, long, BigDecimal)}.
 		 */
 		@Test
-		public void constructorWithValidPlayer() {
+		public void constructor() {
 			long playerId = 24L;
+			BigDecimal amount = BigDecimal.TEN;
 
 			assertThatNoException().isThrownBy(() -> {
-				new Account(playerId);
-			});
-		}
-	}
-
-	/**
-	 * Класс проверки метода {@link Account#credit(BigDecimal)}.
-	 */
-	@Nested
-	public class Credit {
-		/**
-		 * Проверка метода {@link Account#credit(BigDecimal)}.
-		 */
-		@Test
-		public void credit() {
-			long playerId = 24L;
-			Account account = new Account(playerId);
-			BigDecimal amount = mock(BigDecimal.class);
-
-			account.credit(amount);
-
-			verify(amount, times(1)).add(any(BigDecimal.class));
-		}
-
-		/**
-		 * Проверка метода {@link Account#credit(BigDecimal)} с {@code null} в качестве суммы.
-		 */
-		@Test
-		public void creditWithNullAmount() {
-			long playerId = 24L;
-			Account account = new Account(playerId);
-
-			assertThatExceptionOfType(NullPointerException.class).isThrownBy(() -> {
-				account.credit(null);
+				new Account(playerId, amount);
 			});
 		}
 
 		/**
-		 * Проверка метода {@link Account#credit(BigDecimal)}.
+		 * Проверка метода {@link Account#Account(long, long, BigDecimal)} со всеми аргументами.
 		 */
 		@Test
-		public void creditWithNegativeAmount() {
+		public void constructorWithAllArgs() {
+			long accountId = 1L;
 			long playerId = 24L;
-			Account account = new Account(playerId);
-			BigDecimal amount = BigDecimal.valueOf(-99.9);
+			BigDecimal amount = BigDecimal.TEN;
 
-			assertThatExceptionOfType(NegativeAmountOperationException.class).isThrownBy(() -> {
-				account.credit(amount);
-			});
-		}
-	}
-
-	/**
-	 * Класс проверки метода {@link Account#debit(BigDecimal)}.
-	 */
-	@Nested
-	public class Debit {
-		/**
-		 * Проверка метода {@link Account#debit(BigDecimal)}.
-		 */
-		@Test
-		public void debit() {
-			long playerId = 24L;
-			Account account = new Account(playerId);
-			BigDecimal amount1 = mock(BigDecimal.class);
-			BigDecimal amount2 = mock(BigDecimal.class);
-			when(amount1.subtract(any(BigDecimal.class))).thenReturn(amount2);
-			when(amount2.abs()).thenReturn(BigDecimal.TEN);
-
-			account.debit(amount1);
-
-			verify(amount1, times(1)).subtract(any(BigDecimal.class));
-			verify(amount2, times(1)).abs();
-		}
-
-		/**
-		 * Проверка метода {@link Account#debit(BigDecimal)} с {@code null} в качестве суммы.
-		 */
-		@Test
-		public void creditWithNullAmount() {
-			long playerId = 24L;
-			Account account = new Account(playerId);
-
-			assertThatExceptionOfType(NullPointerException.class).isThrownBy(() -> {
-				account.debit(null);
-			});
-		}
-
-		/**
-		 * Проверка метода {@link Account#debit(BigDecimal)}.
-		 */
-		@Test
-		public void debitWithNegativeAmount() {
-			long playerId = 24L;
-			Account account = new Account(playerId);
-			BigDecimal amount = BigDecimal.valueOf(-99.9);
-
-			assertThatExceptionOfType(NegativeAmountOperationException.class).isThrownBy(() -> {
-				account.debit(amount);
-			});
-		}
-
-		/**
-		 * Проверка метода {@link Account#debit(BigDecimal)}.
-		 */
-		@Test
-		public void debitWithOutOfAmount() {
-			long playerId = 24L;
-			Account account = new Account(playerId);
-			BigDecimal amount = BigDecimal.valueOf(7.77);
-
-			assertThatExceptionOfType(OutOfAmountOperationException.class).isThrownBy(() -> {
-				account.debit(amount);
+			assertThatNoException().isThrownBy(() -> {
+				new Account(accountId, playerId, amount);
 			});
 		}
 	}
@@ -213,8 +121,10 @@ public class AccountTest {
 		 */
 		@Test
 		public void testEquals() {
+			long accountId = 1L;
 			long playerId = 24L;
-			Account account1 = new Account(playerId);
+			BigDecimal amount = BigDecimal.TEN;
+			Account account1 = new Account(accountId, playerId, amount);
 			Account account2 = account1;
 
 			boolean actual = account1.equals(account2);
@@ -226,9 +136,11 @@ public class AccountTest {
 		 * Проверка метода {@link Account#equals(Object)} с {@code null} в качестве счёта.
 		 */
 		@Test
-		public void testEqualsWithNullAccount() {
+		public void testEqualsWithNull() {
+			long accountId = 1L;
 			long playerId = 24L;
-			Account account1 = new Account(playerId);
+			BigDecimal amount = BigDecimal.TEN;
+			Account account1 = new Account(accountId, playerId, amount);
 			Account account2 = null;
 
 			boolean actual = account1.equals(account2);
@@ -237,18 +149,54 @@ public class AccountTest {
 		}
 
 		/**
-		 * Проверка метода {@link Account#equals(Object)}.
+		 * Проверка метода {@link Account#equals(Object)} с разными по идентификатору счёта классами.
 		 */
 		@Test
-		public void testEqualsWithDifferentAccount() {
-			long playerId1 = 24L;
-			long playerId2 = 753L;
-			Account account1 = new Account(playerId1);
-			Account account2 = new Account(playerId2);
+		public void testEqualsWithDifferentAccountId() {
+			long accountId1 = 1L;
+			long accountId2 = 19L;
+			long playerId = 24L;
+			BigDecimal amount = BigDecimal.TEN;
+			Account account1 = new Account(accountId1, playerId, amount);
+			Account account2 = new Account(accountId2, playerId, amount);
 
 			boolean actual = account1.equals(account2);
 
 			assertThat(actual).isFalse();
+		}
+
+		/**
+		 * Проверка метода {@link Account#equals(Object)} с разными по сумме счёта классами.
+		 */
+		@Test
+		public void testEqualsWithDifferentAmount() {
+			long accountId = 1L;
+			long playerId = 24L;
+			BigDecimal amount1 = BigDecimal.TEN;
+			BigDecimal amount2 = BigDecimal.TEN;
+			Account account1 = new Account(accountId, playerId, amount1);
+			Account account2 = new Account(accountId, playerId, amount2);
+
+			boolean actual = account1.equals(account2);
+
+			assertThat(actual).isTrue();
+		}
+
+		/**
+		 * Проверка метода {@link Account#equals(Object)} с разными по идентификатору игрока классами.
+		 */
+		@Test
+		public void testEqualsWithDifferentPlayerId() {
+			long accountId = 1L;
+			long playerId1 = 24L;
+			long playerId2 = 81L;
+			BigDecimal amount = BigDecimal.TEN;
+			Account account1 = new Account(accountId, playerId1, amount);
+			Account account2 = new Account(accountId, playerId2, amount);
+
+			boolean actual = account1.equals(account2);
+
+			assertThat(actual).isTrue();
 		}
 	}
 
@@ -262,8 +210,10 @@ public class AccountTest {
 		 */
 		@Test
 		public void testHashCode() {
+			long accountId = 1L;
 			long playerId = 24L;
-			Account account1 = new Account(playerId);
+			BigDecimal amount = BigDecimal.TEN;
+			Account account1 = new Account(accountId, playerId, amount);
 			Account account2 = account1;
 
 			int expected = account1.hashCode();
@@ -273,13 +223,16 @@ public class AccountTest {
 		}
 
 		/**
-		 * Проверка метода {@link Account#hashCode()}.
+		 * Проверка метода {@link Account#hashCode()} с разными по идентификатору счёта классами.
 		 */
 		@Test
-		public void testHashCodeWithDifferentAccount() {
+		public void testHashCodeWithDifferentAccountId() {
+			long accountId1 = 1L;
+			long accountId2 = 19L;
 			long playerId = 24L;
-			Account account1 = new Account(playerId);
-			Account account2 = new Account(playerId);
+			BigDecimal amount = BigDecimal.TEN;
+			Account account1 = new Account(accountId1, playerId, amount);
+			Account account2 = new Account(accountId2, playerId, amount);
 
 			int expected = account1.hashCode();
 			int actual = account2.hashCode();
@@ -288,19 +241,39 @@ public class AccountTest {
 		}
 
 		/**
-		 * Проверка метода {@link Account#hashCode()}.
+		 * Проверка метода {@link Account#hashCode()} с разными по идентификатору игрока классами.
 		 */
 		@Test
-		public void testHashCodeWithDifferentAccountPlayer() {
+		public void testHashCodeWithDifferentPlayerId() {
+			long accountId = 1L;
 			long playerId1 = 24L;
 			long playerId2 = 753L;
-			Account account1 = new Account(playerId1);
-			Account account2 = new Account(playerId2);
+			BigDecimal amount = BigDecimal.TEN;
+			Account account1 = new Account(accountId, playerId1, amount);
+			Account account2 = new Account(accountId, playerId2, amount);
 
 			int expected = account1.hashCode();
 			int actual = account2.hashCode();
 
-			assertThat(actual).isNotEqualTo(expected);
+			assertThat(actual).isEqualTo(expected);
+		}
+
+		/**
+		 * Проверка метода {@link Account#hashCode()} с разными по сумме счёта классами.
+		 */
+		@Test
+		public void testHashCodeWithDifferentAmount() {
+			long accountId = 1L;
+			long playerId = 24L;
+			BigDecimal amount1 = BigDecimal.TEN;
+			BigDecimal amount2 = BigDecimal.TEN;
+			Account account1 = new Account(accountId, playerId, amount1);
+			Account account2 = new Account(accountId, playerId, amount2);
+
+			int expected = account1.hashCode();
+			int actual = account2.hashCode();
+
+			assertThat(actual).isEqualTo(expected);
 		}
 	}
 }

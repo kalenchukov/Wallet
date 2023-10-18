@@ -6,12 +6,9 @@
 
 package dev.kalenchukov.wallet.in.commands;
 
-import dev.kalenchukov.wallet.entity.Player;
-import dev.kalenchukov.wallet.exceptions.MissingParametersCommandException;
-import dev.kalenchukov.wallet.repository.ActionRepositoryImpl;
-import dev.kalenchukov.wallet.resources.ActionType;
+import dev.kalenchukov.wallet.exceptions.MissingArgsCommandException;
+import dev.kalenchukov.wallet.type.ActionType;
 import dev.kalenchukov.wallet.in.service.ActionService;
-import dev.kalenchukov.wallet.in.service.ActionServiceImpl;
 
 import java.io.PrintStream;
 import java.util.Objects;
@@ -26,10 +23,12 @@ public abstract class AbstractCommandHandler implements CommandHandler {
 	protected final ActionService actionService;
 
 	/**
-	 * Конструирует обработчик команды.
+	 * Конструирует обработчик абстрактной команды.
+	 *
+	 * @param actionService сервис действий.
 	 */
-	public AbstractCommandHandler() {
-		this.actionService = new ActionServiceImpl(new ActionRepositoryImpl());
+	public AbstractCommandHandler(final ActionService actionService) {
+		this.actionService = actionService;
 	}
 
 	/**
@@ -56,17 +55,17 @@ public abstract class AbstractCommandHandler implements CommandHandler {
 	}
 
 	/**
-	 * Проверяет количество параметров для команды.
+	 * Проверяет количество аргументов для команды.
 	 *
 	 * @param data        данные.
-	 * @param countParams количество необходимых параметров.
-	 * @throws MissingParametersCommandException если указаны не все параметры для данной команды.
+	 * @param requireArgs количество необходимых аргументов.
+	 * @throws MissingArgsCommandException если указаны не все аргументы для данной команды.
 	 */
-	protected void checkCountRequireParameters(final String[] data, final int countParams) {
+	protected void checkCountRequireArgs(final String[] data, final int requireArgs) {
 		Objects.requireNonNull(data);
 
-		if (data.length < countParams) {
-			throw new MissingParametersCommandException(data.length);
+		if (data.length < requireArgs) {
+			throw new MissingArgsCommandException(data.length - 1);
 		}
 	}
 }

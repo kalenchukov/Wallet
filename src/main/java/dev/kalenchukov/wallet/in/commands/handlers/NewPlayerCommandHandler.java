@@ -11,10 +11,13 @@ import dev.kalenchukov.wallet.entity.Player;
 import dev.kalenchukov.wallet.exceptions.DuplicatePlayerException;
 import dev.kalenchukov.wallet.exceptions.EmptyNamePlayerException;
 import dev.kalenchukov.wallet.exceptions.EmptyPasswordPlayerException;
-import dev.kalenchukov.wallet.repository.PlayerRepositoryImpl;
-import dev.kalenchukov.wallet.resources.ActionType;
+import dev.kalenchukov.wallet.in.service.impl.ActionServiceImpl;
+import dev.kalenchukov.wallet.repository.impl.ActionRepositoryImpl;
+import dev.kalenchukov.wallet.repository.impl.PlayerRepositoryImpl;
+import dev.kalenchukov.wallet.repository.modules.DataBase;
+import dev.kalenchukov.wallet.type.ActionType;
 import dev.kalenchukov.wallet.in.service.PlayerService;
-import dev.kalenchukov.wallet.in.service.PlayerServiceImpl;
+import dev.kalenchukov.wallet.in.service.impl.PlayerServiceImpl;
 
 import java.io.PrintStream;
 import java.util.Objects;
@@ -32,7 +35,8 @@ public class NewPlayerCommandHandler extends AbstractCommandHandler {
 	 * Конструирует обработчик команды.
 	 */
 	public NewPlayerCommandHandler() {
-		this.playerService = new PlayerServiceImpl(new PlayerRepositoryImpl());
+		super(new ActionServiceImpl(new ActionRepositoryImpl(DataBase.getDataSource())));
+		this.playerService = new PlayerServiceImpl(new PlayerRepositoryImpl(DataBase.getDataSource()));
 	}
 
 	/**
@@ -45,10 +49,10 @@ public class NewPlayerCommandHandler extends AbstractCommandHandler {
 	public void execute(final String[] data, final PrintStream output) {
 		Objects.requireNonNull(data);
 		Objects.requireNonNull(output);
-		this.checkCountRequireParameters(data, 3);
+		this.checkCountRequireArgs(data, 3);
 
 		String name = data[1];
-		String password = data[2]; // не будем пока заморачиваться о хранении его в String Pool
+		String password = data[2];
 
 		try {
 			Player player = this.playerService.add(name, password);

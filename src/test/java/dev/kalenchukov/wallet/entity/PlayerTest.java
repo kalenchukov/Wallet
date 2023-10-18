@@ -6,13 +6,10 @@
 
 package dev.kalenchukov.wallet.entity;
 
-import dev.kalenchukov.wallet.exceptions.EmptyNamePlayerException;
-import dev.kalenchukov.wallet.exceptions.EmptyPasswordPlayerException;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.mockito.Mockito.mock;
 
 /**
  * Класс проверки методов класса {@link Player}.
@@ -23,7 +20,10 @@ public class PlayerTest {
 	 */
 	@Test
 	public void getPlayerId() {
-		Player player = new Player("Имя", "pa$$w0rd");
+		long playerId = 1L;
+		String name = "Имя";
+		String password = "d41d8cd98f00b204e9800998ecf8427e";
+		Player player = new Player(playerId, name, password);
 
 		long actual = player.getPlayerId();
 
@@ -35,7 +35,10 @@ public class PlayerTest {
 	 */
 	@Test
 	public void getName() {
-		Player player = new Player("Имя", "pa$$w0rd");
+		long playerId = 1L;
+		String name = "Имя";
+		String password = "d41d8cd98f00b204e9800998ecf8427e";
+		Player player = new Player(playerId, name, password);
 
 		String actual = player.getName();
 		String expected = "Имя";
@@ -48,7 +51,10 @@ public class PlayerTest {
 	 */
 	@Test
 	public void getPassword() {
-		Player player = new Player("Имя", "pa$$w0rd");
+		long playerId = 1L;
+		String name = "Имя";
+		String password = "d41d8cd98f00b204e9800998ecf8427e";
+		Player player = new Player(playerId, name, password);
 
 		String actual = player.getPassword();
 
@@ -60,7 +66,10 @@ public class PlayerTest {
 	 */
 	@Test
 	public void testToString() {
-		Player player = new Player("Имя", "pa$$w0rd");
+		long playerId = 1L;
+		String name = "Имя";
+		String password = "d41d8cd98f00b204e9800998ecf8427e";
+		Player player = new Player(playerId, name, password);
 
 		String actual = player.toString();
 
@@ -68,57 +77,56 @@ public class PlayerTest {
 	}
 
 	/**
-	 * Класс проверки метода {@link Player#Player(String, String)}.
+	 * Класс проверки метода {@link Player#Player(long, String, String)}.
 	 */
 	@Nested
 	public class Constructor {
 		/**
-		 * Проверка метода {@link Player#Player(String, String)}.
+		 * Проверка метода {@link Player#Player(long, String, String)}.
 		 */
 		@Test
-		public void constructorWithValidNameAndPassword() {
+		public void constructor() {
+			String name = "Имя";
+			String password = "d41d8cd98f00b204e9800998ecf8427e";
 			assertThatNoException().isThrownBy(() -> {
-				new Player("Имя", "pa$$w0rd");
+				new Player(name, password);
 			});
 		}
 
 		/**
-		 * Проверка метода {@link Player#Player(String, String)} с {@code null} в качестве имени.
+		 * Проверка метода {@link Player#Player(long, String, String)} со всеми аргументами.
+		 */
+		@Test
+		public void constructorWithAllArgs() {
+			long playerId = 1L;
+			String name = "Имя";
+			String password = "d41d8cd98f00b204e9800998ecf8427e";
+			assertThatNoException().isThrownBy(() -> {
+				new Player(playerId, name, password);
+			});
+		}
+
+		/**
+		 * Проверка метода {@link Player#Player(long, String, String)} с {@code null} в качестве имени.
 		 */
 		@Test
 		public void constructorWithNullName() {
+			long playerId = 1L;
+			String password = "d41d8cd98f00b204e9800998ecf8427e";
 			assertThatExceptionOfType(NullPointerException.class).isThrownBy(() -> {
-				new Player(null, "pa$$w0rd");
+				new Player(playerId, null, password);
 			});
 		}
 
 		/**
-		 * Проверка метода {@link Player#Player(String, String)}.
-		 */
-		@Test
-		public void constructorWithEmptyName() {
-			assertThatExceptionOfType(EmptyNamePlayerException.class).isThrownBy(() -> {
-				new Player("", "pa$$w0rd");
-			});
-		}
-
-		/**
-		 * Проверка метода {@link Player#Player(String, String)} с {@code null} в качестве пароля.
+		 * Проверка метода {@link Player#Player(long, String, String)} с {@code null} в качестве пароля.
 		 */
 		@Test
 		public void constructorWithNullPassword() {
+			long playerId = 1L;
+			String name = "Имя";
 			assertThatExceptionOfType(NullPointerException.class).isThrownBy(() -> {
-				new Player("Имя", null);
-			});
-		}
-
-		/**
-		 * Проверка метода {@link Player#Player(String, String)}.
-		 */
-		@Test
-		public void constructorWithEmptyPassword() {
-			assertThatExceptionOfType(EmptyPasswordPlayerException.class).isThrownBy(() -> {
-				new Player("Имя", "");
+				new Player(playerId, name, null);
 			});
 		}
 	}
@@ -133,7 +141,10 @@ public class PlayerTest {
 		 */
 		@Test
 		public void testEquals() {
-			Player player1 = new Player("Имя", "pa$$w0rd");
+			long playerId = 1L;
+			String name = "Имя";
+			String password = "d41d8cd98f00b204e9800998ecf8427e";
+			Player player1 = new Player(playerId, name, password);
 			Player player2 = player1;
 
 			boolean actual = player1.equals(player2);
@@ -145,8 +156,11 @@ public class PlayerTest {
 		 * Проверка метода {@link Player#equals(Object)} с {@code null} в качестве игрока.
 		 */
 		@Test
-		public void testEqualsWithNullPlayer() {
-			Player player1 = new Player("Имя", "pa$$w0rd");
+		public void testEqualsWithNull() {
+			long playerId = 1L;
+			String name = "Имя";
+			String password = "d41d8cd98f00b204e9800998ecf8427e";
+			Player player1 = new Player(playerId, name, password);
 			Player player2 = null;
 
 			boolean actual = player1.equals(player2);
@@ -155,16 +169,20 @@ public class PlayerTest {
 		}
 
 		/**
-		 * Проверка метода {@link Player#equals(Object)}.
+		 * Проверка метода {@link Player#equals(Object)} с разными по имени игрока классами.
 		 */
 		@Test
-		public void testEqualsWithDifferentPlayerName() {
-			Player player1 = new Player("Имя1", "pa$$w0rd");
-			Player player2 = new Player("Имя2", "pa$$w0rd");
+		public void testEqualsWithDifferentName() {
+			long playerId = 1L;
+			String name1 = "Имя1";
+			String name2 = "Имя2";
+			String password = "d41d8cd98f00b204e9800998ecf8427e";
+			Player player1 = new Player(playerId, name1, password);
+			Player player2 = new Player(playerId, name2, password);
 
 			boolean actual = player1.equals(player2);
 
-			assertThat(actual).isFalse();
+			assertThat(actual).isTrue();
 		}
 	}
 
@@ -178,7 +196,10 @@ public class PlayerTest {
 		 */
 		@Test
 		public void testHashCode() {
-			Player player1 = new Player("Имя", "pa$$w0rd");
+			long playerId = 1L;
+			String name = "Имя";
+			String password = "d41d8cd98f00b204e9800998ecf8427e";
+			Player player1 = new Player(playerId, name, password);
 			Player player2 = player1;
 
 			int expected = player1.hashCode();
@@ -188,17 +209,21 @@ public class PlayerTest {
 		}
 
 		/**
-		 * Проверка метода {@link Player#hashCode()}.
+		 * Проверка метода {@link Player#hashCode()} с разными по имени игрока классами.
 		 */
 		@Test
-		public void testHashCodeWithDifferentPlayerName() {
-			Player player1 = new Player("Имя1", "pa$$w0rd");
-			Player player2 = new Player("Имя2", "pa$$w0rd");
+		public void testHashCodeWithDifferentName() {
+			long playerId = 1L;
+			String name1 = "Имя1";
+			String name2 = "Имя2";
+			String password = "d41d8cd98f00b204e9800998ecf8427e";
+			Player player1 = new Player(playerId, name1, password);
+			Player player2 = new Player(playerId, name2, password);
 
 			int expected = player1.hashCode();
 			int actual = player2.hashCode();
 
-			assertThat(actual).isNotEqualTo(expected);
+			assertThat(actual).isEqualTo(expected);
 		}
 	}
 }
