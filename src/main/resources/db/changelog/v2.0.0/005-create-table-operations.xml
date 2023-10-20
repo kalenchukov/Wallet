@@ -12,10 +12,14 @@
 
     <!-- Создание таблицы операций -->
     <changeSet context="production,test" id="003-create-table-operations" author="admin">
-        <createTable tableName="operations" remarks="Таблица операций со счетами">
+		<createSequence sequenceName="sq_operations"
+						startValue="1"
+						incrementBy="1"/>
+
+		<createTable tableName="operations" remarks="Таблица операций со счетами">
             <column name="operation_id"
                     type="BIGINT"
-                    autoIncrement="true"
+                    defaultValueSequenceNext="sq_operations"
                     remarks="Идентификатор операции">
                 <constraints nullable="false"
                              primaryKey="true"

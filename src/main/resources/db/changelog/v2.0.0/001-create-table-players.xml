@@ -12,10 +12,14 @@
 
     <!-- Создание таблицы игроков -->
     <changeSet context="production,test" id="001-create-table-players" author="admin">
+		<createSequence sequenceName="sq_players"
+						startValue="1"
+						incrementBy="1"/>
+
         <createTable tableName="players" remarks="Таблица игроков">
             <column name="player_id"
                     type="BIGINT"
-                    autoIncrement="true"
+					defaultValueSequenceNext="sq_players"
                     remarks="Идентификатор игрока">
                 <constraints nullable="false"
                              primaryKey="true"

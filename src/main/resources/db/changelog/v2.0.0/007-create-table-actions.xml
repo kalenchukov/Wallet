@@ -12,10 +12,14 @@
 
     <!-- Создание таблицы действий -->
     <changeSet context="production,test" id="004-create-table-actions" author="admin">
-        <createTable tableName="actions" remarks="Таблица действий игроков">
+		<createSequence sequenceName="sq_actions"
+						startValue="1"
+						incrementBy="1"/>
+
+		<createTable tableName="actions" remarks="Таблица действий игроков">
             <column name="action_id"
                     type="BIGINT"
-                    autoIncrement="true"
+                    defaultValueSequenceNext="sq_actions"
                     remarks="Идентификатор действия">
                 <constraints nullable="false"
                              primaryKey="true"
