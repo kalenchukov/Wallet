@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright © 2023 Алексей Каленчуков
+  ~ GitHub: https://github.com/kalenchukov
+  ~ E-mail: mailto:aleksey.kalenchukov@yandex.ru
+  -->
+
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.10.xsd">
+
+    <!-- Создание таблицы игроков -->
+    <changeSet context="production,test" id="001-create-table-players" author="admin">
+		<createSequence sequenceName="sq_players"
+						startValue="1"
+						incrementBy="1"/>
+
+        <createTable tableName="players" remarks="Таблица игроков">
+            <column name="player_id"
+                    type="BIGINT"
+					defaultValueSequenceNext="sq_players"
+                    remarks="Идентификатор игрока">
+                <constraints nullable="false"
+                             primaryKey="true"
+                             primaryKeyName="pk_players"/>
+            </column>
+            <column name="name"
+                    type="VARCHAR(255)"
+                    defaultOnNull="false"
+                    remarks="Имя">
+                <constraints nullable="false"
+                             unique="true"/>
+            </column>
+            <column name="password"
+                    type="VARCHAR(255)"
+                    defaultOnNull="false"
+                    remarks="Пароль">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+</databaseChangeLog>

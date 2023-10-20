@@ -7,12 +7,17 @@
 package dev.kalenchukov.wallet.in.commands.handlers;
 
 import dev.kalenchukov.wallet.Wallet;
+import dev.kalenchukov.wallet.exceptions.NotNeedAuthException;
 import dev.kalenchukov.wallet.in.commands.AbstractCommandHandler;
 import dev.kalenchukov.wallet.exceptions.NotFoundPlayerException;
-import dev.kalenchukov.wallet.repository.PlayerRepositoryImpl;
-import dev.kalenchukov.wallet.resources.ActionType;
+import dev.kalenchukov.wallet.in.service.impl.ActionServiceImpl;
+import dev.kalenchukov.wallet.repository.impl.ActionRepositoryImpl;
+import dev.kalenchukov.wallet.repository.impl.PlayerRepositoryImpl;
+import dev.kalenchukov.wallet.repository.modules.DataBase;
+import dev.kalenchukov.wallet.type.ActionType;
 import dev.kalenchukov.wallet.in.service.PlayerService;
-import dev.kalenchukov.wallet.in.service.PlayerServiceImpl;
+import dev.kalenchukov.wallet.in.service.impl.PlayerServiceImpl;
+import org.apache.commons.codec.digest.DigestUtils;
 
 import java.io.PrintStream;
 import java.util.Objects;
@@ -30,7 +35,8 @@ public class AuthPlayerCommandHandler extends AbstractCommandHandler {
 	 * Конструирует обработчик команды.
 	 */
 	public AuthPlayerCommandHandler() {
-		this.playerService = new PlayerServiceImpl(new PlayerRepositoryImpl());
+		super(new ActionServiceImpl(new ActionRepositoryImpl(DataBase.getDataSource())));
+		this.playerService = new PlayerServiceImpl(new PlayerRepositoryImpl(DataBase.getDataSource()));
 	}
 
 	/**
@@ -43,17 +49,17 @@ public class AuthPlayerCommandHandler extends AbstractCommandHandler {
 	public void execute(final String[] data, final PrintStream output) {
 		Objects.requireNonNull(data);
 		Objects.requireNonNull(output);
-		this.checkCountRequireParameters(data, 3);
+		this.checkCountRequireArgs(data, 3);
 
 		String name = data[1];
-		String password = data[2]; // не будем пока заморачиваться о хранении его в String Pool
+		String password = DigestUtils.md5Hex(data[2]);
 
 		if (Wallet.AUTH_PLAYER != null) {
-			output.printf("Вы уже авторизировались.");
+			throw new NotNeedAuthException();
 		}
 
 		try {
-			Wallet.AUTH_PLAYER = this.playerService.getByNameAndPassword(name, password);
+			Wallet.AUTH_PLAYER = this.playerService.find(name, password);
 			this.fixAction(Wallet.AUTH_PLAYER.getPlayerId(), ActionType.AUTH, ActionType.Status.SUCCESS);
 			output.print("OK.");
 		} catch (NotFoundPlayerException exception) {

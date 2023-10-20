@@ -7,14 +7,17 @@
 package dev.kalenchukov.wallet.in.commands.handlers;
 
 import dev.kalenchukov.wallet.Wallet;
-import dev.kalenchukov.wallet.exceptions.NeedAuthCommandException;
+import dev.kalenchukov.wallet.exceptions.NeedAuthException;
 import dev.kalenchukov.wallet.in.commands.AbstractCommandHandler;
 import dev.kalenchukov.wallet.entity.Account;
-import dev.kalenchukov.wallet.repository.AccountRepositoryImpl;
-import dev.kalenchukov.wallet.repository.OperationRepositoryImpl;
-import dev.kalenchukov.wallet.resources.ActionType;
+import dev.kalenchukov.wallet.in.service.impl.ActionServiceImpl;
+import dev.kalenchukov.wallet.repository.impl.AccountRepositoryImpl;
+import dev.kalenchukov.wallet.repository.impl.ActionRepositoryImpl;
+import dev.kalenchukov.wallet.repository.impl.OperationRepositoryImpl;
+import dev.kalenchukov.wallet.repository.modules.DataBase;
+import dev.kalenchukov.wallet.type.ActionType;
 import dev.kalenchukov.wallet.in.service.AccountService;
-import dev.kalenchukov.wallet.in.service.AccountServiceImpl;
+import dev.kalenchukov.wallet.in.service.impl.AccountServiceImpl;
 
 import java.io.PrintStream;
 import java.util.Objects;
@@ -32,7 +35,8 @@ public class CreateAccountCommandHandler extends AbstractCommandHandler {
 	 * Конструирует обработчик команды.
 	 */
 	public CreateAccountCommandHandler() {
-		this.accountService = new AccountServiceImpl(new AccountRepositoryImpl(), new OperationRepositoryImpl());
+		super(new ActionServiceImpl(new ActionRepositoryImpl(DataBase.getDataSource())));
+		this.accountService = new AccountServiceImpl(new AccountRepositoryImpl(DataBase.getDataSource()), new OperationRepositoryImpl(DataBase.getDataSource()));
 	}
 
 	/**
@@ -45,10 +49,10 @@ public class CreateAccountCommandHandler extends AbstractCommandHandler {
 	public void execute(final String[] data, final PrintStream output) {
 		Objects.requireNonNull(data);
 		Objects.requireNonNull(output);
-		this.checkCountRequireParameters(data, 1);
+		this.checkCountRequireArgs(data, 1);
 
 		if (Wallet.AUTH_PLAYER == null) {
-			throw new NeedAuthCommandException();
+			throw new NeedAuthException();
 		}
 
 		Account account = this.accountService.add(Wallet.AUTH_PLAYER.getPlayerId());

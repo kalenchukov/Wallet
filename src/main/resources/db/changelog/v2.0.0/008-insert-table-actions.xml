@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright © 2023 Алексей Каленчуков
+  ~ GitHub: https://github.com/kalenchukov
+  ~ E-mail: mailto:aleksey.kalenchukov@yandex.ru
+  -->
+
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.10.xsd">
+
+    <!-- Добавление действий -->
+    <changeSet context="test" id="008-insert-table-actions" author="admin">
+        <insert tableName="actions">
+            <column name="player_id">1</column>
+            <column name="type">NEW</column>
+            <column name="status">SUCCESS</column>
+        </insert>
+        <insert tableName="actions">
+            <column name="player_id">1</column>
+            <column name="type">AUTH</column>
+            <column name="status">SUCCESS</column>
+        </insert>
+        <insert tableName="actions">
+            <column name="player_id">1</column>
+            <column name="type">CREATE_ACCOUNT</column>
+            <column name="status">SUCCESS</column>
+        </insert>
+        <insert tableName="actions">
+            <column name="player_id">1</column>
+            <column name="type">CREDIT_ACCOUNT</column>
+            <column name="status">SUCCESS</column>
+        </insert>
+        <insert tableName="actions">
+            <column name="player_id">1</column>
+            <column name="type">CREDIT_ACCOUNT</column>
+            <column name="status">SUCCESS</column>
+        </insert>
+        <insert tableName="actions">
+            <column name="player_id">1</column>
+            <column name="type">CREDIT_ACCOUNT</column>
+            <column name="status">SUCCESS</column>
+        </insert>
+        <insert tableName="actions">
+            <column name="player_id">1</column>
+            <column name="type">DEBIT_ACCOUNT</column>
+            <column name="status">FAIL</column>
+        </insert>
+        <insert tableName="actions">
+            <column name="player_id">1</column>
+            <column name="type">DEBIT_ACCOUNT</column>
+            <column name="status">SUCCESS</column>
+        </insert>
+        <insert tableName="actions">
+            <column name="player_id">1</column>
+            <column name="type">OPERATION_ACCOUNT</column>
+            <column name="status">SUCCESS</column>
+        </insert>
+        <insert tableName="actions">
+            <column name="player_id">1</column>
+            <column name="type">OPERATIONS_ACCOUNT_LIST</column>
+            <column name="status">SUCCESS</column>
+        </insert>
+        <insert tableName="actions">
+            <column name="player_id">1</column>
+            <column name="type">ACTIONS_LIST</column>
+            <column name="status">SUCCESS</column>
+        </insert>
+        <insert tableName="actions">
+            <column name="player_id">1</column>
+            <column name="type">LOGOUT</column>
+            <column name="status">SUCCESS</column>
+        </insert>
+
+        <insert tableName="actions">
+            <column name="player_id">2</column>
+            <column name="type">NEW</column>
+            <column name="status">SUCCESS</column>
+        </insert>
+        <insert tableName="actions">
+            <column name="player_id">2</column>
+            <column name="type">AUTH</column>
+            <column name="status">SUCCESS</column>
+        </insert>
+        <insert tableName="actions">
+            <column name="player_id">2</column>
+            <column name="type">CREATE_ACCOUNT</column>
+            <column name="status">SUCCESS</column>
+        </insert>
+        <insert tableName="actions">
+            <column name="player_id">2</column>
+            <column name="type">CREDIT_ACCOUNT</column>
+            <column name="status">SUCCESS</column>
+        </insert>
+        <insert tableName="actions">
+            <column name="player_id">2</column>
+            <column name="type">OPERATIONS_ACCOUNT_LIST</column>
+            <column name="status">SUCCESS</column>
+        </insert>
+        <insert tableName="actions">
+            <column name="player_id">2</column>
+            <column name="type">LOGOUT</column>
+            <column name="status">SUCCESS</column>
+        </insert>
+
+        <insert tableName="actions">
+            <column name="player_id">3</column>
+            <column name="type">NEW</column>
+            <column name="status">SUCCESS</column>
+        </insert>
+        <insert tableName="actions">
+            <column name="player_id">3</column>
+            <column name="type">AUTH</column>
+            <column name="status">SUCCESS</column>
+        </insert>
+        <insert tableName="actions">
+            <column name="player_id">3</column>
+            <column name="type">CREATE_ACCOUNT</column>
+            <column name="status">SUCCESS</column>
+        </insert>
+        <insert tableName="actions">
+            <column name="player_id">3</column>
+            <column name="type">CREDIT_ACCOUNT</column>
+            <column name="status">SUCCESS</column>
+        </insert>
+        <insert tableName="actions">
+            <column name="player_id">3</column>
+            <column name="type">OPERATIONS_ACCOUNT_LIST</column>
+            <column name="status">SUCCESS</column>
+        </insert>
+        <insert tableName="actions">
+            <column name="player_id">3</column>
+            <column name="type">LOGOUT</column>
+            <column name="status">SUCCESS</column>
+        </insert>
+
+        <insert tableName="actions">
+            <column name="player_id">4</column>
+            <column name="type">NEW</column>
+            <column name="status">SUCCESS</column>
+        </insert>
+        <insert tableName="actions">
+            <column name="player_id">4</column>
+            <column name="type">AUTH</column>
+            <column name="status">SUCCESS</column>
+        </insert>
+        <insert tableName="actions">
+            <column name="player_id">4</column>
+            <column name="type">CREATE_ACCOUNT</column>
+            <column name="status">SUCCESS</column>
+        </insert>
+        <insert tableName="actions">
+            <column name="player_id">4</column>
+            <column name="type">CREDIT_ACCOUNT</column>
+            <column name="status">SUCCESS</column>
+        </insert>
+        <insert tableName="actions">
+            <column name="player_id">4</column>
+            <column name="type">ACTIONS_LIST</column>
+            <column name="status">SUCCESS</column>
+        </insert>
+        <insert tableName="actions">
+            <column name="player_id">4</column>
+            <column name="type">LOGOUT</column>
+            <column name="status">SUCCESS</column>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>

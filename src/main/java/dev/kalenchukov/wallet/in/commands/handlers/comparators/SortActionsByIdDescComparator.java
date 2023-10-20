@@ -14,6 +14,13 @@ import java.util.Comparator;
  * Класс реализации сравнения для сортировки действий.
  */
 public class SortActionsByIdDescComparator implements Comparator<Action> {
+	/**
+	 * {@inheritDoc}
+	 *
+	 * @param o1 {@inheritDoc}
+	 * @param o2 {@inheritDoc}
+	 * @return {@inheritDoc}
+	 */
 	@Override
 	public int compare(final Action o1, final Action o2) {
 		return Long.compare(o2.getActionId(), o1.getActionId());

@@ -6,7 +6,7 @@
 
 package dev.kalenchukov.wallet.entity;
 
-import dev.kalenchukov.wallet.resources.ActionType;
+import dev.kalenchukov.wallet.type.ActionType;
 
 import java.util.Objects;
 
@@ -14,11 +14,6 @@ import java.util.Objects;
  * Класс действий.
  */
 public final class Action {
-	/**
-	 * Счётчик идентификаторов.
-	 */
-	private static long SCORE_ID = 0;
-
 	/**
 	 * Идентификатор.
 	 */
@@ -47,10 +42,22 @@ public final class Action {
 	 * @param actionTypeStatus статус.
 	 */
 	public Action(final long playerId, final ActionType actionType, final ActionType.Status actionTypeStatus) {
+		this(0L, playerId, actionType, actionTypeStatus);
+	}
+
+	/**
+	 * Конструирует действие.
+	 *
+	 * @param actionId         идентификатор действия.
+	 * @param playerId         идентификатор игрока.
+	 * @param actionType       тип.
+	 * @param actionTypeStatus статус.
+	 */
+	public Action(final long actionId, final long playerId, final ActionType actionType, final ActionType.Status actionTypeStatus) {
 		Objects.requireNonNull(actionType);
 		Objects.requireNonNull(actionTypeStatus);
 
-		this.actionId = ++SCORE_ID;
+		this.actionId = actionId;
 		this.playerId = playerId;
 		this.actionType = actionType;
 		this.actionTypeStatus = actionTypeStatus;

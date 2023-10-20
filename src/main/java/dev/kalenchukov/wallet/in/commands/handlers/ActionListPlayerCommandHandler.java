@@ -7,11 +7,14 @@
 package dev.kalenchukov.wallet.in.commands.handlers;
 
 import dev.kalenchukov.wallet.Wallet;
-import dev.kalenchukov.wallet.exceptions.NeedAuthCommandException;
+import dev.kalenchukov.wallet.exceptions.NeedAuthException;
 import dev.kalenchukov.wallet.in.commands.AbstractCommandHandler;
 import dev.kalenchukov.wallet.entity.Action;
 import dev.kalenchukov.wallet.in.commands.handlers.comparators.SortActionsByIdDescComparator;
-import dev.kalenchukov.wallet.resources.ActionType;
+import dev.kalenchukov.wallet.in.service.impl.ActionServiceImpl;
+import dev.kalenchukov.wallet.repository.impl.ActionRepositoryImpl;
+import dev.kalenchukov.wallet.repository.modules.DataBase;
+import dev.kalenchukov.wallet.type.ActionType;
 
 import java.io.PrintStream;
 import java.util.Collection;
@@ -22,6 +25,13 @@ import java.util.Objects;
  */
 public class ActionListPlayerCommandHandler extends AbstractCommandHandler {
 	/**
+	 * Конструирует обработчик команды.
+	 */
+	public ActionListPlayerCommandHandler() {
+		super(new ActionServiceImpl(new ActionRepositoryImpl(DataBase.getDataSource())));
+	}
+
+	/**
 	 * {@inheritDoc}
 	 *
 	 * @param data   {@inheritDoc}
@@ -31,10 +41,10 @@ public class ActionListPlayerCommandHandler extends AbstractCommandHandler {
 	public void execute(final String[] data, final PrintStream output) {
 		Objects.requireNonNull(data);
 		Objects.requireNonNull(output);
-		this.checkCountRequireParameters(data, 1);
+		this.checkCountRequireArgs(data, 1);
 
 		if (Wallet.AUTH_PLAYER == null) {
-			throw new NeedAuthCommandException();
+			throw new NeedAuthException();
 		}
 
 		Collection<Action> actions = this.actionService.find(Wallet.AUTH_PLAYER.getPlayerId());

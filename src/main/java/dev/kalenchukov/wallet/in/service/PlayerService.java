@@ -33,6 +33,6 @@ public interface PlayerService {
 	 * @return игрока.
 	 * @throws NotFoundPlayerException если игрок не найден.
 	 */
-	Player getByNameAndPassword(String name, String password)
+	Player find(String name, String password)
 			throws NotFoundPlayerException;
 }

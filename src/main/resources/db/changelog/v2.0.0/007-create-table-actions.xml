@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright © 2023 Алексей Каленчуков
+  ~ GitHub: https://github.com/kalenchukov
+  ~ E-mail: mailto:aleksey.kalenchukov@yandex.ru
+  -->
+
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.10.xsd">
+
+    <!-- Создание таблицы действий -->
+    <changeSet context="production,test" id="004-create-table-actions" author="admin">
+		<createSequence sequenceName="sq_actions"
+						startValue="1"
+						incrementBy="1"/>
+
+		<createTable tableName="actions" remarks="Таблица действий игроков">
+            <column name="action_id"
+                    type="BIGINT"
+                    defaultValueSequenceNext="sq_actions"
+                    remarks="Идентификатор действия">
+                <constraints nullable="false"
+                             primaryKey="true"
+                             primaryKeyName="pk_actions"/>
+            </column>
+            <column name="player_id"
+                    type="BIGINT"
+                    defaultOnNull="false"
+                    remarks="Идентификатор игрока">
+                <constraints nullable="false"
+                             foreignKeyName="fk_actions_players"
+                             references="players(player_id)"
+                             deleteCascade="true"/>
+            </column>
+            <column name="type"
+                    type="VARCHAR(255)"
+                    defaultOnNull="false"
+                    remarks="Тип действия">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status"
+                    type="VARCHAR(255)"
+                    defaultOnNull="false"
+                    remarks="Статус действия">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+</databaseChangeLog>

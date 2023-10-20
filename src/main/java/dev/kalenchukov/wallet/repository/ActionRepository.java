@@ -7,7 +7,7 @@
 package dev.kalenchukov.wallet.repository;
 
 import dev.kalenchukov.wallet.entity.Action;
-import dev.kalenchukov.wallet.entity.Player;
+import dev.kalenchukov.wallet.exceptions.ApplicationException;
 
 import java.util.Set;
 
@@ -20,6 +20,7 @@ public interface ActionRepository {
 	 *
 	 * @param action действие.
 	 * @return действие.
+	 * @throws ApplicationException если произошла ошибка при работе с приложением.
 	 */
 	Action save(Action action);
 
@@ -28,6 +29,7 @@ public interface ActionRepository {
 	 *
 	 * @param playerId идентификатор игрока.
 	 * @return найденные действия.
+	 * @throws ApplicationException если произошла ошибка при работе с приложением.
 	 */
 	Set<Action> find(long playerId);
 }

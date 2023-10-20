@@ -6,21 +6,12 @@
 
 package dev.kalenchukov.wallet.entity;
 
-import dev.kalenchukov.wallet.exceptions.EmptyNamePlayerException;
-import dev.kalenchukov.wallet.exceptions.EmptyPasswordPlayerException;
-import org.apache.commons.codec.digest.DigestUtils;
-
 import java.util.Objects;
 
 /**
  * Класс игрока.
  */
 public final class Player {
-	/**
-	 * Счётчик идентификаторов.
-	 */
-	private static long SCORE_ID = 0;
-
 	/**
 	 * Идентификатор.
 	 */
@@ -41,24 +32,34 @@ public final class Player {
 	 *
 	 * @param name     имя.
 	 * @param password пароль.
-	 * @throws EmptyNamePlayerException     если имя игрока пустое.
-	 * @throws EmptyPasswordPlayerException если пароль пустой.
 	 */
 	public Player(final String name, final String password) {
+		this(0L, name, password);
+	}
+
+	/**
+	 * Конструирует игрока.
+	 *
+	 * @param playerId идентификатор.
+	 * @param name     имя.
+	 * @param password пароль.
+	 */
+	public Player(final long playerId, final String name, final String password) {
 		Objects.requireNonNull(name);
 		Objects.requireNonNull(password);
 
-		if (name.isEmpty()) {
-			throw new EmptyNamePlayerException(name);
-		}
-
-		if (password.isEmpty()) {
-			throw new EmptyPasswordPlayerException();
-		}
-
-		this.playerId = ++SCORE_ID;
+		this.playerId = playerId;
 		this.name = name;
-		this.password = DigestUtils.md2Hex(password);
+		this.password = password;
+	}
+
+	/**
+	 * Возвращает идентификатор.
+	 *
+	 * @return идентификатор.
+	 */
+	public long getPlayerId() {
+		return this.playerId;
 	}
 
 	/**
@@ -80,15 +81,6 @@ public final class Player {
 	}
 
 	/**
-	 * Возвращает идентификатор.
-	 *
-	 * @return идентификатор.
-	 */
-	public long getPlayerId() {
-		return this.playerId;
-	}
-
-	/**
 	 * {@inheritDoc}
 	 *
 	 * @return {@inheritDoc}
@@ -96,7 +88,7 @@ public final class Player {
 	@Override
 	public String toString() {
 		return "Player{" +
-				"accountId='" + this.playerId + "', " +
+				"playerId='" + this.playerId + "', " +
 				"name='" + this.name + "', " +
 				"password='" + this.password + "'" +
 				'}';

@@ -6,15 +6,17 @@
 
 package dev.kalenchukov.wallet;
 
-import dev.kalenchukov.wallet.exceptions.NeedAuthCommandException;
+import dev.kalenchukov.wallet.exceptions.ApplicationException;
+import dev.kalenchukov.wallet.exceptions.AuthException;
 import dev.kalenchukov.wallet.in.commands.CommandHandler;
 import dev.kalenchukov.wallet.entity.Player;
-import dev.kalenchukov.wallet.in.commands.resources.CommandType;
-import dev.kalenchukov.wallet.exceptions.MissingParametersCommandException;
+import dev.kalenchukov.wallet.in.commands.type.CommandType;
+import dev.kalenchukov.wallet.exceptions.MissingArgsCommandException;
+import dev.kalenchukov.wallet.in.commands.util.ConsoleUtil;
 
 import java.io.InputStream;
 import java.io.PrintStream;
-import java.util.Objects;
+import java.util.Arrays;
 import java.util.Scanner;
 
 /**
@@ -44,55 +46,75 @@ public class Wallet {
 
 		try (Scanner scanner = new Scanner(INPUT)) {
 			while (!Thread.currentThread().isInterrupted()) {
-				OUTPUT.append(Wallet.getDecorator());
+				OUTPUT.append(ConsoleUtil.getDecorator(AUTH_PLAYER));
 
-				String[] data = scanner.nextLine().split(scanner.delimiter().toString());
+				String[] inputData = scanner.nextLine().split(scanner.delimiter().toString());
 
-				if (data.length == 0 || data[0].isEmpty()) {
+				if (Wallet.isCommandEmpty(inputData)) {
 					OUTPUT.print("Необходимо ввести команду.");
 					continue;
 				}
 
-				String command = data[0];
+				String command = inputData[0];
 
-				if ("exit".equals(command)) {
+				if (Wallet.isCommandExit(command)) {
 					Thread.currentThread().interrupt();
 					continue;
 				}
 
 				CommandType commandType = CommandType.findByName(command);
 
-				if (commandType == null) {
+				if (Wallet.isCommandNotFound(commandType)) {
 					OUTPUT.print("Команда не найдена.");
 					continue;
 				}
 
-				CommandHandler commandHandler = commandType.getCommandHandler();
-
 				try {
-					commandHandler.execute(data, OUTPUT);
-				} catch (MissingParametersCommandException exception) {
-					OUTPUT.printf(exception.getMessage(), exception.getCountParam());
-				} catch (NeedAuthCommandException exception) {
+					CommandHandler commandHandler = commandType.getCommandHandler();
+					commandHandler.execute(inputData, OUTPUT);
+				} catch (MissingArgsCommandException exception) {
+					OUTPUT.printf(exception.getMessage(), exception.getInputParam());
+				} catch (AuthException exception) {
 					OUTPUT.printf(exception.getMessage());
+				} catch (ApplicationException exception) {
+					OUTPUT.println("Произошла ошибка в приложении." +
+							"Сообщите администратору, он не в курсе так как логирования пока нет.");
+					OUTPUT.println(exception.getMessage());
+					OUTPUT.println(exception.getCause());
+					OUTPUT.println(Arrays.toString(exception.getStackTrace()));
 				}
 			}
+		} catch (Exception exception) {
+			OUTPUT.println("Ввод команд не ожидается.");
 		}
 	}
 
 	/**
-	 * Возвращает декоратор.
-	 *
-	 * @return декоратор.
+	 * Проверяет, введена ли команда.
+	 * @param inputData введённые данные.
+	 * @return {@code true} если команда введена, иначе {@code false}.
 	 */
-	public static String getDecorator() {
-		StringBuilder decorator = new StringBuilder();
-		decorator.append("\n");
-		if (Objects.nonNull(AUTH_PLAYER)) {
-			decorator.append(AUTH_PLAYER.getName());
-		}
-		decorator.append("> ");
+	public static boolean isCommandEmpty(final String[] inputData) {
+		return (inputData.length == 0 || inputData[0].isEmpty());
+	}
 
-		return decorator.toString();
+	/**
+	 * Проверяет, является ли команда, командой выхода из приложения.
+	 *
+	 * @param command команда.
+	 * @return {@code true} если команда является командой выхода, иначе {@code false}.
+	 */
+	public static boolean isCommandExit(final String command) {
+		return ("exit".equals(command));
+	}
+
+	/**
+	 * Проверяет, найдена ли команда.
+	 *
+	 * @param commandType тип команды.
+	 * @return {@code true} если команда не найдена, иначе {@code false}.
+	 */
+	public static boolean isCommandNotFound(final CommandType commandType) {
+		return (commandType == null);
 	}
 }

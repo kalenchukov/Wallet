@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright © 2023 Алексей Каленчуков
+  ~ GitHub: https://github.com/kalenchukov
+  ~ E-mail: mailto:aleksey.kalenchukov@yandex.ru
+  -->
+
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.10.xsd">
+
+    <!-- Создание таблицы операций -->
+    <changeSet context="production,test" id="003-create-table-operations" author="admin">
+		<createSequence sequenceName="sq_operations"
+						startValue="1"
+						incrementBy="1"/>
+
+		<createTable tableName="operations" remarks="Таблица операций со счетами">
+            <column name="operation_id"
+                    type="BIGINT"
+                    defaultValueSequenceNext="sq_operations"
+                    remarks="Идентификатор операции">
+                <constraints nullable="false"
+                             primaryKey="true"
+                             primaryKeyName="pk_operations"/>
+            </column>
+            <column name="player_id"
+                    type="BIGINT"
+                    defaultOnNull="false"
+                    remarks="Идентификатор игрока">
+                <constraints nullable="false"
+                             foreignKeyName="fk_operations_players"
+                             references="players(player_id)"
+                             deleteCascade="true"/>
+            </column>
+            <column name="account_id"
+                    type="BIGINT"
+                    defaultOnNull="false"
+                    remarks="Идентификатор счёта">
+                <constraints nullable="false"
+                             foreignKeyName="fk_operations_accounts"
+                             references="accounts(account_id)"
+                             deleteCascade="true"/>
+            </column>
+            <column name="type"
+                    type="VARCHAR(255)"
+                    defaultOnNull="false"
+                    remarks="Тип операции">
+                <constraints nullable="false"/>
+            </column>
+            <column name="amount"
+                    type="DECIMAL"
+                    defaultOnNull="false"
+                    remarks="Сумма">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+</databaseChangeLog>

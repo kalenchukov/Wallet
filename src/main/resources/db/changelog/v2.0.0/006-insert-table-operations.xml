@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright © 2023 Алексей Каленчуков
+  ~ GitHub: https://github.com/kalenchukov
+  ~ E-mail: mailto:aleksey.kalenchukov@yandex.ru
+  -->
+
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.10.xsd">
+
+    <!-- Добавление операций -->
+    <changeSet context="test" id="006-insert-table-operations" author="admin">
+        <insert tableName="operations">
+            <column name="player_id">1</column>
+            <column name="account_id">1</column>
+            <column name="type">CREDIT</column>
+            <column name="amount">5.0</column>
+        </insert>
+        <insert tableName="operations">
+            <column name="player_id">1</column>
+            <column name="account_id">1</column>
+            <column name="type">CREDIT</column>
+            <column name="amount">5.0</column>
+        </insert>
+        <insert tableName="operations">
+            <column name="player_id">1</column>
+            <column name="account_id">1</column>
+            <column name="type">CREDIT</column>
+            <column name="amount">5.0</column>
+        </insert>
+        <insert tableName="operations">
+            <column name="player_id">1</column>
+            <column name="account_id">1</column>
+            <column name="type">DEBIT</column>
+            <column name="amount">5.0</column>
+        </insert>
+        <insert tableName="operations">
+            <column name="player_id">1</column>
+            <column name="account_id">2</column>
+            <column name="type">CREDIT</column>
+            <column name="amount">20.0</column>
+        </insert>
+        <insert tableName="operations">
+            <column name="player_id">1</column>
+            <column name="account_id">3</column>
+            <column name="type">CREDIT</column>
+            <column name="amount">30.0</column>
+        </insert>
+        <insert tableName="operations">
+            <column name="player_id">2</column>
+            <column name="account_id">4</column>
+            <column name="type">CREDIT</column>
+            <column name="amount">40.0</column>
+        </insert>
+        <insert tableName="operations">
+            <column name="player_id">2</column>
+            <column name="account_id">5</column>
+            <column name="type">CREDIT</column>
+            <column name="amount">50.0</column>
+        </insert>
+        <insert tableName="operations">
+            <column name="player_id">3</column>
+            <column name="account_id">6</column>
+            <column name="type">CREDIT</column>
+            <column name="amount">60.0</column>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>

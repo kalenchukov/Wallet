@@ -6,8 +6,7 @@
 
 package dev.kalenchukov.wallet.entity;
 
-import dev.kalenchukov.wallet.exceptions.NegativeAmountOperationException;
-import dev.kalenchukov.wallet.resources.OperationType;
+import dev.kalenchukov.wallet.type.OperationType;
 
 import java.math.BigDecimal;
 import java.util.Objects;
@@ -17,19 +16,19 @@ import java.util.Objects;
  */
 public final class Operation {
 	/**
-	 * Счётчик идентификаторов.
-	 */
-	private static long SCORE_ID = 0;
-
-	/**
 	 * Идентификатор.
 	 */
 	private final long operationId;
 
 	/**
-	 * Игрок.
+	 * Идентификатор игрока.
 	 */
-	private final Account account;
+	private final long playerId;
+
+	/**
+	 * Идентификатор счёта.
+	 */
+	private final long accountId;
 
 	/**
 	 * Тип.
@@ -44,42 +43,60 @@ public final class Operation {
 	/**
 	 * Конструирует операцию.
 	 *
-	 * @param account       счёт.
+	 * @param playerId   	идентификатор игрока.
+	 * @param accountId     идентификатор счёта.
 	 * @param operationType тип.
 	 * @param amount        сумма.
-	 * @throws NegativeAmountOperationException если сумма операции меньше нуля.
 	 */
-	public Operation(final Account account, final OperationType operationType, final BigDecimal amount) {
-		Objects.requireNonNull(account);
+	public Operation(final long playerId, final long accountId, final OperationType operationType, final BigDecimal amount) {
+		this(0L, playerId, accountId, operationType, amount);
+	}
+
+	/**
+	 * Конструирует операцию.
+	 *
+	 * @param operationId   идентификатор операции.
+	 * @param playerId   	идентификатор игрока.
+	 * @param accountId     идентификатор счёта.
+	 * @param operationType тип.
+	 * @param amount        сумма.
+	 */
+	public Operation(final long operationId, final long playerId, final long accountId, final OperationType operationType, final BigDecimal amount) {
 		Objects.requireNonNull(operationType);
 		Objects.requireNonNull(amount);
 
-		if (amount.compareTo(BigDecimal.ZERO) < 0) {
-			throw new NegativeAmountOperationException(amount);
-		}
-
-		this.operationId = ++SCORE_ID;
-		this.account = account;
+		this.operationId = operationId;
+		this.playerId = playerId;
+		this.accountId = accountId;
 		this.operationType = operationType;
 		this.amount = amount;
 	}
 
 	/**
-	 * Возвращает идентификатор.
+	 * Возвращает идентификатор операции.
 	 *
-	 * @return идентификатор.
+	 * @return идентификатор операции.
 	 */
 	public long getOperationId() {
 		return this.operationId;
 	}
 
 	/**
-	 * Возвращает счет.
+	 * Возвращает идентификатор игрока.
 	 *
-	 * @return счет.
+	 * @return идентификатор игрока.
 	 */
-	public Account getAccount() {
-		return this.account;
+	public long getPlayerId() {
+		return this.playerId;
+	}
+
+	/**
+	 * Возвращает идентификатор счета.
+	 *
+	 * @return идентификатор счета.
+	 */
+	public long getAccountId() {
+		return this.accountId;
 	}
 
 	/**
@@ -109,7 +126,8 @@ public final class Operation {
 	public String toString() {
 		return "Operation{" +
 				"operationId='" + this.operationId + "', " +
-				"account='" + this.account + "', " +
+				"playerId='" + this.playerId + "', " +
+				"accountId='" + this.accountId + "', " +
 				"operationType='" + this.operationType + "', " +
 				"amount='" + this.amount + "'" +
 				'}';

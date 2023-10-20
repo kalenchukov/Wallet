@@ -12,28 +12,31 @@
 git clone https://github.com/kalenchukov/Wallet.git
 ```
 
+# Подготовка
+
+Для установить базы данных в docker, необходимо выполнить команду:
+```bash
+docker-compose up -d --build
+```
+
+Проверить работу базы данных в docker, можно выполнив команду:
+```bash
+docker ps -a
+```
+Нас интересует контейнер с названием "wallet-database", у которого статус должен быть "запущен".
+
 # Сборка
 
 ```bash
 mvn install
 ```
 
-После выполнения в папке появится файл:<br/>
-<code>%PATH%/Wallet/target/wallet-1.0.0-jar-with-dependencies.jar</code>
-
 # Запуск
 
-Для запуска приложения, в консоли, необходимо выполнить команду:
+Для запуска приложения, необходимо выполнить команду:
 
 ```bash
-cd %PATH%
-java -jar wallet-1.0.0-jar-with-dependencies.jar
-```
-
-## Остановка
-
-```bash
-exit
+java -jar target/wallet-2.0.0-jar-with-dependencies.jar
 ```
 
 # Использование
@@ -94,4 +97,10 @@ operation {идентификатор операции}
 
 ```bash
 operations
+```
+
+### Выход из приложения
+
+```bash
+exit
 ```

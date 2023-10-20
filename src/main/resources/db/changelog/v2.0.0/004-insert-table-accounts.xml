@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright © 2023 Алексей Каленчуков
+  ~ GitHub: https://github.com/kalenchukov
+  ~ E-mail: mailto:aleksey.kalenchukov@yandex.ru
+  -->
+
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.10.xsd">
+
+    <!-- Добавление счетов -->
+    <changeSet context="test" id="004-insert-table-accounts" author="admin">
+        <insert tableName="accounts">
+            <column name="player_id">1</column>
+            <column name="amount">10.0</column>
+        </insert>
+        <insert tableName="accounts">
+            <column name="player_id">1</column>
+            <column name="amount">20.0</column>
+        </insert>
+        <insert tableName="accounts">
+            <column name="player_id">1</column>
+            <column name="amount">30.0</column>
+        </insert>
+        <insert tableName="accounts">
+            <column name="player_id">2</column>
+            <column name="amount">40.0</column>
+        </insert>
+        <insert tableName="accounts">
+            <column name="player_id">2</column>
+            <column name="amount">50.0</column>
+        </insert>
+        <insert tableName="accounts">
+            <column name="player_id">3</column>
+            <column name="amount">60.0</column>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>
