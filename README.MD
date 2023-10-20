@@ -31,9 +31,6 @@ docker ps -a
 mvn install
 ```
 
-После выполнения в папке появится файл:<br/>
-<code>%PATH%/Wallet/target/wallet-2.0.0-jar-with-dependencies.jar</code>
-
 # Запуск
 
 Для запуска приложения, необходимо выполнить команду:
