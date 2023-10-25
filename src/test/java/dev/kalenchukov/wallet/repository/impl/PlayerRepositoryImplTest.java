@@ -8,8 +8,8 @@ package dev.kalenchukov.wallet.repository.impl;
 
 import dev.kalenchukov.wallet.Config;
 import dev.kalenchukov.wallet.entity.Player;
+import dev.kalenchukov.wallet.modules.Liquibase;
 import dev.kalenchukov.wallet.repository.PlayerRepository;
-import dev.kalenchukov.wallet.repository.modules.Liquibase;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -19,7 +19,6 @@ import org.postgresql.ds.PGSimpleDataSource;
 import org.testcontainers.containers.PostgreSQLContainer;
 
 import javax.sql.DataSource;
-
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -32,22 +31,22 @@ import static org.mockito.Mockito.when;
  */
 public class PlayerRepositoryImplTest {
 	private static final PostgreSQLContainer<?> POSTGRES =
-			new PostgreSQLContainer<>(Config.get().getProperty("docker.image"));
+			new PostgreSQLContainer<>(Config.get().getProperty("test.docker.image"));
 
 	private static DataSource DATA_SOURCE;
 
 	@BeforeAll
 	public static void beforeAll() {
-		POSTGRES.withDatabaseName(Config.get().getProperty("database"));
-		POSTGRES.withUsername(Config.get().getProperty("username"));
-		POSTGRES.withPassword(Config.get().getProperty("password"));
+		POSTGRES.withDatabaseName(Config.get().getProperty("database.name"));
+		POSTGRES.withUsername(Config.get().getProperty("database.username"));
+		POSTGRES.withPassword(Config.get().getProperty("database.password"));
 		POSTGRES.start();
 
 		PGSimpleDataSource dataSource = new PGSimpleDataSource();
 		dataSource.setUrl(POSTGRES.getJdbcUrl());
 		dataSource.setUser(POSTGRES.getUsername());
 		dataSource.setPassword(POSTGRES.getPassword());
-		dataSource.setCurrentSchema(Config.get().getProperty("application.schema"));
+		dataSource.setCurrentSchema(Config.get().getProperty("liquibase.schema.app"));
 		DATA_SOURCE = dataSource;
 
 		Liquibase.init(

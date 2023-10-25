@@ -6,9 +6,10 @@
 
 package dev.kalenchukov.wallet;
 
-import dev.kalenchukov.wallet.repository.modules.DataBase;
+import dev.kalenchukov.wallet.modules.DataBase;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Properties;
 
 /**
@@ -35,10 +36,10 @@ public final class Config {
 	private static Properties load() {
 		Properties properties = new Properties();
 
-		try {
-			properties.load(DataBase.class.getResourceAsStream("/application.properties"));
+		try (InputStream inputStreamFile = DataBase.class.getResourceAsStream("/application.properties")) {
+			properties.load(inputStreamFile);
 		} catch (IOException exception) {
-			System.out.println("Не удалось загрузить конфигурацию приложения.");
+			throw new RuntimeException("Не удалось загрузить конфигурацию приложения.");
 		}
 
 		return properties;

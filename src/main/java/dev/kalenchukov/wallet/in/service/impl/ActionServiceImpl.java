@@ -11,8 +11,8 @@ import dev.kalenchukov.wallet.in.service.ActionService;
 import dev.kalenchukov.wallet.repository.ActionRepository;
 import dev.kalenchukov.wallet.type.ActionType;
 
+import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 
 /**
  * Класс сервиса действий.
@@ -43,12 +43,12 @@ public class ActionServiceImpl implements ActionService {
 	 * @return {@inheritDoc}
 	 */
 	@Override
-	public Action add(final long playerId, final ActionType actionType, ActionType.Status actionTypeStatus) {
+	public Action add(final long playerId, final ActionType actionType, final ActionType.Status actionTypeStatus) {
 		Objects.requireNonNull(actionType);
 		Objects.requireNonNull(actionTypeStatus);
 
 		return this.actionRepository.save(
-				new Action(playerId, actionType, actionTypeStatus)
+				new Action(0L, playerId, actionType, actionTypeStatus)
 		);
 	}
 
@@ -59,7 +59,7 @@ public class ActionServiceImpl implements ActionService {
 	 * @return {@inheritDoc}
 	 */
 	@Override
-	public Set<Action> find(final long playerId) {
+	public List<Action> find(final long playerId) {
 		return this.actionRepository.find(playerId);
 	}
 }

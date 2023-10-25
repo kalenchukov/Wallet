@@ -7,13 +7,13 @@
 package dev.kalenchukov.wallet.repository.impl;
 
 import dev.kalenchukov.wallet.entity.Account;
-import dev.kalenchukov.wallet.exceptions.ApplicationException;
 import dev.kalenchukov.wallet.repository.AccountRepository;
 
 import javax.sql.DataSource;
 import java.math.BigDecimal;
 import java.sql.*;
-import java.util.*;
+import java.util.Objects;
+import java.util.Optional;
 
 /**
  * Класс хранилища счетов.
@@ -41,6 +41,8 @@ public class AccountRepositoryImpl implements AccountRepository {
 	 */
 	@Override
 	public Account save(final Account account) {
+		Objects.requireNonNull(account);
+
 		String query = "INSERT INTO accounts (player_id, amount) VALUES (?, ?)";
 
 		try (Connection connection = this.dataSource.getConnection();
@@ -60,7 +62,7 @@ public class AccountRepositoryImpl implements AccountRepository {
 				);
 			}
 		} catch (SQLException exception) {
-			throw new ApplicationException(exception);
+			throw new RuntimeException("Возникла ошибка при работе с базой данных");
 		}
 	}
 
@@ -87,7 +89,7 @@ public class AccountRepositoryImpl implements AccountRepository {
 				return resultSet.next();
 			}
 		} catch (SQLException exception) {
-			throw new ApplicationException(exception);
+			throw new RuntimeException("Возникла ошибка при работе с базой данных");
 		}
 	}
 
@@ -119,7 +121,7 @@ public class AccountRepositoryImpl implements AccountRepository {
 				}
 			}
 		} catch (SQLException exception) {
-			throw new ApplicationException(exception);
+			throw new RuntimeException("Возникла ошибка при работе с базой данных");
 		}
 
 		return account;

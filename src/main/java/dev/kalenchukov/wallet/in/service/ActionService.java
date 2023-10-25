@@ -9,7 +9,7 @@ package dev.kalenchukov.wallet.in.service;
 import dev.kalenchukov.wallet.entity.Action;
 import dev.kalenchukov.wallet.type.ActionType;
 
-import java.util.Set;
+import java.util.List;
 
 /**
  * Интерфейс для реализации класса сервиса действий.
@@ -31,5 +31,5 @@ public interface ActionService {
 	 * @param playerId идентификатор игрока.
 	 * @return найденные действия.
 	 */
-	Set<Action> find(long playerId);
+	List<Action> find(long playerId);
 }

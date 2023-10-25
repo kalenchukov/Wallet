@@ -7,11 +7,11 @@
 package dev.kalenchukov.wallet.in.service.impl;
 
 import dev.kalenchukov.wallet.entity.Account;
-import dev.kalenchukov.wallet.exceptions.NotFoundAccountException;
+import dev.kalenchukov.wallet.exceptions.account.NotFoundAccountException;
 import dev.kalenchukov.wallet.in.service.AccountService;
 import dev.kalenchukov.wallet.repository.AccountRepository;
-import dev.kalenchukov.wallet.repository.impl.AccountRepositoryImpl;
 import dev.kalenchukov.wallet.repository.OperationRepository;
+import dev.kalenchukov.wallet.repository.impl.AccountRepositoryImpl;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 

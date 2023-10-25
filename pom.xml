@@ -12,7 +12,8 @@
 
     <groupId>dev.kalenchukov.wallet</groupId>
     <artifactId>wallet</artifactId>
-    <version>2.0.0</version>
+    <version>3.0.0</version>
+    <packaging>war</packaging>
 
     <name>Wallet</name>
     <description>Проект по управлению счетами игроков</description>
@@ -35,17 +36,33 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-        <commons.codec.version>1.15</commons.codec.version>
         <postgresql.version>42.6.0</postgresql.version>
         <liquibase.version>4.24.0</liquibase.version>
         <slf4j.version>2.0.9</slf4j.version>
-
+        <log4j.version>2.21.0</log4j.version>
         <junit.version>5.9.2</junit.version>
         <mockito.core.version>5.2.0</mockito.core.version>
         <mockito.junit.version>5.3.1</mockito.junit.version>
         <assertj.version>3.24.2</assertj.version>
         <testcontainers.postgresql.version>1.19.1</testcontainers.postgresql.version>
         <testcontainers.junit.version>1.19.1</testcontainers.junit.version>
+        <commons.codec.version>1.15</commons.codec.version>
+        <jackson.version>2.15.3</jackson.version>
+        <servlet.version>6.0.0</servlet.version>
+        <aspectj.version>1.9.20.1</aspectj.version>
+        <lombok.version>1.18.30</lombok.version>
+        <mapstruct.version>1.5.5.Final</mapstruct.version>
+        <java.jwt.version>4.4.0</java.jwt.version>
+
+        <aspectj.plugin.version>1.14.0</aspectj.plugin.version>
+        <war.plugin.version>3.3.1</war.plugin.version>
+        <assembly.plugin.version>3.6.0</assembly.plugin.version>
+        <dependency.plugin.version>3.6.0</dependency.plugin.version>
+        <dependency.plugin.version>3.6.0</dependency.plugin.version>
+        <source.plugin.version>3.3.0</source.plugin.version>
+        <compiler.plugin.version>3.11.0</compiler.plugin.version>
+        <javadoc.plugin.version>3.6.0</javadoc.plugin.version>
+
     </properties>
 
     <dependencies>
@@ -68,6 +85,47 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.servlet</groupId>
+            <artifactId>jakarta.servlet-api</artifactId>
+            <version>${servlet.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>${lombok.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjrt</artifactId>
+            <version>${aspectj.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct</artifactId>
+            <version>${mapstruct.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.auth0</groupId>
+            <artifactId>java-jwt</artifactId>
+            <version>${java.jwt.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <version>${log4j.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
             <version>${slf4j.version}</version>
@@ -79,7 +137,6 @@
             <version>${slf4j.version}</version>
             <scope>compile</scope>
         </dependency>
-
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
@@ -123,7 +180,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.6.0</version>
+                <version>${javadoc.plugin.version}</version>
                 <executions>
                     <execution>
                         <id>attach-javadocs</id>
@@ -136,17 +193,29 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.11.0</version>
+                <version>${compiler.plugin.version}</version>
                 <configuration>
                     <source>${maven.compiler.source}</source>
                     <target>${maven.compiler.target}</target>
                     <encoding>${maven.compiler.encoding}</encoding>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>${lombok.version}</version>
+                        </path>
+                        <path>
+                            <groupId>org.mapstruct</groupId>
+                            <artifactId>mapstruct-processor</artifactId>
+                            <version>${mapstruct.version}</version>
+                        </path>
+                    </annotationProcessorPaths>
                 </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
-                <version>3.3.0</version>
+                <version>${source.plugin.version}</version>
                 <executions>
                     <execution>
                         <id>attach-sources</id>
@@ -160,7 +229,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
-                <version>3.6.0</version>
+                <version>${dependency.plugin.version}</version>
                 <configuration>
                     <outputDirectory>${project.build.directory}/lib</outputDirectory>
                     <overWriteReleases>false</overWriteReleases>
@@ -180,16 +249,11 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
-                <version>3.6.0</version>
+                <version>${assembly.plugin.version}</version>
                 <configuration>
                     <descriptorRefs>
                         <descriptorRef>jar-with-dependencies</descriptorRef>
                     </descriptorRefs>
-                    <archive>
-                        <manifest>
-                            <mainClass>dev.kalenchukov.wallet.Wallet</mainClass>
-                        </manifest>
-                    </archive>
                 </configuration>
                 <executions>
                     <execution>
@@ -203,11 +267,38 @@
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.1.2</version>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>${war.plugin.version}</version>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>aspectj-maven-plugin</artifactId>
+                <version>${aspectj.plugin.version}</version>
+                <configuration>
+                    <showWeaveInfo>true</showWeaveInfo>
+                    <source>16</source>
+                    <target>16</target>
+                    <complianceLevel>16</complianceLevel>
+                    <verbose>false</verbose>
+                    <Xlint>ignore</Xlint>
+                    <outxml>true</outxml>
+                    <encoding>${project.reporting.outputEncoding}</encoding>
+                    <forceAjcCompile>true</forceAjcCompile>
+                    <sources/>
+                    <weaveDirectories>
+                        <weaveDirectory>${project.build.directory}/classes</weaveDirectory>
+                    </weaveDirectories>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <dependencies>
+                </dependencies>
             </plugin>
         </plugins>
     </build>
-
-
 </project>

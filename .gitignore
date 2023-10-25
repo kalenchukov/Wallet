@@ -1,5 +1,6 @@
 /.idea
 /.attach_pid*
+/ajcore.*
 /.jpb
 /.mvn
 /out

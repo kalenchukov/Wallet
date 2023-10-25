@@ -7,10 +7,9 @@
 package dev.kalenchukov.wallet.repository;
 
 import dev.kalenchukov.wallet.entity.Operation;
-import dev.kalenchukov.wallet.exceptions.ApplicationException;
 
+import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 /**
  * Интерфейс для реализации класса хранилища операций.
@@ -21,7 +20,6 @@ public interface OperationRepository {
 	 *
 	 * @param operation операция.
 	 * @return операцию.
-	 * @throws ApplicationException если произошла ошибка при работе с приложением.
 	 */
 	Operation save(Operation operation);
 
@@ -31,7 +29,6 @@ public interface OperationRepository {
 	 * @param operationId идентификатор операции.
 	 * @param playerId    идентификатор игрока.
 	 * @return операцию.
-	 * @throws ApplicationException если произошла ошибка при работе с приложением.
 	 */
 	Optional<Operation> findById(long operationId, long playerId);
 
@@ -41,7 +38,6 @@ public interface OperationRepository {
 	 * @param accountId идентификатор счёта.
 	 * @param playerId  идентификатор игрока.
 	 * @return найденные операции.
-	 * @throws ApplicationException если произошла ошибка при работе с приложением.
 	 */
-	Set<Operation> find(long accountId, long playerId);
+	List<Operation> find(long accountId, long playerId);
 }

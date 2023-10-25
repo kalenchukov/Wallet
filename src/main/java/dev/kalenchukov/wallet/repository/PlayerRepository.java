@@ -7,7 +7,6 @@
 package dev.kalenchukov.wallet.repository;
 
 import dev.kalenchukov.wallet.entity.Player;
-import dev.kalenchukov.wallet.exceptions.ApplicationException;
 
 import java.util.Optional;
 
@@ -20,7 +19,6 @@ public interface PlayerRepository {
 	 *
 	 * @param player игрок.
 	 * @return игрока.
-	 * @throws ApplicationException если произошла ошибка при работе с приложением.
 	 */
 	Player save(Player player);
 
@@ -29,7 +27,6 @@ public interface PlayerRepository {
 	 *
 	 * @param name имя.
 	 * @return {@code true}, если игрок существует, иначе {@code false}.
-	 * @throws ApplicationException если произошла ошибка при работе с приложением.
 	 */
 	boolean existsByName(String name);
 
@@ -39,7 +36,6 @@ public interface PlayerRepository {
 	 * @param name     имя.
 	 * @param password пароль.
 	 * @return игрока.
-	 * @throws ApplicationException если произошла ошибка при работе с приложением.
 	 */
 	Optional<Player> find(String name, String password);
 }

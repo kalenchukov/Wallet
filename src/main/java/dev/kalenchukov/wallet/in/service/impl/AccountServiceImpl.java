@@ -8,7 +8,10 @@ package dev.kalenchukov.wallet.in.service.impl;
 
 import dev.kalenchukov.wallet.entity.Account;
 import dev.kalenchukov.wallet.entity.Operation;
-import dev.kalenchukov.wallet.exceptions.*;
+import dev.kalenchukov.wallet.exceptions.account.NoAccessAccountException;
+import dev.kalenchukov.wallet.exceptions.account.NotFoundAccountException;
+import dev.kalenchukov.wallet.exceptions.account.OutOfAmountAccountException;
+import dev.kalenchukov.wallet.exceptions.operation.NegativeAmountOperationException;
 import dev.kalenchukov.wallet.in.service.AccountService;
 import dev.kalenchukov.wallet.repository.AccountRepository;
 import dev.kalenchukov.wallet.repository.OperationRepository;
@@ -56,7 +59,7 @@ public class AccountServiceImpl implements AccountService {
 	@Override
 	public Account add(final long playerId) {
 		return this.accountRepository.save(
-				new Account(playerId, BigDecimal.ZERO)
+				new Account(0L, playerId, BigDecimal.ZERO)
 		);
 	}
 
@@ -73,7 +76,7 @@ public class AccountServiceImpl implements AccountService {
 	 */
 	@Override
 	public Operation credit(final long accountId, final long playerId, final BigDecimal amount)
-			throws NotFoundAccountException, NoAccessAccountException {
+			throws NotFoundAccountException, NoAccessAccountException, NegativeAmountOperationException {
 		Objects.requireNonNull(amount);
 
 		Optional<Account> account = this.accountRepository.findById(accountId);
@@ -93,14 +96,12 @@ public class AccountServiceImpl implements AccountService {
 		BigDecimal resultAmount = account.get().getAmount().add(amount);
 
 		if (!this.accountRepository.updateAmount(accountId, resultAmount)) {
-			throw new ApplicationException("Не удалось выполнить пополнение счёта.");
+			throw new RuntimeException("Не удалось выполнить пополнение счёта.");
 		}
 
-		Operation operation = this.operationRepository.save(
-				new Operation(playerId, accountId, OperationType.CREDIT, amount)
+		return this.operationRepository.save(
+				new Operation(0L, playerId, accountId, OperationType.CREDIT, amount)
 		);
-
-		return operation;
 	}
 
 	/**
@@ -111,13 +112,13 @@ public class AccountServiceImpl implements AccountService {
 	 * @param amount    {@inheritDoc}
 	 * @return {@inheritDoc}
 	 * @throws NotFoundAccountException         {@inheritDoc}
-	 * @throws OutOfAmountOperationException    {@inheritDoc}
+	 * @throws OutOfAmountAccountException      {@inheritDoc}
 	 * @throws NegativeAmountOperationException {@inheritDoc}
 	 * @throws NoAccessAccountException         {@inheritDoc}
 	 */
 	@Override
 	public Operation debit(final long accountId, final long playerId, final BigDecimal amount)
-			throws NotFoundAccountException, NoAccessAccountException {
+			throws NotFoundAccountException, NoAccessAccountException, NegativeAmountOperationException, OutOfAmountAccountException {
 		Objects.requireNonNull(amount);
 
 		Optional<Account> account = this.accountRepository.findById(accountId);
@@ -134,21 +135,19 @@ public class AccountServiceImpl implements AccountService {
 			throw new NegativeAmountOperationException(amount);
 		}
 
-		if (account.get().getAmount().subtract(amount).compareTo(BigDecimal.ZERO) < 0) {
-			throw new OutOfAmountOperationException(account.get().getAmount());
-		}
-
 		BigDecimal resultAmount = account.get().getAmount().subtract(amount);
 
-		if (!this.accountRepository.updateAmount(accountId, resultAmount)) {
-			throw new ApplicationException("Не удалось выполнить списание со счёта.");
+		if (resultAmount.compareTo(BigDecimal.ZERO) < 0) {
+			throw new OutOfAmountAccountException(account.get().getAmount());
 		}
 
-		Operation operation = this.operationRepository.save(
-				new Operation(playerId, accountId, OperationType.DEBIT, amount)
-		);
+		if (!this.accountRepository.updateAmount(accountId, resultAmount)) {
+			throw new RuntimeException("Не удалось выполнить списание со счёта.");
+		}
 
-		return operation;
+		return this.operationRepository.save(
+				new Operation(0L, playerId, accountId, OperationType.DEBIT, amount)
+		);
 	}
 
 	/**
@@ -161,7 +160,6 @@ public class AccountServiceImpl implements AccountService {
 	@Override
 	public Account findById(final long accountId) throws NotFoundAccountException {
 		Optional<Account> account = this.accountRepository.findById(accountId);
-
 		return account.orElseThrow(() -> new NotFoundAccountException(accountId));
 	}
 }
