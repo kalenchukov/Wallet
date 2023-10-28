@@ -10,7 +10,7 @@ import dev.kalenchukov.wallet.type.ActionType;
 import lombok.*;
 
 /**
- * Класс действий.
+ * Класс действия.
  */
 @NoArgsConstructor
 @AllArgsConstructor

@@ -9,7 +9,7 @@ package dev.kalenchukov.wallet.dto.operation;
 import lombok.*;
 
 /**
- * Класс операции.
+ * Класс списка операций.
  */
 @NoArgsConstructor
 @AllArgsConstructor
