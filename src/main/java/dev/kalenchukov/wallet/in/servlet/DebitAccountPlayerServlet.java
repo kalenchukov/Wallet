@@ -72,7 +72,10 @@ public class DebitAccountPlayerServlet extends AbstractServlet {
 					debitAccountDto.getAmount()
 			);
 
-			this.generateResponse(this.mapping(operation), response, HttpServletResponse.SC_OK);
+			OperationDto operationDto = Mappers.getMapper(OperationMapper.class)
+					.toDto(operation);
+
+			this.generateResponse(operationDto, response, HttpServletResponse.SC_OK);
 			this.fixAction(playerId, ActionType.DEBIT_ACCOUNT, ActionType.Status.SUCCESS);
 		} catch (ApplicationException exception) {
 			this.generateResponse(new ViolationDto(exception.getMessage()), response, exception.getHttpCode());
@@ -106,16 +109,5 @@ public class DebitAccountPlayerServlet extends AbstractServlet {
 		}
 
 		return dto;
-	}
-
-	/**
-	 * Преобразовывает сущность операции для транспортировки.
-	 *
-	 * @param operation сущность операции.
-	 * @return операция для транспортировки.
-	 */
-	private OperationDto mapping(final Operation operation) {
-		OperationMapper operationDtoMapper = Mappers.getMapper(OperationMapper.class);
-		return operationDtoMapper.toDto(operation);
 	}
 }

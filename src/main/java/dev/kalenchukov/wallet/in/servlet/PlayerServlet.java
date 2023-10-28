@@ -63,7 +63,10 @@ public class PlayerServlet extends AbstractServlet {
 
 			Player player = this.playerService.add(createPlayerDto.getName(), createPlayerDto.getPassword());
 
-			this.generateResponse(this.mapping(player), response, HttpServletResponse.SC_CREATED);
+			PlayerDto playerDto = Mappers.getMapper(PlayerMapper.class)
+					.toDto(player);
+
+			this.generateResponse(playerDto, response, HttpServletResponse.SC_CREATED);
 			this.fixAction(player.getPlayerId(), ActionType.NEW, ActionType.Status.SUCCESS);
 		} catch (ApplicationException exception) {
 			this.generateResponse(new ViolationDto(exception.getMessage()), response, exception.getHttpCode());
@@ -92,16 +95,5 @@ public class PlayerServlet extends AbstractServlet {
 		}
 
 		return dto;
-	}
-
-	/**
-	 * Преобразовывает сущность игрока для транспортировки.
-	 *
-	 * @param player сущность игрока.
-	 * @return игрока для транспортировки.
-	 */
-	private PlayerDto mapping(final Player player) {
-		PlayerMapper playerDtoMapper = Mappers.getMapper(PlayerMapper.class);
-		return playerDtoMapper.toDto(player);
 	}
 }

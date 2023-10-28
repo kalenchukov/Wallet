@@ -71,7 +71,12 @@ public class ListOperationAccountPlayerServlet extends AbstractServlet {
 					playerId
 			);
 
-			this.generateResponse(this.mapping(operations), response, HttpServletResponse.SC_OK);
+			List<OperationDto> operationsDto = new ArrayList<>();
+			for (Operation operation : operations) {
+				operationsDto.add(Mappers.getMapper(OperationMapper.class).toDto(operation));
+			}
+
+			this.generateResponse(operationsDto, response, HttpServletResponse.SC_OK);
 			this.fixAction(playerId, ActionType.OPERATIONS_ACCOUNT_LIST, ActionType.Status.SUCCESS);
 		} catch (ApplicationException exception) {
 			this.generateResponse(new ViolationDto(exception.getMessage()), response, exception.getHttpCode());
@@ -99,22 +104,5 @@ public class ListOperationAccountPlayerServlet extends AbstractServlet {
 		}
 
 		return dto;
-	}
-
-	/**
-	 * Преобразовывает сущности операций для транспортировки.
-	 *
-	 * @param operations сущности операций.
-	 * @return операции для транспортировки.
-	 */
-	private List<OperationDto> mapping(final List<Operation> operations) {
-		OperationMapper operationDtoMapper = Mappers.getMapper(OperationMapper.class);
-
-		List<OperationDto> operationsDto = new ArrayList<>();
-		for (Operation operation : operations) {
-			operationsDto.add(operationDtoMapper.toDto(operation));
-		}
-
-		return operationsDto;
 	}
 }

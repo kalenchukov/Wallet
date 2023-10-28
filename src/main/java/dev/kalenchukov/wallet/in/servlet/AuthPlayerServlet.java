@@ -73,7 +73,10 @@ public class AuthPlayerServlet extends AbstractServlet {
 					AuthToken.createToken(player.getPlayerId())
 			);
 
-			this.generateResponse(this.mapping(accessToken), response, HttpServletResponse.SC_OK);
+			AccessTokenDto accessTokenDto = Mappers.getMapper(AccessTokenMapper.class)
+					.toDto(accessToken);
+
+			this.generateResponse(accessTokenDto, response, HttpServletResponse.SC_OK);
 			this.fixAction(player.getPlayerId(), ActionType.AUTH, ActionType.Status.SUCCESS);
 		} catch (ApplicationException exception) {
 			this.generateResponse(new ViolationDto(exception.getMessage()), response, exception.getHttpCode());
@@ -102,16 +105,5 @@ public class AuthPlayerServlet extends AbstractServlet {
 		}
 
 		return dto;
-	}
-
-	/**
-	 * Преобразовывает сущность токена доступа для транспортировки.
-	 *
-	 * @param accessToken сущность токена доступа.
-	 * @return токен доступа для транспортировки.
-	 */
-	private AccessTokenDto mapping(final AccessToken accessToken) {
-		AccessTokenMapper accessTokenDtoMapper = Mappers.getMapper(AccessTokenMapper.class);
-		return accessTokenDtoMapper.toDto(accessToken);
 	}
 }

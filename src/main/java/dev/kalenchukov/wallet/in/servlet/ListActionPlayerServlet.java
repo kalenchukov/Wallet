@@ -58,7 +58,12 @@ public class ListActionPlayerServlet extends AbstractServlet {
 
 			List<Action> actions = this.actionService.find(playerId);
 
-			this.generateResponse(this.mapping(actions), response, HttpServletResponse.SC_OK);
+			List<ActionDto> actionsDto = new ArrayList<>();
+			for (Action action : actions) {
+				actionsDto.add(Mappers.getMapper(ActionMapper.class).toDto(action));
+			}
+
+			this.generateResponse(actionsDto, response, HttpServletResponse.SC_OK);
 			this.fixAction(playerId, ActionType.ACTIONS_LIST, ActionType.Status.SUCCESS);
 		} catch (ApplicationException exception) {
 			this.generateResponse(new ViolationDto(exception.getMessage()), response, exception.getHttpCode());
@@ -82,22 +87,5 @@ public class ListActionPlayerServlet extends AbstractServlet {
 		}
 
 		return dto;
-	}
-
-	/**
-	 * Преобразовывает сущности действий для транспортировки.
-	 *
-	 * @param actions сущность действия.
-	 * @return действия для транспортировки.
-	 */
-	private List<ActionDto> mapping(final List<Action> actions) {
-		ActionMapper actionDtoMapper = Mappers.getMapper(ActionMapper.class);
-
-		List<ActionDto> actionsDto = new ArrayList<>();
-		for (Action action : actions) {
-			actionsDto.add(actionDtoMapper.toDto(action));
-		}
-
-		return actionsDto;
 	}
 }

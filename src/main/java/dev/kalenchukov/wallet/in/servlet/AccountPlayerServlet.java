@@ -64,7 +64,10 @@ public class AccountPlayerServlet extends AbstractServlet {
 
 			Account account = this.accountService.add(playerId);
 
-			this.generateResponse(this.mapping(account), response, HttpServletResponse.SC_CREATED);
+			AccountDto accountDto = Mappers.getMapper(AccountMapper.class)
+					.toDto(account);
+
+			this.generateResponse(accountDto, response, HttpServletResponse.SC_CREATED);
 			this.fixAction(playerId, ActionType.CREATE_ACCOUNT, ActionType.Status.SUCCESS);
 		} catch (ApplicationException exception) {
 			this.generateResponse(new ViolationDto(exception.getMessage()), response, exception.getHttpCode());
@@ -87,16 +90,5 @@ public class AccountPlayerServlet extends AbstractServlet {
 		}
 
 		return dto;
-	}
-
-	/**
-	 * Преобразовывает сущность счёта для транспортировки.
-	 *
-	 * @param account сущность счёта.
-	 * @return счёт для транспортировки.
-	 */
-	private AccountDto mapping(final Account account) {
-		AccountMapper accountDtoMapper = Mappers.getMapper(AccountMapper.class);
-		return accountDtoMapper.toDto(account);
 	}
 }
