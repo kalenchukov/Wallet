@@ -8,7 +8,7 @@
 <databaseChangeLog
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.10.xsd">
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.10.xsd">
 
     <!-- Добавление действий -->
     <changeSet context="test" id="008-insert-table-actions" author="admin">
@@ -67,11 +67,6 @@
             <column name="type">ACTIONS_LIST</column>
             <column name="status">SUCCESS</column>
         </insert>
-        <insert tableName="actions">
-            <column name="player_id">1</column>
-            <column name="type">LOGOUT</column>
-            <column name="status">SUCCESS</column>
-        </insert>
 
         <insert tableName="actions">
             <column name="player_id">2</column>
@@ -98,11 +93,6 @@
             <column name="type">OPERATIONS_ACCOUNT_LIST</column>
             <column name="status">SUCCESS</column>
         </insert>
-        <insert tableName="actions">
-            <column name="player_id">2</column>
-            <column name="type">LOGOUT</column>
-            <column name="status">SUCCESS</column>
-        </insert>
 
         <insert tableName="actions">
             <column name="player_id">3</column>
@@ -127,11 +117,6 @@
         <insert tableName="actions">
             <column name="player_id">3</column>
             <column name="type">OPERATIONS_ACCOUNT_LIST</column>
-            <column name="status">SUCCESS</column>
-        </insert>
-        <insert tableName="actions">
-            <column name="player_id">3</column>
-            <column name="type">LOGOUT</column>
             <column name="status">SUCCESS</column>
         </insert>
 
@@ -158,11 +143,6 @@
         <insert tableName="actions">
             <column name="player_id">4</column>
             <column name="type">ACTIONS_LIST</column>
-            <column name="status">SUCCESS</column>
-        </insert>
-        <insert tableName="actions">
-            <column name="player_id">4</column>
-            <column name="type">LOGOUT</column>
             <column name="status">SUCCESS</column>
         </insert>
     </changeSet>

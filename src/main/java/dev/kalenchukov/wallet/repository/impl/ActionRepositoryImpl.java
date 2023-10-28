@@ -7,13 +7,15 @@
 package dev.kalenchukov.wallet.repository.impl;
 
 import dev.kalenchukov.wallet.entity.Action;
-import dev.kalenchukov.wallet.exceptions.ApplicationException;
 import dev.kalenchukov.wallet.repository.ActionRepository;
 import dev.kalenchukov.wallet.type.ActionType;
 
 import javax.sql.DataSource;
 import java.sql.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * Класс хранилища действий.
@@ -66,7 +68,7 @@ public class ActionRepositoryImpl implements ActionRepository {
 				);
 			}
 		} catch (SQLException exception) {
-			throw new ApplicationException(exception);
+			throw new RuntimeException("Возникла ошибка при работе с базой данных");
 		}
 	}
 
@@ -77,9 +79,9 @@ public class ActionRepositoryImpl implements ActionRepository {
 	 * @return {@inheritDoc}
 	 */
 	@Override
-	public Set<Action> find(final long playerId) {
-		Set<Action> actions = new HashSet<>();
-		String query = "SELECT * FROM actions WHERE player_id = ?";
+	public List<Action> find(final long playerId) {
+		List<Action> actions = new ArrayList<>();
+		String query = "SELECT * FROM actions WHERE player_id = ? ORDER BY action_id DESC";
 
 		try (Connection connection = this.dataSource.getConnection();
 			 PreparedStatement preparedStatement = connection.prepareStatement(query)) {
@@ -99,9 +101,9 @@ public class ActionRepositoryImpl implements ActionRepository {
 				}
 			}
 		} catch (SQLException exception) {
-			throw new ApplicationException(exception);
+			throw new RuntimeException("Возникла ошибка при работе с базой данных");
 		}
 
-		return Collections.unmodifiableSet(actions);
+		return Collections.unmodifiableList(actions);
 	}
 }

@@ -6,25 +6,32 @@
 
 package dev.kalenchukov.wallet.exceptions;
 
+import lombok.Getter;
+
 /**
  * Класс исключения при ошибке приложения.
  */
-public class ApplicationException extends RuntimeException {
+@Getter
+public class ApplicationException extends Exception {
 	/**
-	 * Конструирует исключение.
-	 *
-	 * @param cause родительское исключение.
+	 * HTTP-код ответа соответствующий данному исключению.
 	 */
-	public ApplicationException(final Throwable cause) {
-		super(cause);
-	}
+	private final int httpCode;
+
+	/**
+	 * Текст сообщения.
+	 */
+	private final String message;
 
 	/**
 	 * Конструирует исключение.
 	 *
-	 * @param message сообщение.
+	 * @param message  сообщение.
+	 * @param httpCode HTTP-код.
 	 */
-	public ApplicationException(final String message) {
+	public ApplicationException(final String message, final int httpCode) {
 		super(message);
+		this.message = message;
+		this.httpCode = httpCode;
 	}
 }

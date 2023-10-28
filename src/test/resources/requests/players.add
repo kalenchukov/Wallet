@@ -1,0 +1,10 @@
+#!/bin/bash
+
+curl -v -X POST http://localhost:1111/wallet_war/players \
+-H "Content-Type: application/json; charset=UTF-8" \
+-d @- << EOF
+{
+	"name": "qwe",
+	"password": "qwe"
+}
+EOF

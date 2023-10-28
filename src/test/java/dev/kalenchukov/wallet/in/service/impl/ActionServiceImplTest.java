@@ -8,14 +8,13 @@ package dev.kalenchukov.wallet.in.service.impl;
 
 import dev.kalenchukov.wallet.entity.Action;
 import dev.kalenchukov.wallet.in.service.ActionService;
-import dev.kalenchukov.wallet.in.service.impl.ActionServiceImpl;
 import dev.kalenchukov.wallet.repository.ActionRepository;
 import dev.kalenchukov.wallet.repository.impl.ActionRepositoryImpl;
 import dev.kalenchukov.wallet.type.ActionType;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import java.util.Set;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -93,11 +92,11 @@ public class ActionServiceImplTest {
 			long playerId = 36L;
 			Action action = mock(Action.class);
 			ActionRepository actionRepository = mock(ActionRepositoryImpl.class);
-			when(actionRepository.find(anyLong())).thenReturn(Set.of(action));
+			when(actionRepository.find(anyLong())).thenReturn(List.of(action));
 			ActionService actionService = new ActionServiceImpl(actionRepository);
 
-			Set<Action> actual = actionService.find(playerId);
-			Set<Action> expected = Set.of(action);
+			List<Action> actual = actionService.find(playerId);
+			List<Action> expected = List.of(action);
 
 			verify(actionRepository, only()).find(playerId);
 			assertThat(actual).containsExactlyElementsOf(expected);
@@ -110,10 +109,10 @@ public class ActionServiceImplTest {
 		public void findWithNotFound() {
 			long playerId = 3456456L;
 			ActionRepository actionRepository = mock(ActionRepositoryImpl.class);
-			when(actionRepository.find(anyLong())).thenReturn(Set.of());
+			when(actionRepository.find(anyLong())).thenReturn(List.of());
 			ActionService actionService = new ActionServiceImpl(actionRepository);
 
-			Set<Action> actual = actionService.find(playerId);
+			List<Action> actual = actionService.find(playerId);
 
 			verify(actionRepository, only()).find(playerId);
 			assertThat(actual).isEmpty();

@@ -7,8 +7,8 @@
 package dev.kalenchukov.wallet.in.service.impl;
 
 import dev.kalenchukov.wallet.entity.Player;
-import dev.kalenchukov.wallet.exceptions.DuplicatePlayerException;
-import dev.kalenchukov.wallet.exceptions.NotFoundPlayerException;
+import dev.kalenchukov.wallet.exceptions.player.DuplicateNamePlayerException;
+import dev.kalenchukov.wallet.exceptions.player.NotFoundPlayerException;
 import dev.kalenchukov.wallet.in.service.PlayerService;
 import dev.kalenchukov.wallet.repository.PlayerRepository;
 import dev.kalenchukov.wallet.repository.impl.PlayerRepositoryImpl;
@@ -34,7 +34,7 @@ public class PlayerServiceImplTest {
 		 * Проверка метода {@link PlayerServiceImpl#add(String, String)}.
 		 */
 		@Test
-		public void add() throws DuplicatePlayerException {
+		public void add() throws DuplicateNamePlayerException {
 			String name = "Имя";
 			String password = "d41d8cd98f00b204e9800998ecf8427e";
 			Player player = mock(Player.class);
@@ -91,7 +91,7 @@ public class PlayerServiceImplTest {
 			when(playerRepository.existsByName(anyString())).thenReturn(true);
 			PlayerService playerService = new PlayerServiceImpl(playerRepository);
 
-			assertThatExceptionOfType(DuplicatePlayerException.class).isThrownBy(() -> {
+			assertThatExceptionOfType(DuplicateNamePlayerException.class).isThrownBy(() -> {
 				playerService.add(name, password);
 			});
 		}

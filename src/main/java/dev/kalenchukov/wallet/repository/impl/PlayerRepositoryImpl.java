@@ -7,12 +7,12 @@
 package dev.kalenchukov.wallet.repository.impl;
 
 import dev.kalenchukov.wallet.entity.Player;
-import dev.kalenchukov.wallet.exceptions.ApplicationException;
 import dev.kalenchukov.wallet.repository.PlayerRepository;
 
 import javax.sql.DataSource;
 import java.sql.*;
-import java.util.*;
+import java.util.Objects;
+import java.util.Optional;
 
 /**
  * Класс хранилища игроков.
@@ -61,7 +61,7 @@ public class PlayerRepositoryImpl implements PlayerRepository {
 				);
 			}
 		} catch (SQLException exception) {
-			throw new ApplicationException(exception);
+			throw new RuntimeException("Возникла ошибка при работе с базой данных");
 		}
 	}
 
@@ -89,7 +89,7 @@ public class PlayerRepositoryImpl implements PlayerRepository {
 				}
 			}
 		} catch (SQLException exception) {
-			throw new ApplicationException(exception);
+			throw new RuntimeException("Возникла ошибка при работе с базой данных");
 		}
 
 		return result;
@@ -128,7 +128,7 @@ public class PlayerRepositoryImpl implements PlayerRepository {
 				}
 			}
 		} catch (SQLException exception) {
-			throw new ApplicationException(exception);
+			throw new RuntimeException("Возникла ошибка при работе с базой данных");
 		}
 
 		return player;

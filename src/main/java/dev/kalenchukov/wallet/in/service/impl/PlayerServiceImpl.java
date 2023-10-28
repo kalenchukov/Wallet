@@ -7,10 +7,8 @@
 package dev.kalenchukov.wallet.in.service.impl;
 
 import dev.kalenchukov.wallet.entity.Player;
-import dev.kalenchukov.wallet.exceptions.DuplicatePlayerException;
-import dev.kalenchukov.wallet.exceptions.EmptyNamePlayerException;
-import dev.kalenchukov.wallet.exceptions.EmptyPasswordPlayerException;
-import dev.kalenchukov.wallet.exceptions.NotFoundPlayerException;
+import dev.kalenchukov.wallet.exceptions.player.DuplicateNamePlayerException;
+import dev.kalenchukov.wallet.exceptions.player.NotFoundPlayerException;
 import dev.kalenchukov.wallet.in.service.PlayerService;
 import dev.kalenchukov.wallet.repository.PlayerRepository;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -44,29 +42,19 @@ public class PlayerServiceImpl implements PlayerService {
 	 * @param name     {@inheritDoc}
 	 * @param password {@inheritDoc}
 	 * @return {@inheritDoc}
-	 * @throws DuplicatePlayerException     {@inheritDoc}
-	 * @throws EmptyNamePlayerException     если имя игрока пустое.
-	 * @throws EmptyPasswordPlayerException если пароль пустой.
+	 * @throws DuplicateNamePlayerException {@inheritDoc}
 	 */
 	@Override
-	public Player add(final String name, final String password) throws DuplicatePlayerException {
+	public Player add(final String name, final String password) throws DuplicateNamePlayerException {
 		Objects.requireNonNull(name);
 		Objects.requireNonNull(password);
 
-		if (name.isEmpty()) {
-			throw new EmptyNamePlayerException(name);
-		}
-
-		if (password.isEmpty()) {
-			throw new EmptyPasswordPlayerException();
-		}
-
 		if (this.playerRepository.existsByName(name)) {
-			throw new DuplicatePlayerException(name);
+			throw new DuplicateNamePlayerException(name);
 		}
 
 		return this.playerRepository.save(
-				new Player(name, DigestUtils.md5Hex(password))
+				new Player(0L, name, DigestUtils.md5Hex(password))
 		);
 	}
 
@@ -79,13 +67,11 @@ public class PlayerServiceImpl implements PlayerService {
 	 * @throws NotFoundPlayerException {@inheritDoc}
 	 */
 	@Override
-	public Player find(final String name, final String password)
-			throws NotFoundPlayerException {
+	public Player find(final String name, final String password) throws NotFoundPlayerException {
 		Objects.requireNonNull(name);
 		Objects.requireNonNull(password);
 
 		Optional<Player> player = this.playerRepository.find(name, password);
-
 		return player.orElseThrow(() -> new NotFoundPlayerException(name));
 	}
 }

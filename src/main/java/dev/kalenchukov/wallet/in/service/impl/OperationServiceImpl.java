@@ -7,15 +7,15 @@
 package dev.kalenchukov.wallet.in.service.impl;
 
 import dev.kalenchukov.wallet.entity.Operation;
-import dev.kalenchukov.wallet.exceptions.NotFoundOperationException;
+import dev.kalenchukov.wallet.exceptions.operation.NotFoundOperationException;
 import dev.kalenchukov.wallet.in.service.OperationService;
 import dev.kalenchukov.wallet.repository.OperationRepository;
 import dev.kalenchukov.wallet.type.OperationType;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
 
 /**
  * Класс сервиса операций.
@@ -47,12 +47,12 @@ public class OperationServiceImpl implements OperationService {
 	 * @return {@inheritDoc}
 	 */
 	@Override
-	public Operation add(long playerId, long accountId, OperationType operationType, BigDecimal amount) {
+	public Operation add(long playerId, long accountId, final OperationType operationType, final BigDecimal amount) {
 		Objects.requireNonNull(operationType);
 		Objects.requireNonNull(amount);
 
 		return this.operationRepository.save(
-				new Operation(playerId, accountId, operationType, amount)
+				new Operation(0L, playerId, accountId, operationType, amount)
 		);
 	}
 
@@ -64,10 +64,8 @@ public class OperationServiceImpl implements OperationService {
 	 * @return {@inheritDoc}
 	 * @throws NotFoundOperationException {@inheritDoc}
 	 */
-	public Operation findById(final long operationId, final long playerId)
-			throws NotFoundOperationException {
+	public Operation findById(final long operationId, final long playerId) throws NotFoundOperationException {
 		Optional<Operation> operation = this.operationRepository.findById(operationId, playerId);
-
 		return operation.orElseThrow(() -> new NotFoundOperationException(operationId));
 	}
 
@@ -79,7 +77,7 @@ public class OperationServiceImpl implements OperationService {
 	 * @return {@inheritDoc}
 	 */
 	@Override
-	public Set<Operation> find(final long accountId, final long playerId) {
+	public List<Operation> find(final long accountId, final long playerId) {
 		return this.operationRepository.find(accountId, playerId);
 	}
 }

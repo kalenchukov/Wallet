@@ -7,7 +7,6 @@
 package dev.kalenchukov.wallet.repository.impl;
 
 import dev.kalenchukov.wallet.entity.Operation;
-import dev.kalenchukov.wallet.exceptions.ApplicationException;
 import dev.kalenchukov.wallet.repository.OperationRepository;
 import dev.kalenchukov.wallet.type.OperationType;
 
@@ -66,7 +65,7 @@ public class OperationRepositoryImpl implements OperationRepository {
 				);
 			}
 		} catch (SQLException exception) {
-			throw new ApplicationException(exception);
+			throw new RuntimeException("Возникла ошибка при работе с базой данных");
 		}
 	}
 
@@ -101,7 +100,7 @@ public class OperationRepositoryImpl implements OperationRepository {
 				}
 			}
 		} catch (SQLException exception) {
-			throw new ApplicationException(exception);
+			throw new RuntimeException("Возникла ошибка при работе с базой данных");
 		}
 
 		return operation;
@@ -115,9 +114,9 @@ public class OperationRepositoryImpl implements OperationRepository {
 	 * @return {@inheritDoc}
 	 */
 	@Override
-	public Set<Operation> find(final long accountId, final long playerId) {
-		Set<Operation> operations = new HashSet<>();
-		String query = "SELECT * FROM operations WHERE account_id = ? AND player_id = ?";
+	public List<Operation> find(final long accountId, final long playerId) {
+		List<Operation> operations = new ArrayList<>();
+		String query = "SELECT * FROM operations WHERE account_id = ? AND player_id = ? ORDER BY operation_id DESC";
 
 		try (Connection connection = this.dataSource.getConnection();
 			 PreparedStatement preparedStatement = connection.prepareStatement(query)) {
@@ -139,9 +138,9 @@ public class OperationRepositoryImpl implements OperationRepository {
 				}
 			}
 		} catch (SQLException exception) {
-			throw new ApplicationException(exception);
+			throw new RuntimeException("Возникла ошибка при работе с базой данных");
 		}
 
-		return Collections.unmodifiableSet(operations);
+		return Collections.unmodifiableList(operations);
 	}
 }

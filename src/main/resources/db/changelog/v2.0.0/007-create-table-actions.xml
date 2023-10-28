@@ -8,15 +8,15 @@
 <databaseChangeLog
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.10.xsd">
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.10.xsd">
 
     <!-- Создание таблицы действий -->
     <changeSet context="production,test" id="004-create-table-actions" author="admin">
-		<createSequence sequenceName="sq_actions"
-						startValue="1"
-						incrementBy="1"/>
+        <createSequence sequenceName="sq_actions"
+                        startValue="1"
+                        incrementBy="1"/>
 
-		<createTable tableName="actions" remarks="Таблица действий игроков">
+        <createTable tableName="actions" remarks="Таблица действий игроков">
             <column name="action_id"
                     type="BIGINT"
                     defaultValueSequenceNext="sq_actions"

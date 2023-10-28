@@ -8,10 +8,10 @@ package dev.kalenchukov.wallet.in.service;
 
 import dev.kalenchukov.wallet.entity.Account;
 import dev.kalenchukov.wallet.entity.Operation;
-import dev.kalenchukov.wallet.exceptions.NegativeAmountOperationException;
-import dev.kalenchukov.wallet.exceptions.NoAccessAccountException;
-import dev.kalenchukov.wallet.exceptions.NotFoundAccountException;
-import dev.kalenchukov.wallet.exceptions.OutOfAmountOperationException;
+import dev.kalenchukov.wallet.exceptions.account.NoAccessAccountException;
+import dev.kalenchukov.wallet.exceptions.account.NotFoundAccountException;
+import dev.kalenchukov.wallet.exceptions.account.OutOfAmountAccountException;
+import dev.kalenchukov.wallet.exceptions.operation.NegativeAmountOperationException;
 
 import java.math.BigDecimal;
 
@@ -40,7 +40,7 @@ public interface AccountService {
 	 * @throws NoAccessAccountException         если счёт принадлежит другому игроку.
 	 */
 	Operation credit(long accountId, long playerId, BigDecimal amount)
-			throws NotFoundAccountException, NoAccessAccountException;
+			throws NotFoundAccountException, NoAccessAccountException, NegativeAmountOperationException;
 
 	/**
 	 * Списывает со счёта.
@@ -51,11 +51,11 @@ public interface AccountService {
 	 * @return операцию.
 	 * @throws NotFoundAccountException         если счёт не найден.
 	 * @throws NoAccessAccountException         если счёт принадлежит другому игроку.
-	 * @throws OutOfAmountOperationException    если для списания недостаточно средств.
+	 * @throws OutOfAmountAccountException      если для списания недостаточно средств.
 	 * @throws NegativeAmountOperationException если сумма меньше нуля.
 	 */
 	Operation debit(long accountId, long playerId, BigDecimal amount)
-			throws NotFoundAccountException, NoAccessAccountException;
+			throws NotFoundAccountException, NoAccessAccountException, NegativeAmountOperationException, OutOfAmountAccountException;
 
 	/**
 	 * Возвращает счёт.

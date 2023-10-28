@@ -1,0 +1,11 @@
+#!/bin/bash
+
+curl -v -X POST http://localhost:1111/wallet_war/players/accounts/debit \
+-H "Content-Type: application/json; charset=UTF-8" \
+-d @- << EOF
+{
+	"accountId": 1,
+	"amount": 50.0,
+	"accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJXYWxsZXRBdXRoIiwicGxheWVySWQiOjEsImV4cCI6MTY5ODIzODMwN30.BjLA5RPsR7xqr1VdNJaGq64MhLzBUd9qT97sY51XZI8"
+}
+EOF

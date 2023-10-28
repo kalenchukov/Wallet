@@ -8,8 +8,8 @@ package dev.kalenchukov.wallet.repository.impl;
 
 import dev.kalenchukov.wallet.Config;
 import dev.kalenchukov.wallet.entity.Operation;
+import dev.kalenchukov.wallet.modules.Liquibase;
 import dev.kalenchukov.wallet.repository.OperationRepository;
-import dev.kalenchukov.wallet.repository.modules.Liquibase;
 import dev.kalenchukov.wallet.type.OperationType;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -19,10 +19,9 @@ import org.postgresql.ds.PGSimpleDataSource;
 import org.testcontainers.containers.PostgreSQLContainer;
 
 import javax.sql.DataSource;
-
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -34,22 +33,22 @@ import static org.mockito.Mockito.when;
  */
 public class OperationRepositoryImplTest {
 	private static final PostgreSQLContainer<?> POSTGRES =
-			new PostgreSQLContainer<>(Config.get().getProperty("docker.image"));
+			new PostgreSQLContainer<>(Config.get().getProperty("test.docker.image"));
 
 	private static DataSource DATA_SOURCE;
 
 	@BeforeAll
 	public static void beforeAll() {
-		POSTGRES.withDatabaseName(Config.get().getProperty("database"));
-		POSTGRES.withUsername(Config.get().getProperty("username"));
-		POSTGRES.withPassword(Config.get().getProperty("password"));
+		POSTGRES.withDatabaseName(Config.get().getProperty("database.name"));
+		POSTGRES.withUsername(Config.get().getProperty("database.username"));
+		POSTGRES.withPassword(Config.get().getProperty("database.password"));
 		POSTGRES.start();
 
 		PGSimpleDataSource dataSource = new PGSimpleDataSource();
 		dataSource.setUrl(POSTGRES.getJdbcUrl());
 		dataSource.setUser(POSTGRES.getUsername());
 		dataSource.setPassword(POSTGRES.getPassword());
-		dataSource.setCurrentSchema(Config.get().getProperty("application.schema"));
+		dataSource.setCurrentSchema(Config.get().getProperty("liquibase.schema.app"));
 		DATA_SOURCE = dataSource;
 
 		Liquibase.init(
@@ -172,7 +171,7 @@ public class OperationRepositoryImplTest {
 			long accountId = 2L;
 			OperationRepository operationRepository = new OperationRepositoryImpl(DATA_SOURCE);
 
-			Set<Operation> actualSet = operationRepository.find(accountId, playerId);
+			List<Operation> actualSet = operationRepository.find(accountId, playerId);
 
 			assertThat(actualSet).hasSize(1);
 		}
@@ -186,7 +185,7 @@ public class OperationRepositoryImplTest {
 			long accountId = 465166L;
 			OperationRepository operationRepository = new OperationRepositoryImpl(DATA_SOURCE);
 
-			Set<Operation> actualSet = operationRepository.find(accountId, playerId);
+			List<Operation> actualSet = operationRepository.find(accountId, playerId);
 
 			assertThat(actualSet).isEmpty();
 		}

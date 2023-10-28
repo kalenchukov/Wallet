@@ -7,8 +7,8 @@
 package dev.kalenchukov.wallet.in.service;
 
 import dev.kalenchukov.wallet.entity.Player;
-import dev.kalenchukov.wallet.exceptions.DuplicatePlayerException;
-import dev.kalenchukov.wallet.exceptions.NotFoundPlayerException;
+import dev.kalenchukov.wallet.exceptions.player.DuplicateNamePlayerException;
+import dev.kalenchukov.wallet.exceptions.player.NotFoundPlayerException;
 
 /**
  * Интерфейс для реализации класса сервиса игроков.
@@ -20,10 +20,10 @@ public interface PlayerService {
 	 * @param name     имя.
 	 * @param password пароль.
 	 * @return игрока.
-	 * @throws DuplicatePlayerException если игрок с указанным именем уже существует.
+	 * @throws DuplicateNamePlayerException если игрок с указанным именем уже существует.
 	 */
 	Player add(String name, String password)
-			throws DuplicatePlayerException;
+			throws DuplicateNamePlayerException;
 
 	/**
 	 * Возвращает игрока.

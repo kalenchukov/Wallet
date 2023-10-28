@@ -7,11 +7,11 @@
 package dev.kalenchukov.wallet.in.service;
 
 import dev.kalenchukov.wallet.entity.Operation;
-import dev.kalenchukov.wallet.exceptions.NotFoundOperationException;
+import dev.kalenchukov.wallet.exceptions.operation.NotFoundOperationException;
 import dev.kalenchukov.wallet.type.OperationType;
 
 import java.math.BigDecimal;
-import java.util.Set;
+import java.util.List;
 
 /**
  * Интерфейс для реализации класса сервиса операций.
@@ -46,5 +46,5 @@ public interface OperationService {
 	 * @param playerId  идентификатор игрока.
 	 * @return найденные операции.
 	 */
-	Set<Operation> find(long accountId, long playerId);
+	List<Operation> find(long accountId, long playerId);
 }

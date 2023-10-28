@@ -8,18 +8,18 @@
 <databaseChangeLog
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.10.xsd">
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.10.xsd">
 
     <!-- Создание таблицы игроков -->
     <changeSet context="production,test" id="001-create-table-players" author="admin">
-		<createSequence sequenceName="sq_players"
-						startValue="1"
-						incrementBy="1"/>
+        <createSequence sequenceName="sq_players"
+                        startValue="1"
+                        incrementBy="1"/>
 
         <createTable tableName="players" remarks="Таблица игроков">
             <column name="player_id"
                     type="BIGINT"
-					defaultValueSequenceNext="sq_players"
+                    defaultValueSequenceNext="sq_players"
                     remarks="Идентификатор игрока">
                 <constraints nullable="false"
                              primaryKey="true"

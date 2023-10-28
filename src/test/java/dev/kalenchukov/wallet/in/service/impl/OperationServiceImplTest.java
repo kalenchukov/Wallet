@@ -8,14 +8,14 @@ package dev.kalenchukov.wallet.in.service.impl;
 
 import dev.kalenchukov.wallet.entity.Operation;
 import dev.kalenchukov.wallet.in.service.OperationService;
-import dev.kalenchukov.wallet.repository.*;
+import dev.kalenchukov.wallet.repository.OperationRepository;
 import dev.kalenchukov.wallet.repository.impl.OperationRepositoryImpl;
 import dev.kalenchukov.wallet.type.OperationType;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
-import java.util.Set;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -99,11 +99,11 @@ public class OperationServiceImplTest {
 			Operation operation = mock(Operation.class);
 			when(operation.getAccountId()).thenReturn(accountId);
 			OperationRepository operationRepository = mock(OperationRepositoryImpl.class);
-			when(operationRepository.find(accountId, playerId)).thenReturn(Set.of(operation));
+			when(operationRepository.find(accountId, playerId)).thenReturn(List.of(operation));
 			OperationService operationService = new OperationServiceImpl(operationRepository);
 
-			Set<Operation> actual = operationService.find(accountId, playerId);
-			Set<Operation> expected = Set.of(operation);
+			List<Operation> actual = operationService.find(accountId, playerId);
+			List<Operation> expected = List.of(operation);
 
 			verify(operationRepository, only()).find(accountId, playerId);
 			assertThat(actual).containsExactlyElementsOf(expected);
@@ -119,10 +119,10 @@ public class OperationServiceImplTest {
 			Operation operation = mock(Operation.class);
 			when(operation.getAccountId()).thenReturn(accountId);
 			OperationRepository operationRepository = mock(OperationRepositoryImpl.class);
-			when(operationRepository.find(accountId, playerId)).thenReturn(Set.of());
+			when(operationRepository.find(accountId, playerId)).thenReturn(List.of());
 			OperationService operationService = new OperationServiceImpl(operationRepository);
 
-			Set<Operation> actual = operationService.find(accountId, playerId);
+			List<Operation> actual = operationService.find(accountId, playerId);
 
 			verify(operationRepository, only()).find(accountId, playerId);
 			assertThat(actual).isEmpty();
