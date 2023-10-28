@@ -11,11 +11,9 @@ import lombok.*;
 /**
  * Класс игрока.
  */
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@Setter
-@ToString
 public class PlayerDto {
 	/**
 	 * Идентификатор.

@@ -14,11 +14,9 @@ import java.math.BigDecimal;
 /**
  * Класс операции.
  */
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@Setter
-@ToString
 public class OperationDto {
 	/**
 	 * Идентификатор.

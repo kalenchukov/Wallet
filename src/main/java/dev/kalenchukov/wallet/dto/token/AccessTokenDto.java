@@ -11,11 +11,9 @@ import lombok.*;
 /**
  * Класс токена доступа.
  */
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@Setter
-@ToString
 public class AccessTokenDto {
 	/**
 	 * Токен доступа.

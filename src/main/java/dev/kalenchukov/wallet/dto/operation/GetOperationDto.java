@@ -11,11 +11,9 @@ import lombok.*;
 /**
  * Класс получения информации об операции.
  */
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@Setter
-@ToString
 public class GetOperationDto {
 	/**
 	 * Идентификатор.

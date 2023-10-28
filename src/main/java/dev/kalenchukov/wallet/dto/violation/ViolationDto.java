@@ -11,11 +11,9 @@ import lombok.*;
 /**
  * Класс нарушения.
  */
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@Setter
-@ToString
 public class ViolationDto {
 	/**
 	 * Сообщение.

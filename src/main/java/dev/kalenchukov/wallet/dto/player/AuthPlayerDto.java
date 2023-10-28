@@ -11,11 +11,9 @@ import lombok.*;
 /**
  * Класс авторизации игрока.
  */
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@Setter
-@ToString
 public class AuthPlayerDto {
 	/**
 	 * Имя.

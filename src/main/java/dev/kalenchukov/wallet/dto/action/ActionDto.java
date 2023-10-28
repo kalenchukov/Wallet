@@ -12,11 +12,9 @@ import lombok.*;
 /**
  * Класс действия.
  */
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@Setter
-@ToString
 public class ActionDto {
 	/**
 	 * Идентификатор.

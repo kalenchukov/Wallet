@@ -11,11 +11,9 @@ import lombok.*;
 /**
  * Класс добавления счёта.
  */
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@Setter
-@ToString
 public class CreateAccountDto {
 	/**
 	 * Токен доступа.

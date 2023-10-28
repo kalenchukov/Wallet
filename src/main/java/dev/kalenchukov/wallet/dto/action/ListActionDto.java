@@ -11,11 +11,9 @@ import lombok.*;
 /**
  * Класс списка действий.
  */
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@Setter
-@ToString
 public class ListActionDto {
 	/**
 	 * Токен доступа.

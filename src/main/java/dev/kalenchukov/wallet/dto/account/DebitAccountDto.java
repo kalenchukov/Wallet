@@ -13,11 +13,9 @@ import java.math.BigDecimal;
 /**
  * Класс снятия со счёта.
  */
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@Setter
-@ToString
 public class DebitAccountDto {
 	/**
 	 * Идентификатор счёта.
