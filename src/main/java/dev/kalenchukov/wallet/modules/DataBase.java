@@ -6,7 +6,7 @@
 
 package dev.kalenchukov.wallet.modules;
 
-import dev.kalenchukov.wallet.Config;
+import dev.kalenchukov.wallet.properties.Props;
 import org.postgresql.ds.PGSimpleDataSource;
 
 import javax.sql.DataSource;
@@ -30,9 +30,9 @@ public final class DataBase {
 			DataBase.DATA_SOURCE = DataBase.init();
 
 			Liquibase.init(
-					Config.get().getProperty("database.url"),
-					Config.get().getProperty("database.username"),
-					Config.get().getProperty("database.password")
+					Props.get().getDatabase().getUrl(),
+					Props.get().getDatabase().getUsername(),
+					Props.get().getDatabase().getPassword()
 			);
 		}
 
@@ -45,11 +45,12 @@ public final class DataBase {
 	 * @return источник данных.
 	 */
 	private static DataSource init() {
+
 		PGSimpleDataSource dataSource = new PGSimpleDataSource();
-		dataSource.setUrl(Config.get().getProperty("database.url"));
-		dataSource.setUser(Config.get().getProperty("database.username"));
-		dataSource.setPassword(Config.get().getProperty("database.password"));
-		dataSource.setCurrentSchema(Config.get().getProperty("liquibase.schema.app"));
+		dataSource.setUrl(Props.get().getDatabase().getUrl());
+		dataSource.setUser(Props.get().getDatabase().getUsername());
+		dataSource.setPassword(Props.get().getDatabase().getPassword());
+		dataSource.setCurrentSchema(Props.get().getLiquibase().getSchemaApp());
 		return dataSource;
 	}
 }

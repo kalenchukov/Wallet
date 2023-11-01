@@ -7,6 +7,7 @@
 package dev.kalenchukov.wallet.exceptions;
 
 import lombok.Getter;
+import org.springframework.http.HttpStatus;
 
 /**
  * Класс исключения при ошибке приложения.
@@ -16,7 +17,7 @@ public class ApplicationException extends Exception {
 	/**
 	 * HTTP-код ответа соответствующий данному исключению.
 	 */
-	private final int httpCode;
+	private final HttpStatus httpCode;
 
 	/**
 	 * Текст сообщения.
@@ -29,7 +30,7 @@ public class ApplicationException extends Exception {
 	 * @param message  сообщение.
 	 * @param httpCode HTTP-код.
 	 */
-	public ApplicationException(final String message, final int httpCode) {
+	public ApplicationException(final String message, final HttpStatus httpCode) {
 		super(message);
 		this.message = message;
 		this.httpCode = httpCode;

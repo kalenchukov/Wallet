@@ -1,0 +1,41 @@
+#
+# Copyright © 2023 Алексей Каленчуков
+# GitHub: https://github.com/kalenchukov
+# E-mail: mailto:aleksey.kalenchukov@yandex.ru
+#
+
+context: test
+
+# Database
+database:
+  # Название базы данных.
+  name: wallet
+  # Пользователь.
+  username: test
+  # Пароль.
+  password: test
+
+# Liquibase
+liquibase:
+  # Путь к файлам миграции.
+  changeLogFile: db/changelog/changelog.xml
+  # Схема для служебных таблиц.
+  schema: migration
+  # Схема для таблиц приложения.
+  schemaApp: wallet
+  # Необходимые миграции.
+  contexts: production,test
+
+# Test
+test:
+  # Образ базы данных для тест-контейнера.
+  dockerImage: postgres:16
+
+# AccessToken
+accessToken:
+  # Сервер авторизации выдавший токен доступа.
+  server: WalletAuth
+  # Время жизни токена доступа в секундах.
+  ttl: 7400
+  # Строка для формирования токенов доступа.
+  secret: WalletSecretCode123

@@ -32,6 +32,7 @@ public class ActionRepositoryImpl implements ActionRepository {
 	 * @param dataSource источник данных.
 	 */
 	public ActionRepositoryImpl(final DataSource dataSource) {
+		Objects.requireNonNull(dataSource);
 		this.dataSource = dataSource;
 	}
 

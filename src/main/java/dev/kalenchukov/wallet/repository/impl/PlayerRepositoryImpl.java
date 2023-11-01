@@ -29,6 +29,7 @@ public class PlayerRepositoryImpl implements PlayerRepository {
 	 * @param dataSource источник данных.
 	 */
 	public PlayerRepositoryImpl(final DataSource dataSource) {
+		Objects.requireNonNull(dataSource);
 		this.dataSource = dataSource;
 	}
 

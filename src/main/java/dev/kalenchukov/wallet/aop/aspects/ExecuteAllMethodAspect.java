@@ -13,7 +13,7 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 
 /**
- * Класс аспекта при выполнении любого метода.
+ * Класс аспекта для фиксации выполнения методов.
  */
 @Aspect
 public class ExecuteAllMethodAspect {
@@ -23,10 +23,10 @@ public class ExecuteAllMethodAspect {
 	private static final Logger LOG = LogManager.getLogger(ExecuteAllMethodAspect.class);
 
 	/**
-	 * Выполняется при вызове любого метода и записывает выполнение в лог.
+	 * Срез отбора методов, выполнение которых необходимо отражать в логах.
 	 *
 	 * @param proceedingJoinPoint точка соединения.
-	 * @return объект целевого метода.
+	 * @return значение результата целевого метода.
 	 * @throws Throwable если выполнить целевой метод не удалось.
 	 */
 	@Around("execution(* *(..))")

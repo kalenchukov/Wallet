@@ -6,7 +6,7 @@
 
 package dev.kalenchukov.wallet.modules;
 
-import dev.kalenchukov.wallet.Config;
+import dev.kalenchukov.wallet.properties.Props;
 import liquibase.command.CommandScope;
 import liquibase.command.core.UpdateCommandStep;
 import liquibase.command.core.helpers.DbUrlConnectionCommandStep;
@@ -38,18 +38,18 @@ public final class Liquibase {
 		Objects.requireNonNull(password);
 
 		try (Connection connection = DriverManager.getConnection(url, username, password)) {
-			Liquibase.createSchema(connection, Config.get().getProperty("liquibase.schema"));
-			Liquibase.createSchema(connection, Config.get().getProperty("liquibase.schema.app"));
+			Liquibase.createSchema(connection, Props.get().getLiquibase().getSchema());
+			Liquibase.createSchema(connection, Props.get().getLiquibase().getSchemaApp());
 
 			JdbcConnection jdbcConnection = new JdbcConnection(connection);
 			Database database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(jdbcConnection);
-			database.setLiquibaseSchemaName(Config.get().getProperty("liquibase.schema"));
-			database.setDefaultSchemaName(Config.get().getProperty("liquibase.schema.app"));
+			database.setLiquibaseSchemaName(Props.get().getLiquibase().getSchema());
+			database.setDefaultSchemaName(Props.get().getLiquibase().getSchemaApp());
 
 			CommandScope updateCommand = new CommandScope(UpdateCommandStep.COMMAND_NAME);
 			updateCommand.addArgumentValue(DbUrlConnectionCommandStep.DATABASE_ARG, database);
-			updateCommand.addArgumentValue(UpdateCommandStep.CHANGELOG_FILE_ARG, Config.get().getProperty("liquibase.change.log.file"));
-			updateCommand.addArgumentValue(UpdateCommandStep.CONTEXTS_ARG, Config.get().getProperty("liquibase.contexts"));
+			updateCommand.addArgumentValue(UpdateCommandStep.CHANGELOG_FILE_ARG, Props.get().getLiquibase().getChangeLogFile());
+			updateCommand.addArgumentValue(UpdateCommandStep.CONTEXTS_ARG, Props.get().getLiquibase().getContexts());
 			updateCommand.execute();
 		} catch (LiquibaseException exception) {
 			throw new RuntimeException("Не удалось выполнить миграцию базы данных.");

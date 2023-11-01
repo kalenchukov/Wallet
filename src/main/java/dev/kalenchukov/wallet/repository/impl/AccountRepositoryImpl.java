@@ -30,6 +30,7 @@ public class AccountRepositoryImpl implements AccountRepository {
 	 * @param dataSource источник данных.
 	 */
 	public AccountRepositoryImpl(final DataSource dataSource) {
+		Objects.requireNonNull(dataSource);
 		this.dataSource = dataSource;
 	}
 
@@ -69,20 +70,22 @@ public class AccountRepositoryImpl implements AccountRepository {
 	/**
 	 * {@inheritDoc}
 	 *
+	 * @param playerId  {@inheritDoc}
 	 * @param accountId {@inheritDoc}
 	 * @param amount    {@inheritDoc}
 	 * @return {@inheritDoc}
 	 */
 	@Override
-	public boolean updateAmount(final long accountId, BigDecimal amount) {
+	public boolean updateAmount(final long playerId, final long accountId, BigDecimal amount) {
 		Objects.requireNonNull(amount);
 
-		String query = "UPDATE accounts SET amount = ? WHERE account_id = ?";
+		String query = "UPDATE accounts SET amount = ? WHERE player_id = ? AND account_id = ?";
 
 		try (Connection connection = this.dataSource.getConnection();
 			 PreparedStatement preparedStatement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
 			preparedStatement.setBigDecimal(1, amount);
-			preparedStatement.setLong(2, accountId);
+			preparedStatement.setLong(2, playerId);
+			preparedStatement.setLong(3, accountId);
 			preparedStatement.executeUpdate();
 
 			try (ResultSet resultSet = preparedStatement.getGeneratedKeys()) {
@@ -96,17 +99,19 @@ public class AccountRepositoryImpl implements AccountRepository {
 	/**
 	 * {@inheritDoc}
 	 *
+	 * @param playerId  {@inheritDoc}
 	 * @param accountId {@inheritDoc}
 	 * @return {@inheritDoc}
 	 */
 	@Override
-	public Optional<Account> findById(final long accountId) {
+	public Optional<Account> findById(final long playerId, final long accountId) {
 		Optional<Account> account = Optional.empty();
-		String query = "SELECT * FROM accounts WHERE account_id = ?";
+		String query = "SELECT * FROM accounts WHERE player_id = ? AND account_id = ?";
 
 		try (Connection connection = this.dataSource.getConnection();
 			 PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-			preparedStatement.setLong(1, accountId);
+			preparedStatement.setLong(1, playerId);
+			preparedStatement.setLong(2, accountId);
 			preparedStatement.execute();
 
 			try (ResultSet resultSet = preparedStatement.getResultSet()) {

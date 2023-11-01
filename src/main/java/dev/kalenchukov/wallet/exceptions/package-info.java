@@ -6,22 +6,5 @@
 
 /**
  * Предоставляет классы, необходимые для конкретизации исключений.
- * <p>
- * Exception
- * |
- * --------------------
- * ApplicationException
- * ------------------------------------------------------------------------------------------
- * /                              |                               |                           \
- * AccountException               OperationException               PlayerException             AccessTokenException
- * |                                 |                               |                           |
- * ---------------------------  -------------------------------  ------------------------------  ---------------------------
- * OutOfAmountAccountException  InvalidAmountOperationException  InvalidPasswordPlayerException  InvalidAccessTokenException
- * InvalidIdAccountException    InvalidIdOperationException      DuplicateNamePlayerException
- * NoAccessAccountException     NotFoundOperationException       InvalidIdPlayerException
- * NotFoundAccountException     NegativeAmountOperationException InvalidNamePlayerException
- * NeedAuthPlayerException
- * NotFoundPlayerException
- * </p>
  */
 package dev.kalenchukov.wallet.exceptions;

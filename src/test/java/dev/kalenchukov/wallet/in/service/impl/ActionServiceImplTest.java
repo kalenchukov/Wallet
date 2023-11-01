@@ -14,6 +14,7 @@ import dev.kalenchukov.wallet.type.ActionType;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -49,7 +50,8 @@ public class ActionServiceImplTest {
 		}
 
 		/**
-		 * Проверка метода {@link ActionServiceImpl#add(long, ActionType, ActionType.Status)} с {@code null} в качестве типа действия.
+		 * Проверка метода {@link ActionServiceImpl#add(long, ActionType, ActionType.Status)}
+		 * с {@code null} в качестве типа действия.
 		 */
 		@Test
 		public void addWithNullActionType() {
@@ -64,7 +66,8 @@ public class ActionServiceImplTest {
 		}
 
 		/**
-		 * Проверка метода {@link ActionServiceImpl#add(long, ActionType, ActionType.Status)} с {@code null} в качестве статуса действия.
+		 * Проверка метода {@link ActionServiceImpl#add(long, ActionType, ActionType.Status)}
+		 * с {@code null} в качестве статуса действия.
 		 */
 		@Test
 		public void addWithNullActionTypeStatus() {
@@ -103,13 +106,14 @@ public class ActionServiceImplTest {
 		}
 
 		/**
-		 * Проверка метода {@link ActionServiceImpl#find(long)} с отсутствующими действиями.
+		 * Проверка метода {@link ActionServiceImpl#find(long)}
+		 * с отсутствующими действиями.
 		 */
 		@Test
 		public void findWithNotFound() {
 			long playerId = 3456456L;
 			ActionRepository actionRepository = mock(ActionRepositoryImpl.class);
-			when(actionRepository.find(anyLong())).thenReturn(List.of());
+			when(actionRepository.find(anyLong())).thenReturn(Collections.emptyList());
 			ActionService actionService = new ActionServiceImpl(actionRepository);
 
 			List<Action> actual = actionService.find(playerId);

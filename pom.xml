@@ -12,7 +12,7 @@
 
     <groupId>dev.kalenchukov.wallet</groupId>
     <artifactId>wallet</artifactId>
-    <version>3.0.0</version>
+    <version>4.0.0</version>
     <packaging>war</packaging>
 
     <name>Wallet</name>
@@ -48,11 +48,15 @@
         <testcontainers.junit.version>1.19.1</testcontainers.junit.version>
         <commons.codec.version>1.15</commons.codec.version>
         <jackson.version>2.15.3</jackson.version>
-        <servlet.version>6.0.0</servlet.version>
+        <servlet.version>4.0.1</servlet.version>
         <aspectj.version>1.9.20.1</aspectj.version>
         <lombok.version>1.18.30</lombok.version>
         <mapstruct.version>1.5.5.Final</mapstruct.version>
         <java.jwt.version>4.4.0</java.jwt.version>
+        <spring.version>5.3.30</spring.version>
+        <jsonpath.version>2.8.0</jsonpath.version>
+        <springfox.version>3.0.0</springfox.version>
+        <snakeyaml.version>2.2</snakeyaml.version>
 
         <aspectj.plugin.version>1.14.0</aspectj.plugin.version>
         <war.plugin.version>3.3.1</war.plugin.version>
@@ -62,10 +66,67 @@
         <source.plugin.version>3.3.0</source.plugin.version>
         <compiler.plugin.version>3.11.0</compiler.plugin.version>
         <javadoc.plugin.version>3.6.0</javadoc.plugin.version>
-
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>${spring.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+            <version>${spring.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-webmvc</artifactId>
+            <version>${spring.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-aop</artifactId>
+            <version>${spring.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-aspects</artifactId>
+            <version>${spring.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test</artifactId>
+            <version>${spring.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.jayway.jsonpath</groupId>
+            <artifactId>json-path</artifactId>
+            <version>${jsonpath.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-oas</artifactId>
+            <version>${springfox.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger-ui</artifactId>
+            <version>${springfox.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.yaml</groupId>
+            <artifactId>snakeyaml</artifactId>
+            <version>${snakeyaml.version}</version>
+            <scope>compile</scope>
+        </dependency>
         <dependency>
             <groupId>commons-codec</groupId>
             <artifactId>commons-codec</artifactId>
@@ -90,8 +151,8 @@
             <version>${jackson.version}</version>
         </dependency>
         <dependency>
-            <groupId>jakarta.servlet</groupId>
-            <artifactId>jakarta.servlet-api</artifactId>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
             <version>${servlet.version}</version>
             <scope>provided</scope>
         </dependency>
@@ -189,6 +250,11 @@
                         </goals>
                     </execution>
                 </executions>
+                <configuration>
+                    <sourceFileExcludes>
+                        <exclude>dev/kalenchukov/wallet/entity/mappers/*MapperImpl.java</exclude>
+                    </sourceFileExcludes>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -297,6 +363,11 @@
                     </execution>
                 </executions>
                 <dependencies>
+                    <dependency>
+                        <groupId>org.aspectj</groupId>
+                        <artifactId>aspectjtools</artifactId>
+                        <version>${aspectj.version}</version>
+                    </dependency>
                 </dependencies>
             </plugin>
         </plugins>

@@ -7,8 +7,8 @@
 package dev.kalenchukov.wallet.in.service.impl;
 
 import dev.kalenchukov.wallet.entity.Player;
-import dev.kalenchukov.wallet.exceptions.player.DuplicateNamePlayerException;
-import dev.kalenchukov.wallet.exceptions.player.NotFoundPlayerException;
+import dev.kalenchukov.wallet.exceptions.DuplicateNamePlayerException;
+import dev.kalenchukov.wallet.exceptions.NotFoundPlayerException;
 import dev.kalenchukov.wallet.in.service.PlayerService;
 import dev.kalenchukov.wallet.repository.PlayerRepository;
 import org.apache.commons.codec.digest.DigestUtils;
