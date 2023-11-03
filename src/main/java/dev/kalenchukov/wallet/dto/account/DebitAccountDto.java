@@ -6,7 +6,10 @@
 
 package dev.kalenchukov.wallet.dto.account;
 
-import lombok.*;
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 
@@ -16,19 +19,11 @@ import java.math.BigDecimal;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Schema(description = "Сущность списания со счёта")
 public class DebitAccountDto {
-	/**
-	 * Идентификатор счёта.
-	 */
-	private Long accountId;
-
 	/**
 	 * Сумма.
 	 */
+	@Schema(description = "Сумма", example = "78.9")
 	private BigDecimal amount;
-
-	/**
-	 * Токен доступа.
-	 */
-	private String accessToken;
 }

@@ -14,12 +14,12 @@
     <changeSet context="test" id="008-insert-table-actions" author="admin">
         <insert tableName="actions">
             <column name="player_id">1</column>
-            <column name="type">NEW</column>
+            <column name="type">ACTIONS</column>
             <column name="status">SUCCESS</column>
         </insert>
         <insert tableName="actions">
             <column name="player_id">1</column>
-            <column name="type">AUTH</column>
+            <column name="type">ACTIONS</column>
             <column name="status">SUCCESS</column>
         </insert>
         <insert tableName="actions">
@@ -59,23 +59,23 @@
         </insert>
         <insert tableName="actions">
             <column name="player_id">1</column>
-            <column name="type">OPERATIONS_ACCOUNT_LIST</column>
+            <column name="type">OPERATIONS_ACCOUNT</column>
             <column name="status">SUCCESS</column>
         </insert>
         <insert tableName="actions">
             <column name="player_id">1</column>
-            <column name="type">ACTIONS_LIST</column>
+            <column name="type">ACTIONS</column>
             <column name="status">SUCCESS</column>
         </insert>
 
         <insert tableName="actions">
             <column name="player_id">2</column>
-            <column name="type">NEW</column>
+            <column name="type">ACTIONS</column>
             <column name="status">SUCCESS</column>
         </insert>
         <insert tableName="actions">
             <column name="player_id">2</column>
-            <column name="type">AUTH</column>
+            <column name="type">ACTIONS</column>
             <column name="status">SUCCESS</column>
         </insert>
         <insert tableName="actions">
@@ -90,18 +90,18 @@
         </insert>
         <insert tableName="actions">
             <column name="player_id">2</column>
-            <column name="type">OPERATIONS_ACCOUNT_LIST</column>
+            <column name="type">OPERATIONS_ACCOUNT</column>
             <column name="status">SUCCESS</column>
         </insert>
 
         <insert tableName="actions">
             <column name="player_id">3</column>
-            <column name="type">NEW</column>
+            <column name="type">ACTIONS</column>
             <column name="status">SUCCESS</column>
         </insert>
         <insert tableName="actions">
             <column name="player_id">3</column>
-            <column name="type">AUTH</column>
+            <column name="type">ACTIONS</column>
             <column name="status">SUCCESS</column>
         </insert>
         <insert tableName="actions">
@@ -116,18 +116,18 @@
         </insert>
         <insert tableName="actions">
             <column name="player_id">3</column>
-            <column name="type">OPERATIONS_ACCOUNT_LIST</column>
+            <column name="type">OPERATIONS_ACCOUNT</column>
             <column name="status">SUCCESS</column>
         </insert>
 
         <insert tableName="actions">
             <column name="player_id">4</column>
-            <column name="type">NEW</column>
+            <column name="type">ACTIONS</column>
             <column name="status">SUCCESS</column>
         </insert>
         <insert tableName="actions">
             <column name="player_id">4</column>
-            <column name="type">AUTH</column>
+            <column name="type">ACTIONS</column>
             <column name="status">SUCCESS</column>
         </insert>
         <insert tableName="actions">
@@ -142,7 +142,7 @@
         </insert>
         <insert tableName="actions">
             <column name="player_id">4</column>
-            <column name="type">ACTIONS_LIST</column>
+            <column name="type">ACTIONS</column>
             <column name="status">SUCCESS</column>
         </insert>
     </changeSet>

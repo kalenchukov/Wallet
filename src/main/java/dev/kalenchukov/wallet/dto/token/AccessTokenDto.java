@@ -6,7 +6,10 @@
 
 package dev.kalenchukov.wallet.dto.token;
 
-import lombok.*;
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * Класс токена доступа.
@@ -14,9 +17,11 @@ import lombok.*;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Schema(description = "Сущность токена доступа")
 public class AccessTokenDto {
 	/**
 	 * Токен доступа.
 	 */
+	@Schema(description = "Токен доступа")
 	private String accessToken;
 }

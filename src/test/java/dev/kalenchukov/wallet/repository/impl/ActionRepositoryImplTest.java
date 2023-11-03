@@ -6,9 +6,9 @@
 
 package dev.kalenchukov.wallet.repository.impl;
 
-import dev.kalenchukov.wallet.Config;
 import dev.kalenchukov.wallet.entity.Action;
 import dev.kalenchukov.wallet.modules.Liquibase;
+import dev.kalenchukov.wallet.properties.Props;
 import dev.kalenchukov.wallet.repository.ActionRepository;
 import dev.kalenchukov.wallet.type.ActionType;
 import org.junit.jupiter.api.AfterAll;
@@ -31,22 +31,22 @@ import static org.mockito.Mockito.when;
  */
 public class ActionRepositoryImplTest {
 	private static final PostgreSQLContainer<?> POSTGRES =
-			new PostgreSQLContainer<>(Config.get().getProperty("test.docker.image"));
+			new PostgreSQLContainer<>(Props.get().getTest().getDockerImage());
 
 	private static DataSource DATA_SOURCE;
 
 	@BeforeAll
 	public static void beforeAll() {
-		POSTGRES.withDatabaseName(Config.get().getProperty("database.name"));
-		POSTGRES.withUsername(Config.get().getProperty("database.username"));
-		POSTGRES.withPassword(Config.get().getProperty("database.password"));
+		POSTGRES.withDatabaseName(Props.get().getDatabase().getName());
+		POSTGRES.withUsername(Props.get().getDatabase().getUsername());
+		POSTGRES.withPassword(Props.get().getDatabase().getPassword());
 		POSTGRES.start();
 
 		PGSimpleDataSource dataSource = new PGSimpleDataSource();
 		dataSource.setUrl(POSTGRES.getJdbcUrl());
 		dataSource.setUser(POSTGRES.getUsername());
 		dataSource.setPassword(POSTGRES.getPassword());
-		dataSource.setCurrentSchema(Config.get().getProperty("liquibase.schema.app"));
+		dataSource.setCurrentSchema(Props.get().getLiquibase().getSchemaApp());
 		DATA_SOURCE = dataSource;
 
 		Liquibase.init(
@@ -73,7 +73,7 @@ public class ActionRepositoryImplTest {
 		public void save() {
 			Action action = mock(Action.class);
 			when(action.getPlayerId()).thenReturn(1L);
-			when(action.getActionType()).thenReturn(ActionType.AUTH);
+			when(action.getActionType()).thenReturn(ActionType.ACTIONS);
 			when(action.getActionTypeStatus()).thenReturn(ActionType.Status.SUCCESS);
 			ActionRepository actionRepository = new ActionRepositoryImpl(DATA_SOURCE);
 
@@ -86,7 +86,8 @@ public class ActionRepositoryImplTest {
 		}
 
 		/**
-		 * Проверка метода {@link ActionRepositoryImpl#save(Action)} с {@code null} в качестве действия.
+		 * Проверка метода {@link ActionRepositoryImpl#save(Action)}
+		 * с {@code null} в качестве действия.
 		 */
 		@Test
 		public void saveWithNull() {
@@ -117,7 +118,8 @@ public class ActionRepositoryImplTest {
 		}
 
 		/**
-		 * Проверка метода {@link ActionRepositoryImpl#find(long)} с отсутствующими действиями.
+		 * Проверка метода {@link ActionRepositoryImpl#find(long)}
+		 * с отсутствующими действиями.
 		 */
 		@Test
 		public void findWithNotFound() {

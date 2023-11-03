@@ -26,18 +26,19 @@ public interface OperationRepository {
 	/**
 	 * Возвращает операцию.
 	 *
-	 * @param operationId идентификатор операции.
 	 * @param playerId    идентификатор игрока.
+	 * @param accountId   идентификатор счёта.
+	 * @param operationId идентификатор операции.
 	 * @return операцию.
 	 */
-	Optional<Operation> findById(long operationId, long playerId);
+	Optional<Operation> findById(long playerId, long accountId, long operationId);
 
 	/**
 	 * Ищет операции.
 	 *
-	 * @param accountId идентификатор счёта.
 	 * @param playerId  идентификатор игрока.
+	 * @param accountId идентификатор счёта.
 	 * @return найденные операции.
 	 */
-	List<Operation> find(long accountId, long playerId);
+	List<Operation> find(long playerId, long accountId);
 }

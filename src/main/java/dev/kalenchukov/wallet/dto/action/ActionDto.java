@@ -7,7 +7,10 @@
 package dev.kalenchukov.wallet.dto.action;
 
 import dev.kalenchukov.wallet.type.ActionType;
-import lombok.*;
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * Класс действия.
@@ -15,19 +18,29 @@ import lombok.*;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Schema(description = "Сущность действия")
 public class ActionDto {
 	/**
 	 * Идентификатор.
 	 */
+	@Schema(description = "Идентификатор действия", example = "87")
 	private Long actionId;
+
+	/**
+	 * Идентификатор игрока.
+	 */
+	@Schema(description = "Идентификатор игрока", example = "4")
+	private Long playerId;
 
 	/**
 	 * Тип.
 	 */
+	@Schema(description = "Тип действия", example = "CREATE_ACCOUNT")
 	private ActionType actionType;
 
 	/**
 	 * Статус.
 	 */
+	@Schema(description = "Статус действия", example = "SUCCESS")
 	private ActionType.Status actionTypeStatus;
 }

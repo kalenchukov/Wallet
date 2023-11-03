@@ -12,8 +12,8 @@ import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.auth0.jwt.interfaces.JWTVerifier;
-import dev.kalenchukov.wallet.Config;
-import dev.kalenchukov.wallet.exceptions.player.NeedAuthPlayerException;
+import dev.kalenchukov.wallet.exceptions.NeedAuthPlayerException;
+import dev.kalenchukov.wallet.properties.Props;
 
 import java.time.Instant;
 import java.util.Map;
@@ -31,12 +31,10 @@ public final class AuthToken {
 	 */
 	public static String createToken(final long playerId) {
 		return JWT.create()
-				.withIssuer(Config.get().getProperty("accessToken.server"))
+				.withIssuer(Props.get().getAccessToken().getServer())
 				.withClaim("playerId", playerId)
-				.withExpiresAt(Instant.now().plusSeconds(
-						Integer.parseInt(Config.get().getProperty("accessToken.ttl")))
-				)
-				.sign(Algorithm.HMAC256(Config.get().getProperty("accessToken.secret")));
+				.withExpiresAt(Instant.now().plusSeconds(Props.get().getAccessToken().getTtl()))
+				.sign(Algorithm.HMAC256(Props.get().getAccessToken().getSecret()));
 	}
 
 	/**
@@ -50,9 +48,9 @@ public final class AuthToken {
 		Objects.requireNonNull(accessToken);
 
 		try {
-			JWTVerifier verifier = JWT.require(Algorithm.HMAC256(Config.get().getProperty("accessToken.secret")))
-					.withIssuer(Config.get().getProperty("accessToken.server"))
-					.acceptExpiresAt(Long.parseLong(Config.get().getProperty("accessToken.ttl")))
+			JWTVerifier verifier = JWT.require(Algorithm.HMAC256(Props.get().getAccessToken().getSecret()))
+					.withIssuer(Props.get().getAccessToken().getServer())
+					.acceptExpiresAt(Props.get().getAccessToken().getTtl())
 					.build();
 			DecodedJWT decodedJWT = verifier.verify(accessToken);
 			Map<String, Claim> claims = decodedJWT.getClaims();

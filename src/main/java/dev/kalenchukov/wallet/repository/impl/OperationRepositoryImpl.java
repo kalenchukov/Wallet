@@ -9,6 +9,8 @@ package dev.kalenchukov.wallet.repository.impl;
 import dev.kalenchukov.wallet.entity.Operation;
 import dev.kalenchukov.wallet.repository.OperationRepository;
 import dev.kalenchukov.wallet.type.OperationType;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
 import java.sql.*;
@@ -17,6 +19,7 @@ import java.util.*;
 /**
  * Класс хранилища операций.
  */
+@Repository
 public class OperationRepositoryImpl implements OperationRepository {
 	/**
 	 * Источник данных.
@@ -28,7 +31,9 @@ public class OperationRepositoryImpl implements OperationRepository {
 	 *
 	 * @param dataSource источник данных.
 	 */
+	@Autowired
 	public OperationRepositoryImpl(final DataSource dataSource) {
+		Objects.requireNonNull(dataSource);
 		this.dataSource = dataSource;
 	}
 
@@ -73,17 +78,19 @@ public class OperationRepositoryImpl implements OperationRepository {
 	 * {@inheritDoc}
 	 *
 	 * @param operationId {@inheritDoc}
+	 * @param accountId   {@inheritDoc}
 	 * @param playerId    {@inheritDoc}
 	 * @return {@inheritDoc}
 	 */
-	public Optional<Operation> findById(final long operationId, final long playerId) {
+	public Optional<Operation> findById(final long playerId, final long accountId, final long operationId) {
 		Optional<Operation> operation = Optional.empty();
-		String query = "SELECT * FROM operations WHERE operation_id = ? AND player_id = ?";
+		String query = "SELECT * FROM operations WHERE player_id = ? AND account_id = ? AND operation_id = ?";
 
 		try (Connection connection = this.dataSource.getConnection();
 			 PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-			preparedStatement.setLong(1, operationId);
-			preparedStatement.setLong(2, playerId);
+			preparedStatement.setLong(1, playerId);
+			preparedStatement.setLong(2, accountId);
+			preparedStatement.setLong(3, operationId);
 			preparedStatement.execute();
 
 			try (ResultSet resultSet = preparedStatement.getResultSet()) {
@@ -109,19 +116,19 @@ public class OperationRepositoryImpl implements OperationRepository {
 	/**
 	 * {@inheritDoc}
 	 *
-	 * @param accountId {@inheritDoc}
 	 * @param playerId  {@inheritDoc}
+	 * @param accountId {@inheritDoc}
 	 * @return {@inheritDoc}
 	 */
 	@Override
-	public List<Operation> find(final long accountId, final long playerId) {
+	public List<Operation> find(final long playerId, final long accountId) {
 		List<Operation> operations = new ArrayList<>();
-		String query = "SELECT * FROM operations WHERE account_id = ? AND player_id = ? ORDER BY operation_id DESC";
+		String query = "SELECT * FROM operations WHERE player_id = ? AND account_id = ? ORDER BY operation_id DESC";
 
 		try (Connection connection = this.dataSource.getConnection();
 			 PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-			preparedStatement.setLong(1, accountId);
-			preparedStatement.setLong(2, playerId);
+			preparedStatement.setLong(1, playerId);
+			preparedStatement.setLong(2, accountId);
 			preparedStatement.execute();
 
 			try (ResultSet resultSet = preparedStatement.getResultSet()) {

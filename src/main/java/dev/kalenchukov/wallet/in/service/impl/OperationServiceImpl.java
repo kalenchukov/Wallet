@@ -7,10 +7,12 @@
 package dev.kalenchukov.wallet.in.service.impl;
 
 import dev.kalenchukov.wallet.entity.Operation;
-import dev.kalenchukov.wallet.exceptions.operation.NotFoundOperationException;
+import dev.kalenchukov.wallet.exceptions.NotFoundOperationException;
 import dev.kalenchukov.wallet.in.service.OperationService;
 import dev.kalenchukov.wallet.repository.OperationRepository;
 import dev.kalenchukov.wallet.type.OperationType;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -20,6 +22,7 @@ import java.util.Optional;
 /**
  * Класс сервиса операций.
  */
+@Service
 public class OperationServiceImpl implements OperationService {
 	/**
 	 * Хранилище операций.
@@ -31,6 +34,7 @@ public class OperationServiceImpl implements OperationService {
 	 *
 	 * @param operationRepository хранилище операций.
 	 */
+	@Autowired
 	public OperationServiceImpl(final OperationRepository operationRepository) {
 		Objects.requireNonNull(operationRepository);
 
@@ -59,25 +63,26 @@ public class OperationServiceImpl implements OperationService {
 	/**
 	 * {@inheritDoc}
 	 *
-	 * @param operationId {@inheritDoc}
 	 * @param playerId    {@inheritDoc}
+	 * @param accountId   {@inheritDoc}
+	 * @param operationId {@inheritDoc}
 	 * @return {@inheritDoc}
 	 * @throws NotFoundOperationException {@inheritDoc}
 	 */
-	public Operation findById(final long operationId, final long playerId) throws NotFoundOperationException {
-		Optional<Operation> operation = this.operationRepository.findById(operationId, playerId);
+	public Operation findById(final long playerId, final long accountId, final long operationId) throws NotFoundOperationException {
+		Optional<Operation> operation = this.operationRepository.findById(playerId, accountId, operationId);
 		return operation.orElseThrow(() -> new NotFoundOperationException(operationId));
 	}
 
 	/**
 	 * {@inheritDoc}
 	 *
-	 * @param accountId {@inheritDoc}
 	 * @param playerId  {@inheritDoc}
+	 * @param accountId {@inheritDoc}
 	 * @return {@inheritDoc}
 	 */
 	@Override
-	public List<Operation> find(final long accountId, final long playerId) {
-		return this.operationRepository.find(accountId, playerId);
+	public List<Operation> find(final long playerId, final long accountId) {
+		return this.operationRepository.find(playerId, accountId);
 	}
 }

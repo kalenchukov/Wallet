@@ -7,8 +7,8 @@
 package dev.kalenchukov.wallet.in.service.impl;
 
 import dev.kalenchukov.wallet.entity.Player;
-import dev.kalenchukov.wallet.exceptions.player.DuplicateNamePlayerException;
-import dev.kalenchukov.wallet.exceptions.player.NotFoundPlayerException;
+import dev.kalenchukov.wallet.exceptions.DuplicateNamePlayerException;
+import dev.kalenchukov.wallet.exceptions.NotFoundPlayerException;
 import dev.kalenchukov.wallet.in.service.PlayerService;
 import dev.kalenchukov.wallet.repository.PlayerRepository;
 import dev.kalenchukov.wallet.repository.impl.PlayerRepositoryImpl;
@@ -51,7 +51,8 @@ public class PlayerServiceImplTest {
 		}
 
 		/**
-		 * Проверка метода {@link PlayerServiceImpl#add(String, String)} с {@code null} в качестве имени.
+		 * Проверка метода {@link PlayerServiceImpl#add(String, String)}
+		 * с {@code null} в качестве имени.
 		 */
 		@Test
 		public void addWithNullName() {
@@ -66,7 +67,8 @@ public class PlayerServiceImplTest {
 		}
 
 		/**
-		 * Проверка метода {@link PlayerServiceImpl#add(String, String)} с {@code null} в качестве пароля.
+		 * Проверка метода {@link PlayerServiceImpl#add(String, String)}
+		 * с {@code null} в качестве пароля.
 		 */
 		@Test
 		public void addWithNullPassword() {
@@ -121,7 +123,8 @@ public class PlayerServiceImplTest {
 		}
 
 		/**
-		 * Проверка метода {@link PlayerServiceImpl#find(String, String)} с отсутствующим игроком.
+		 * Проверка метода {@link PlayerServiceImpl#find(String, String)}
+		 * с отсутствующим игроком.
 		 */
 		@Test
 		public void findNotFound() {
@@ -137,7 +140,8 @@ public class PlayerServiceImplTest {
 		}
 
 		/**
-		 * Проверка метода {@link PlayerServiceImpl#find(String, String)} с {@code null} в качестве имени.
+		 * Проверка метода {@link PlayerServiceImpl#find(String, String)}
+		 * с {@code null} в качестве имени.
 		 */
 		@Test
 		public void findWithNullName() {
@@ -150,7 +154,8 @@ public class PlayerServiceImplTest {
 		}
 
 		/**
-		 * Проверка метода {@link PlayerServiceImpl#find(String, String)} с {@code null} в качестве пароля.
+		 * Проверка метода {@link PlayerServiceImpl#find(String, String)}
+		 * с {@code null} в качестве пароля.
 		 */
 		@Test
 		public void findWithNullPassword() {

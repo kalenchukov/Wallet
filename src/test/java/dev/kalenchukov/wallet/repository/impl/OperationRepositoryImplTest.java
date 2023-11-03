@@ -6,9 +6,9 @@
 
 package dev.kalenchukov.wallet.repository.impl;
 
-import dev.kalenchukov.wallet.Config;
 import dev.kalenchukov.wallet.entity.Operation;
 import dev.kalenchukov.wallet.modules.Liquibase;
+import dev.kalenchukov.wallet.properties.Props;
 import dev.kalenchukov.wallet.repository.OperationRepository;
 import dev.kalenchukov.wallet.type.OperationType;
 import org.junit.jupiter.api.AfterAll;
@@ -33,22 +33,22 @@ import static org.mockito.Mockito.when;
  */
 public class OperationRepositoryImplTest {
 	private static final PostgreSQLContainer<?> POSTGRES =
-			new PostgreSQLContainer<>(Config.get().getProperty("test.docker.image"));
+			new PostgreSQLContainer<>(Props.get().getTest().getDockerImage());
 
 	private static DataSource DATA_SOURCE;
 
 	@BeforeAll
 	public static void beforeAll() {
-		POSTGRES.withDatabaseName(Config.get().getProperty("database.name"));
-		POSTGRES.withUsername(Config.get().getProperty("database.username"));
-		POSTGRES.withPassword(Config.get().getProperty("database.password"));
+		POSTGRES.withDatabaseName(Props.get().getDatabase().getName());
+		POSTGRES.withUsername(Props.get().getDatabase().getUsername());
+		POSTGRES.withPassword(Props.get().getDatabase().getPassword());
 		POSTGRES.start();
 
 		PGSimpleDataSource dataSource = new PGSimpleDataSource();
 		dataSource.setUrl(POSTGRES.getJdbcUrl());
 		dataSource.setUser(POSTGRES.getUsername());
 		dataSource.setPassword(POSTGRES.getPassword());
-		dataSource.setCurrentSchema(Config.get().getProperty("liquibase.schema.app"));
+		dataSource.setCurrentSchema(Props.get().getLiquibase().getSchemaApp());
 		DATA_SOURCE = dataSource;
 
 		Liquibase.init(
@@ -89,7 +89,8 @@ public class OperationRepositoryImplTest {
 		}
 
 		/**
-		 * Проверка метода {@link OperationRepositoryImpl#save(Operation)} с {@code null} в качестве операции.
+		 * Проверка метода {@link OperationRepositoryImpl#save(Operation)}
+		 * с {@code null} в качестве операции.
 		 */
 		@Test
 		public void saveWithNull() {
@@ -102,21 +103,21 @@ public class OperationRepositoryImplTest {
 	}
 
 	/**
-	 * Класс проверки метода {@link OperationRepositoryImpl#findById(long, long)}.
+	 * Класс проверки метода {@link OperationRepositoryImpl#findById(long, long, long)}.
 	 */
 	@Nested
 	public class FindById {
 		/**
-		 * Проверка метода {@link OperationRepositoryImpl#findById(long, long)}.
+		 * Проверка метода {@link OperationRepositoryImpl#findById(long, long, long)}.
 		 */
 		@Test
 		public void findById() {
 			long operationId = 2L;
-			long playerId = 1L;
 			long accountId = 1L;
+			long playerId = 1L;
 			OperationRepository operationRepository = new OperationRepositoryImpl(DATA_SOURCE);
 
-			Optional<Operation> actualOperation = operationRepository.findById(operationId, playerId);
+			Optional<Operation> actualOperation = operationRepository.findById(playerId, accountId, operationId);
 
 			assertThat(actualOperation).isPresent();
 			assertThat(actualOperation.get().getOperationId()).isEqualTo(operationId);
@@ -127,31 +128,35 @@ public class OperationRepositoryImplTest {
 		}
 
 		/**
-		 * Проверка метода {@link OperationRepositoryImpl#findById(long, long)} с отсутствующей операцией
+		 * Проверка метода {@link OperationRepositoryImpl#findById(long, long, long)}
+		 * с отсутствующей операцией
 		 * по идентификатору операции.
 		 */
 		@Test
 		public void findByIdNotFoundByOperationId() {
 			long operationId = 24546456L;
+			long accountId = 1L;
 			long playerId = 1L;
 			OperationRepository operationRepository = new OperationRepositoryImpl(DATA_SOURCE);
 
-			Optional<Operation> actualOperation = operationRepository.findById(operationId, playerId);
+			Optional<Operation> actualOperation = operationRepository.findById(playerId, accountId, operationId);
 
 			assertThat(actualOperation).isEmpty();
 		}
 
 		/**
-		 * Проверка метода {@link OperationRepositoryImpl#findById(long, long)} с отсутствующей операцией
+		 * Проверка метода {@link OperationRepositoryImpl#findById(long, long, long)}
+		 * с отсутствующей операцией
 		 * по игроку.
 		 */
 		@Test
 		public void findByIdNotFoundByPlayer() {
-			long operationId = 2;
+			long operationId = 2L;
+			long accountId = 1L;
 			long playerId = 34546572L;
 			OperationRepository operationRepository = new OperationRepositoryImpl(DATA_SOURCE);
 
-			Optional<Operation> actualOperation = operationRepository.findById(operationId, playerId);
+			Optional<Operation> actualOperation = operationRepository.findById(playerId, accountId, operationId);
 
 			assertThat(actualOperation).isEmpty();
 		}
@@ -171,13 +176,14 @@ public class OperationRepositoryImplTest {
 			long accountId = 2L;
 			OperationRepository operationRepository = new OperationRepositoryImpl(DATA_SOURCE);
 
-			List<Operation> actualSet = operationRepository.find(accountId, playerId);
+			List<Operation> actualSet = operationRepository.find(playerId, accountId);
 
 			assertThat(actualSet).hasSize(1);
 		}
 
 		/**
-		 * Проверка метода {@link OperationRepositoryImpl#find(long, long)} с отсутствующей операцией.
+		 * Проверка метода {@link OperationRepositoryImpl#find(long, long)}
+		 * с отсутствующей операцией.
 		 */
 		@Test
 		public void findWithNotFound() {
@@ -185,7 +191,7 @@ public class OperationRepositoryImplTest {
 			long accountId = 465166L;
 			OperationRepository operationRepository = new OperationRepositoryImpl(DATA_SOURCE);
 
-			List<Operation> actualSet = operationRepository.find(accountId, playerId);
+			List<Operation> actualSet = operationRepository.find(playerId, accountId);
 
 			assertThat(actualSet).isEmpty();
 		}

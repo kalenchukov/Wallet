@@ -6,9 +6,9 @@
 
 package dev.kalenchukov.wallet.repository.impl;
 
-import dev.kalenchukov.wallet.Config;
 import dev.kalenchukov.wallet.entity.Player;
 import dev.kalenchukov.wallet.modules.Liquibase;
+import dev.kalenchukov.wallet.properties.Props;
 import dev.kalenchukov.wallet.repository.PlayerRepository;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.junit.jupiter.api.AfterAll;
@@ -31,22 +31,22 @@ import static org.mockito.Mockito.when;
  */
 public class PlayerRepositoryImplTest {
 	private static final PostgreSQLContainer<?> POSTGRES =
-			new PostgreSQLContainer<>(Config.get().getProperty("test.docker.image"));
+			new PostgreSQLContainer<>(Props.get().getTest().getDockerImage());
 
 	private static DataSource DATA_SOURCE;
 
 	@BeforeAll
 	public static void beforeAll() {
-		POSTGRES.withDatabaseName(Config.get().getProperty("database.name"));
-		POSTGRES.withUsername(Config.get().getProperty("database.username"));
-		POSTGRES.withPassword(Config.get().getProperty("database.password"));
+		POSTGRES.withDatabaseName(Props.get().getDatabase().getName());
+		POSTGRES.withUsername(Props.get().getDatabase().getUsername());
+		POSTGRES.withPassword(Props.get().getDatabase().getPassword());
 		POSTGRES.start();
 
 		PGSimpleDataSource dataSource = new PGSimpleDataSource();
 		dataSource.setUrl(POSTGRES.getJdbcUrl());
 		dataSource.setUser(POSTGRES.getUsername());
 		dataSource.setPassword(POSTGRES.getPassword());
-		dataSource.setCurrentSchema(Config.get().getProperty("liquibase.schema.app"));
+		dataSource.setCurrentSchema(Props.get().getLiquibase().getSchemaApp());
 		DATA_SOURCE = dataSource;
 
 		Liquibase.init(
@@ -84,7 +84,8 @@ public class PlayerRepositoryImplTest {
 		}
 
 		/**
-		 * Проверка метода {@link PlayerRepositoryImpl#save(Player)} с {@code null} в качестве игрока.
+		 * Проверка метода {@link PlayerRepositoryImpl#save(Player)}
+		 * с {@code null} в качестве игрока.
 		 */
 		@Test
 		public void saveWithNull() {
@@ -115,7 +116,8 @@ public class PlayerRepositoryImplTest {
 		}
 
 		/**
-		 * Проверка метода {@link PlayerRepositoryImpl#existsByName(String)} с отсутствием игроком.
+		 * Проверка метода {@link PlayerRepositoryImpl#existsByName(String)}
+		 * с отсутствием игроком.
 		 */
 		@Test
 		public void existsByNameWithNotFound() {
@@ -128,7 +130,8 @@ public class PlayerRepositoryImplTest {
 		}
 
 		/**
-		 * Проверка метода {@link PlayerRepositoryImpl#existsByName(String)} с {@code null} в качестве имени.
+		 * Проверка метода {@link PlayerRepositoryImpl#existsByName(String)}
+		 * с {@code null} в качестве имени.
 		 */
 		@Test
 		public void existsByNameWithNullName() {
@@ -163,7 +166,8 @@ public class PlayerRepositoryImplTest {
 		}
 
 		/**
-		 * Проверка метода {@link PlayerRepositoryImpl#find(String, String)} с отсутствующим игроком.
+		 * Проверка метода {@link PlayerRepositoryImpl#find(String, String)}
+		 * с отсутствующим игроком.
 		 */
 		@Test
 		public void findWithNotFound() {
@@ -177,7 +181,8 @@ public class PlayerRepositoryImplTest {
 		}
 
 		/**
-		 * Проверка метода {@link PlayerRepositoryImpl#find(String, String)} с {@code null} в качестве имени.
+		 * Проверка метода {@link PlayerRepositoryImpl#find(String, String)}
+		 * с {@code null} в качестве имени.
 		 */
 		@Test
 		public void findWithNullName() {
@@ -190,7 +195,8 @@ public class PlayerRepositoryImplTest {
 		}
 
 		/**
-		 * Проверка метода {@link PlayerRepositoryImpl#find(String, String)} с {@code null} в качестве пароля.
+		 * Проверка метода {@link PlayerRepositoryImpl#find(String, String)}
+		 * с {@code null} в качестве пароля.
 		 */
 		@Test
 		public void findWithNullPassword() {

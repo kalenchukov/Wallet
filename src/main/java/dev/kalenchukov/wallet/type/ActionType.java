@@ -11,16 +11,6 @@ package dev.kalenchukov.wallet.type;
  */
 public enum ActionType {
 	/**
-	 * Регистрация игрока.
-	 */
-	NEW,
-
-	/**
-	 * Авторизация игрока.
-	 */
-	AUTH,
-
-	/**
 	 * Создание счёта.
 	 */
 	CREATE_ACCOUNT,
@@ -43,12 +33,12 @@ public enum ActionType {
 	/**
 	 * Получение списка операций по счёту.
 	 */
-	OPERATIONS_ACCOUNT_LIST,
+	OPERATIONS_ACCOUNT,
 
 	/**
 	 * Получение списка действий игрока.
 	 */
-	ACTIONS_LIST;
+	ACTIONS;
 
 	/**
 	 * Перечисление типов статусов действий.

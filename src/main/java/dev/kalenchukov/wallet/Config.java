@@ -7,41 +7,31 @@
 package dev.kalenchukov.wallet;
 
 import dev.kalenchukov.wallet.modules.DataBase;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import springfox.documentation.oas.annotations.EnableOpenApi;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
+import javax.sql.DataSource;
 
 /**
- * Класс конфигурации.
+ * Класс конфигурации приложения.
  */
-public final class Config {
+@Configuration
+@EnableWebMvc
+@EnableAspectJAutoProxy
+@EnableOpenApi
+@ComponentScan("dev.kalenchukov.wallet")
+public class Config {
 	/**
-	 * Параметры конфигурации.
-	 */
-	private static final Properties config = Config.load();
-
-	/**
-	 * Возвращает параметры конфигурации.
+	 * Возвращает источник данных.
 	 *
-	 * @return параметры конфигурации.
+	 * @return источник данных.
 	 */
-	public static Properties get() {
-		return Config.config;
-	}
-
-	/**
-	 * Загружает параметры из файла конфигурации.
-	 */
-	private static Properties load() {
-		Properties properties = new Properties();
-
-		try (InputStream inputStreamFile = DataBase.class.getResourceAsStream("/application.properties")) {
-			properties.load(inputStreamFile);
-		} catch (IOException exception) {
-			throw new RuntimeException("Не удалось загрузить конфигурацию приложения.");
-		}
-
-		return properties;
+	@Bean
+	public DataSource dataSource() {
+		return DataBase.getDataSource();
 	}
 }

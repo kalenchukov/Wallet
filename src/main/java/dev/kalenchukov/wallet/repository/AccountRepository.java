@@ -26,17 +26,19 @@ public interface AccountRepository {
 	/**
 	 * Обновляет сумму счёта.
 	 *
+	 * @param playerId  идентификатор игрока.
 	 * @param accountId идентификатор счёта.
 	 * @param amount    сумма.
 	 * @return {@code true} если обновление выполнено, иначе {@code false}.
 	 */
-	boolean updateAmount(long accountId, BigDecimal amount);
+	boolean updateAmount(final long playerId, long accountId, BigDecimal amount);
 
 	/**
 	 * Возвращает счёт.
 	 *
+	 * @param playerId  идентификатор игрока.
 	 * @param accountId идентификатор счёта.
 	 * @return счёт.
 	 */
-	Optional<Account> findById(long accountId);
+	Optional<Account> findById(long playerId, long accountId);
 }

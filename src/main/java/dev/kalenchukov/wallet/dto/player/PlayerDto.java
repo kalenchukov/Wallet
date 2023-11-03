@@ -6,7 +6,10 @@
 
 package dev.kalenchukov.wallet.dto.player;
 
-import lombok.*;
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * Класс игрока.
@@ -14,14 +17,17 @@ import lombok.*;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Schema(description = "Сущность игрока")
 public class PlayerDto {
 	/**
 	 * Идентификатор.
 	 */
+	@Schema(description = "Идентификатор игрока", example = "78")
 	private Long playerId;
 
 	/**
 	 * Имя.
 	 */
+	@Schema(description = "Имя игрока", example = "Fedya")
 	private String name;
 }

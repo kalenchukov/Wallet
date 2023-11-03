@@ -10,6 +10,8 @@ import dev.kalenchukov.wallet.entity.Action;
 import dev.kalenchukov.wallet.in.service.ActionService;
 import dev.kalenchukov.wallet.repository.ActionRepository;
 import dev.kalenchukov.wallet.type.ActionType;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
@@ -17,6 +19,7 @@ import java.util.Objects;
 /**
  * Класс сервиса действий.
  */
+@Service
 public class ActionServiceImpl implements ActionService {
 	/**
 	 * Хранилище действий.
@@ -28,6 +31,7 @@ public class ActionServiceImpl implements ActionService {
 	 *
 	 * @param actionRepository хранилище действий.
 	 */
+	@Autowired
 	public ActionServiceImpl(final ActionRepository actionRepository) {
 		Objects.requireNonNull(actionRepository);
 

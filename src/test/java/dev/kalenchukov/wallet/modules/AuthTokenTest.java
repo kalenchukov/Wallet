@@ -6,7 +6,7 @@
 
 package dev.kalenchukov.wallet.modules;
 
-import dev.kalenchukov.wallet.exceptions.player.NeedAuthPlayerException;
+import dev.kalenchukov.wallet.exceptions.NeedAuthPlayerException;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
@@ -59,7 +59,8 @@ public class AuthTokenTest {
 			}
 
 			/**
-			 * Проверка метода {@link AuthToken#verifyToken(String)} с токеном доступа у которого истёк срок действия.
+			 * Проверка метода {@link AuthToken#verifyToken(String)}
+			 * с токеном доступа у которого истёк срок действия.
 			 */
 			@Test
 			public void verifyTokenWithExpiredTtl() {
@@ -73,7 +74,8 @@ public class AuthTokenTest {
 			}
 
 			/**
-			 * Проверка метода {@link AuthToken#verifyToken(String)} с пустым токеном доступа.
+			 * Проверка метода {@link AuthToken#verifyToken(String)}
+			 * с пустым токеном доступа.
 			 */
 			@Test
 			public void verifyTokenWithEmptyToken() {
@@ -85,7 +87,8 @@ public class AuthTokenTest {
 			}
 
 			/**
-			 * Проверка метода {@link AuthToken#verifyToken(String)} с некорректным токеном доступа.
+			 * Проверка метода {@link AuthToken#verifyToken(String)}
+			 * с некорректным токеном доступа.
 			 */
 			@Test
 			public void verifyTokenWithInvalidToken() {
@@ -97,7 +100,8 @@ public class AuthTokenTest {
 			}
 
 			/**
-			 * Проверка метода {@link AuthToken#verifyToken(String)} с {@code null} в качестве токена доступа.
+			 * Проверка метода {@link AuthToken#verifyToken(String)}
+			 * с {@code null} в качестве токена доступа.
 			 */
 			@Test
 			public void verifyTokenWithNull() {
