@@ -9,6 +9,8 @@ package dev.kalenchukov.wallet.repository.impl;
 import dev.kalenchukov.wallet.entity.Operation;
 import dev.kalenchukov.wallet.repository.OperationRepository;
 import dev.kalenchukov.wallet.type.OperationType;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
 import java.sql.*;
@@ -17,6 +19,7 @@ import java.util.*;
 /**
  * Класс хранилища операций.
  */
+@Repository
 public class OperationRepositoryImpl implements OperationRepository {
 	/**
 	 * Источник данных.
@@ -28,7 +31,7 @@ public class OperationRepositoryImpl implements OperationRepository {
 	 *
 	 * @param dataSource источник данных.
 	 */
-//	@Autowired
+	@Autowired
 	public OperationRepositoryImpl(final DataSource dataSource) {
 		Objects.requireNonNull(dataSource);
 		this.dataSource = dataSource;

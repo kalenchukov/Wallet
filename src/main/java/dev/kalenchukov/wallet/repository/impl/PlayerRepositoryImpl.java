@@ -8,6 +8,8 @@ package dev.kalenchukov.wallet.repository.impl;
 
 import dev.kalenchukov.wallet.entity.Player;
 import dev.kalenchukov.wallet.repository.PlayerRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
 import java.sql.*;
@@ -17,6 +19,7 @@ import java.util.Optional;
 /**
  * Класс хранилища игроков.
  */
+@Repository
 public class PlayerRepositoryImpl implements PlayerRepository {
 	/**
 	 * Источник данных.
@@ -28,6 +31,7 @@ public class PlayerRepositoryImpl implements PlayerRepository {
 	 *
 	 * @param dataSource источник данных.
 	 */
+	@Autowired
 	public PlayerRepositoryImpl(final DataSource dataSource) {
 		Objects.requireNonNull(dataSource);
 		this.dataSource = dataSource;

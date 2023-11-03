@@ -11,6 +11,8 @@ import dev.kalenchukov.wallet.exceptions.NotFoundOperationException;
 import dev.kalenchukov.wallet.in.service.OperationService;
 import dev.kalenchukov.wallet.repository.OperationRepository;
 import dev.kalenchukov.wallet.type.OperationType;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -20,6 +22,7 @@ import java.util.Optional;
 /**
  * Класс сервиса операций.
  */
+@Service
 public class OperationServiceImpl implements OperationService {
 	/**
 	 * Хранилище операций.
@@ -31,6 +34,7 @@ public class OperationServiceImpl implements OperationService {
 	 *
 	 * @param operationRepository хранилище операций.
 	 */
+	@Autowired
 	public OperationServiceImpl(final OperationRepository operationRepository) {
 		Objects.requireNonNull(operationRepository);
 

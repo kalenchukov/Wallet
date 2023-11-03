@@ -9,6 +9,8 @@ package dev.kalenchukov.wallet.repository.impl;
 import dev.kalenchukov.wallet.entity.Action;
 import dev.kalenchukov.wallet.repository.ActionRepository;
 import dev.kalenchukov.wallet.type.ActionType;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
 import java.sql.*;
@@ -20,6 +22,7 @@ import java.util.Objects;
 /**
  * Класс хранилища действий.
  */
+@Repository
 public class ActionRepositoryImpl implements ActionRepository {
 	/**
 	 * Источник данных.
@@ -31,6 +34,7 @@ public class ActionRepositoryImpl implements ActionRepository {
 	 *
 	 * @param dataSource источник данных.
 	 */
+	@Autowired
 	public ActionRepositoryImpl(final DataSource dataSource) {
 		Objects.requireNonNull(dataSource);
 		this.dataSource = dataSource;

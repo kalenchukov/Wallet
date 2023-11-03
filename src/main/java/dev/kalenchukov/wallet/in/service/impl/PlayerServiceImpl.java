@@ -12,6 +12,8 @@ import dev.kalenchukov.wallet.exceptions.NotFoundPlayerException;
 import dev.kalenchukov.wallet.in.service.PlayerService;
 import dev.kalenchukov.wallet.repository.PlayerRepository;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -19,6 +21,7 @@ import java.util.Optional;
 /**
  * Класс сервиса игроков.
  */
+@Service
 public class PlayerServiceImpl implements PlayerService {
 	/**
 	 * Хранилище игроков.
@@ -30,6 +33,7 @@ public class PlayerServiceImpl implements PlayerService {
 	 *
 	 * @param playerRepository хранилище игроков.
 	 */
+	@Autowired
 	public PlayerServiceImpl(final PlayerRepository playerRepository) {
 		Objects.requireNonNull(playerRepository);
 

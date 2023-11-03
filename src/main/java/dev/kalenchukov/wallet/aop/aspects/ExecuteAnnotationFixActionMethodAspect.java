@@ -17,10 +17,12 @@ import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
+import org.springframework.stereotype.Component;
 
 /**
  * Класс аспекта для фиксации действия игрока.
  */
+@Component
 @Aspect
 public class ExecuteAnnotationFixActionMethodAspect {
 	/**

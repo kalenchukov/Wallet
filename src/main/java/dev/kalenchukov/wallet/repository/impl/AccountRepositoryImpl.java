@@ -8,6 +8,8 @@ package dev.kalenchukov.wallet.repository.impl;
 
 import dev.kalenchukov.wallet.entity.Account;
 import dev.kalenchukov.wallet.repository.AccountRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
 import java.math.BigDecimal;
@@ -18,6 +20,7 @@ import java.util.Optional;
 /**
  * Класс хранилища счетов.
  */
+@Repository
 public class AccountRepositoryImpl implements AccountRepository {
 	/**
 	 * Источник данных.
@@ -29,6 +32,7 @@ public class AccountRepositoryImpl implements AccountRepository {
 	 *
 	 * @param dataSource источник данных.
 	 */
+	@Autowired
 	public AccountRepositoryImpl(final DataSource dataSource) {
 		Objects.requireNonNull(dataSource);
 		this.dataSource = dataSource;

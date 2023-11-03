@@ -16,6 +16,8 @@ import dev.kalenchukov.wallet.in.service.AccountService;
 import dev.kalenchukov.wallet.repository.AccountRepository;
 import dev.kalenchukov.wallet.repository.OperationRepository;
 import dev.kalenchukov.wallet.type.OperationType;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.Objects;
@@ -24,6 +26,7 @@ import java.util.Optional;
 /**
  * Класс сервиса счетов.
  */
+@Service
 public class AccountServiceImpl implements AccountService {
 	/**
 	 * Хранилище счетов.
@@ -41,6 +44,7 @@ public class AccountServiceImpl implements AccountService {
 	 * @param accountRepository   хранилище счетов.
 	 * @param operationRepository хранилище операций.
 	 */
+	@Autowired
 	public AccountServiceImpl(final AccountRepository accountRepository,
 							  final OperationRepository operationRepository) {
 		Objects.requireNonNull(accountRepository);
