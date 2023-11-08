@@ -22,8 +22,7 @@ public class NoAccessPlayerException extends ApplicationException {
 	/**
 	 * Текст сообщения.
 	 */
-	private static final String MESSAGE =
-			"Нет доступа к сервисам игрока '%1$s'.";
+	private static final String MESSAGE = "Нет доступа к сервисам игрока '%1$s'.";
 
 	/**
 	 * Некорректное значение.

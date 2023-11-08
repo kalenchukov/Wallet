@@ -6,16 +6,14 @@
 
 package dev.kalenchukov.wallet.repository.impl;
 
-import dev.kalenchukov.wallet.entity.Action;
+import dev.kalenchukov.starter.fixaction.entity.Action;
+import dev.kalenchukov.starter.fixaction.types.ActionType;
 import dev.kalenchukov.wallet.repository.ActionRepository;
-import dev.kalenchukov.wallet.type.ActionType;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-import javax.sql.DataSource;
-import java.sql.*;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -27,54 +25,17 @@ public class ActionRepositoryImpl implements ActionRepository {
 	/**
 	 * Источник данных.
 	 */
-	private final DataSource dataSource;
+	private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
 	/**
 	 * Конструирует хранилище действий.
 	 *
-	 * @param dataSource источник данных.
+	 * @param namedParameterJdbcTemplate источник данных.
 	 */
 	@Autowired
-	public ActionRepositoryImpl(final DataSource dataSource) {
-		Objects.requireNonNull(dataSource);
-		this.dataSource = dataSource;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 *
-	 * @param action {@inheritDoc}
-	 * @return {@inheritDoc}
-	 */
-	@Override
-	public Action save(final Action action) {
-		Objects.requireNonNull(action);
-
-		String query = "INSERT INTO actions (player_id, type, status) VALUES (?, ?, ?)";
-
-		try (Connection connection = this.dataSource.getConnection();
-			 PreparedStatement preparedStatement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
-			preparedStatement.setLong(1, action.getPlayerId());
-			// Думаю лучше будет enum ordinal записывать в столбец, но для наглядности названия хорошо.
-			// Или для целостности данных создать в БД enum на столбец.
-			preparedStatement.setString(2, action.getActionType().name());
-			preparedStatement.setString(3, action.getActionTypeStatus().name());
-			preparedStatement.executeUpdate();
-
-			try (ResultSet resultSet = preparedStatement.getGeneratedKeys()) {
-				resultSet.next();
-				long actionId = resultSet.getLong(1);
-
-				return new Action(
-						actionId,
-						action.getPlayerId(),
-						action.getActionType(),
-						action.getActionTypeStatus()
-				);
-			}
-		} catch (SQLException exception) {
-			throw new RuntimeException("Возникла ошибка при работе с базой данных");
-		}
+	public ActionRepositoryImpl(final NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
+		Objects.requireNonNull(namedParameterJdbcTemplate);
+		this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
 	}
 
 	/**
@@ -85,30 +46,23 @@ public class ActionRepositoryImpl implements ActionRepository {
 	 */
 	@Override
 	public List<Action> find(final long playerId) {
-		List<Action> actions = new ArrayList<>();
-		String query = "SELECT * FROM actions WHERE player_id = ? ORDER BY action_id DESC";
+		String query = """
+				SELECT *
+				FROM actions
+				WHERE player_id = :player_id
+				ORDER BY action_id DESC
+				""";
 
-		try (Connection connection = this.dataSource.getConnection();
-			 PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-			preparedStatement.setLong(1, playerId);
-			preparedStatement.execute();
+		MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
+		mapSqlParameterSource.addValue("player_id", playerId);
 
-			try (ResultSet resultSet = preparedStatement.getResultSet()) {
-				while (resultSet.next()) {
-					Action actionEntity = new Action(
-							resultSet.getLong("action_id"),
-							resultSet.getLong("player_id"),
-							ActionType.valueOf(resultSet.getString("type")),
-							ActionType.Status.valueOf(resultSet.getString("status"))
-					);
-
-					actions.add(actionEntity);
-				}
-			}
-		} catch (SQLException exception) {
-			throw new RuntimeException("Возникла ошибка при работе с базой данных");
-		}
-
-		return Collections.unmodifiableList(actions);
+		return this.namedParameterJdbcTemplate.query(query, mapSqlParameterSource,
+				(rs, row) -> new Action(rs.getLong("action_id"),
+						rs.getLong("player_id"),
+						ActionType.valueOf(rs.getString("type")),
+						ActionType.Status.valueOf(
+								rs.getString("status"))
+				)
+		);
 	}
 }

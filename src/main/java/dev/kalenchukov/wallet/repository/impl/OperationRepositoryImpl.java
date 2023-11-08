@@ -10,11 +10,16 @@ import dev.kalenchukov.wallet.entity.Operation;
 import dev.kalenchukov.wallet.repository.OperationRepository;
 import dev.kalenchukov.wallet.type.OperationType;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
-import javax.sql.DataSource;
-import java.sql.*;
-import java.util.*;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 /**
  * Класс хранилища операций.
@@ -24,17 +29,17 @@ public class OperationRepositoryImpl implements OperationRepository {
 	/**
 	 * Источник данных.
 	 */
-	private final DataSource dataSource;
+	private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
 	/**
 	 * Конструирует хранилище операций.
 	 *
-	 * @param dataSource источник данных.
+	 * @param namedParameterJdbcTemplate источник данных.
 	 */
 	@Autowired
-	public OperationRepositoryImpl(final DataSource dataSource) {
-		Objects.requireNonNull(dataSource);
-		this.dataSource = dataSource;
+	public OperationRepositoryImpl(final NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
+		Objects.requireNonNull(namedParameterJdbcTemplate);
+		this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
 	}
 
 	/**
@@ -47,31 +52,24 @@ public class OperationRepositoryImpl implements OperationRepository {
 	public Operation save(final Operation operation) {
 		Objects.requireNonNull(operation);
 
-		String query = "INSERT INTO operations (player_id, account_id, type, amount) VALUES (?, ?, ?, ?)";
+		String query = """
+				INSERT INTO operations (player_id, account_id, type, amount)
+				VALUES (:player_id, :account_id, :type, :amount)
+				""";
 
-		try (Connection connection = this.dataSource.getConnection();
-			 PreparedStatement preparedStatement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
-			preparedStatement.setLong(1, operation.getPlayerId());
-			preparedStatement.setLong(2, operation.getAccountId());
-			preparedStatement.setString(3, operation.getOperationType().name());
-			preparedStatement.setBigDecimal(4, operation.getAmount());
-			preparedStatement.executeUpdate();
+		MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
+		mapSqlParameterSource.addValue("player_id", operation.getPlayerId());
+		mapSqlParameterSource.addValue("account_id", operation.getAccountId());
+		mapSqlParameterSource.addValue("type", operation.getOperationType().name());
+		mapSqlParameterSource.addValue("amount", operation.getAmount());
 
-			try (ResultSet resultSet = preparedStatement.getGeneratedKeys()) {
-				resultSet.next();
-				long operationId = resultSet.getLong(1);
+		KeyHolder keyHolder = new GeneratedKeyHolder();
+		this.namedParameterJdbcTemplate.update(query, mapSqlParameterSource, keyHolder);
+		long operationId = (long) Objects.requireNonNull(keyHolder.getKeys()).get("operation_id");
 
-				return new Operation(
-						operationId,
-						operation.getPlayerId(),
-						operation.getAccountId(),
-						operation.getOperationType(),
-						operation.getAmount()
-				);
-			}
-		} catch (SQLException exception) {
-			throw new RuntimeException("Возникла ошибка при работе с базой данных");
-		}
+		return new Operation(operationId, operation.getPlayerId(), operation.getAccountId(),
+				operation.getOperationType(), operation.getAmount()
+		);
 	}
 
 	/**
@@ -83,34 +81,31 @@ public class OperationRepositoryImpl implements OperationRepository {
 	 * @return {@inheritDoc}
 	 */
 	public Optional<Operation> findById(final long playerId, final long accountId, final long operationId) {
-		Optional<Operation> operation = Optional.empty();
-		String query = "SELECT * FROM operations WHERE player_id = ? AND account_id = ? AND operation_id = ?";
+		String query = """
+				SELECT *
+				FROM operations
+				WHERE player_id = :player_id AND account_id = :account_id AND operation_id = :operation_id
+				""";
 
-		try (Connection connection = this.dataSource.getConnection();
-			 PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-			preparedStatement.setLong(1, playerId);
-			preparedStatement.setLong(2, accountId);
-			preparedStatement.setLong(3, operationId);
-			preparedStatement.execute();
+		MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
+		mapSqlParameterSource.addValue("player_id", playerId);
+		mapSqlParameterSource.addValue("account_id", accountId);
+		mapSqlParameterSource.addValue("operation_id", operationId);
 
-			try (ResultSet resultSet = preparedStatement.getResultSet()) {
-				if (resultSet.next()) {
-					Operation operationEntity = new Operation(
-							resultSet.getLong("operation_id"),
-							resultSet.getLong("player_id"),
-							resultSet.getLong("account_id"),
-							OperationType.valueOf(resultSet.getString("type")),
-							resultSet.getBigDecimal("amount")
-					);
-
-					operation = Optional.of(operationEntity);
-				}
-			}
-		} catch (SQLException exception) {
-			throw new RuntimeException("Возникла ошибка при работе с базой данных");
+		try {
+			return this.namedParameterJdbcTemplate.queryForObject(query, mapSqlParameterSource,
+					(rs, row) -> Optional.of(
+							new Operation(rs.getLong("operation_id"),
+									rs.getLong("player_id"),
+									rs.getLong("account_id"),
+									OperationType.valueOf(
+											rs.getString("type")),
+									rs.getBigDecimal("amount")
+							))
+			);
+		} catch (EmptyResultDataAccessException exception) {
+			return Optional.empty();
 		}
-
-		return operation;
 	}
 
 	/**
@@ -122,32 +117,25 @@ public class OperationRepositoryImpl implements OperationRepository {
 	 */
 	@Override
 	public List<Operation> find(final long playerId, final long accountId) {
-		List<Operation> operations = new ArrayList<>();
-		String query = "SELECT * FROM operations WHERE player_id = ? AND account_id = ? ORDER BY operation_id DESC";
+		String query = """
+				SELECT *
+				FROM operations
+				WHERE player_id = :player_id AND account_id = :account_id
+				ORDER BY operation_id DESC
+				""";
 
-		try (Connection connection = this.dataSource.getConnection();
-			 PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-			preparedStatement.setLong(1, playerId);
-			preparedStatement.setLong(2, accountId);
-			preparedStatement.execute();
+		MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
+		mapSqlParameterSource.addValue("player_id", playerId);
+		mapSqlParameterSource.addValue("account_id", accountId);
 
-			try (ResultSet resultSet = preparedStatement.getResultSet()) {
-				while (resultSet.next()) {
-					Operation operationEntity = new Operation(
-							resultSet.getLong("operation_id"),
-							resultSet.getLong("player_id"),
-							resultSet.getLong("account_id"),
-							OperationType.valueOf(resultSet.getString("type")),
-							resultSet.getBigDecimal("amount")
-					);
-
-					operations.add(operationEntity);
-				}
-			}
-		} catch (SQLException exception) {
-			throw new RuntimeException("Возникла ошибка при работе с базой данных");
-		}
-
-		return Collections.unmodifiableList(operations);
+		return this.namedParameterJdbcTemplate.query(query, mapSqlParameterSource,
+				(rs, row) -> new Operation(rs.getLong("operation_id"),
+						rs.getLong("player_id"),
+						rs.getLong("account_id"),
+						OperationType.valueOf(
+								rs.getString("type")),
+						rs.getBigDecimal("amount")
+				)
+		);
 	}
 }

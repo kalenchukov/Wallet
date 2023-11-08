@@ -22,8 +22,7 @@ public class NoAccessAccountException extends ApplicationException {
 	/**
 	 * Текст сообщения.
 	 */
-	private static final String MESSAGE =
-			"Нет доступа к счёту с идентификатором '%1$s'.";
+	private static final String MESSAGE = "Нет доступа к счёту с идентификатором '%1$s'.";
 
 	/**
 	 * Некорректное значение.

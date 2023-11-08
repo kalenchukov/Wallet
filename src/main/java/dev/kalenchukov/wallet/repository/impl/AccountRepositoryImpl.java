@@ -9,11 +9,14 @@ package dev.kalenchukov.wallet.repository.impl;
 import dev.kalenchukov.wallet.entity.Account;
 import dev.kalenchukov.wallet.repository.AccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
-import javax.sql.DataSource;
 import java.math.BigDecimal;
-import java.sql.*;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -25,17 +28,17 @@ public class AccountRepositoryImpl implements AccountRepository {
 	/**
 	 * Источник данных.
 	 */
-	private final DataSource dataSource;
+	private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
 	/**
 	 * Конструирует хранилище счетов.
 	 *
-	 * @param dataSource источник данных.
+	 * @param namedParameterJdbcTemplate источник данных.
 	 */
 	@Autowired
-	public AccountRepositoryImpl(final DataSource dataSource) {
-		Objects.requireNonNull(dataSource);
-		this.dataSource = dataSource;
+	public AccountRepositoryImpl(final NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
+		Objects.requireNonNull(namedParameterJdbcTemplate);
+		this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
 	}
 
 	/**
@@ -48,27 +51,20 @@ public class AccountRepositoryImpl implements AccountRepository {
 	public Account save(final Account account) {
 		Objects.requireNonNull(account);
 
-		String query = "INSERT INTO accounts (player_id, amount) VALUES (?, ?)";
+		String query = """
+				INSERT INTO accounts (player_id, amount)
+				VALUES (:player_id, :amount)
+				""";
 
-		try (Connection connection = this.dataSource.getConnection();
-			 PreparedStatement preparedStatement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
-			preparedStatement.setLong(1, account.getPlayerId());
-			preparedStatement.setBigDecimal(2, account.getAmount());
-			preparedStatement.executeUpdate();
+		MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
+		mapSqlParameterSource.addValue("player_id", account.getPlayerId());
+		mapSqlParameterSource.addValue("amount", account.getAmount());
 
-			try (ResultSet resultSet = preparedStatement.getGeneratedKeys()) {
-				resultSet.next();
-				long accountId = resultSet.getLong(1);
+		KeyHolder keyHolder = new GeneratedKeyHolder();
+		this.namedParameterJdbcTemplate.update(query, mapSqlParameterSource, keyHolder);
+		long accountId = (long) Objects.requireNonNull(keyHolder.getKeys()).get("account_id");
 
-				return new Account(
-						accountId,
-						account.getPlayerId(),
-						account.getAmount()
-				);
-			}
-		} catch (SQLException exception) {
-			throw new RuntimeException("Возникла ошибка при работе с базой данных");
-		}
+		return new Account(accountId, account.getPlayerId(), account.getAmount());
 	}
 
 	/**
@@ -83,21 +79,20 @@ public class AccountRepositoryImpl implements AccountRepository {
 	public boolean updateAmount(final long playerId, final long accountId, BigDecimal amount) {
 		Objects.requireNonNull(amount);
 
-		String query = "UPDATE accounts SET amount = ? WHERE player_id = ? AND account_id = ?";
+		String query = """
+				UPDATE accounts
+				SET amount = :amount
+				WHERE player_id = :player_id AND account_id = :account_id
+				""";
 
-		try (Connection connection = this.dataSource.getConnection();
-			 PreparedStatement preparedStatement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
-			preparedStatement.setBigDecimal(1, amount);
-			preparedStatement.setLong(2, playerId);
-			preparedStatement.setLong(3, accountId);
-			preparedStatement.executeUpdate();
+		MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
+		mapSqlParameterSource.addValue("player_id", playerId);
+		mapSqlParameterSource.addValue("account_id", accountId);
+		mapSqlParameterSource.addValue("amount", amount);
 
-			try (ResultSet resultSet = preparedStatement.getGeneratedKeys()) {
-				return resultSet.next();
-			}
-		} catch (SQLException exception) {
-			throw new RuntimeException("Возникла ошибка при работе с базой данных");
-		}
+		int countUpdate = this.namedParameterJdbcTemplate.update(query, mapSqlParameterSource);
+
+		return (countUpdate > 0);
 	}
 
 	/**
@@ -109,30 +104,26 @@ public class AccountRepositoryImpl implements AccountRepository {
 	 */
 	@Override
 	public Optional<Account> findById(final long playerId, final long accountId) {
-		Optional<Account> account = Optional.empty();
-		String query = "SELECT * FROM accounts WHERE player_id = ? AND account_id = ?";
+		String query = """
+				SELECT *
+				FROM accounts
+				WHERE player_id = :player_id AND account_id = :account_id
+				""";
 
-		try (Connection connection = this.dataSource.getConnection();
-			 PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-			preparedStatement.setLong(1, playerId);
-			preparedStatement.setLong(2, accountId);
-			preparedStatement.execute();
+		MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
+		mapSqlParameterSource.addValue("player_id", playerId);
+		mapSqlParameterSource.addValue("account_id", accountId);
 
-			try (ResultSet resultSet = preparedStatement.getResultSet()) {
-				if (resultSet.next()) {
-					Account accountEntity = new Account(
-							resultSet.getLong("account_id"),
-							resultSet.getLong("player_id"),
-							resultSet.getBigDecimal("amount")
-					);
-
-					account = Optional.of(accountEntity);
-				}
-			}
-		} catch (SQLException exception) {
-			throw new RuntimeException("Возникла ошибка при работе с базой данных");
+		try {
+			return this.namedParameterJdbcTemplate.queryForObject(query, mapSqlParameterSource,
+					(rs, row) -> Optional.of(
+							new Account(rs.getLong("account_id"),
+									rs.getLong("player_id"),
+									rs.getBigDecimal("amount")
+							))
+			);
+		} catch (EmptyResultDataAccessException exception) {
+			return Optional.empty();
 		}
-
-		return account;
 	}
 }

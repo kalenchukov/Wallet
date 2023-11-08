@@ -24,8 +24,7 @@ public class OutOfAmountAccountException extends ApplicationException {
 	/**
 	 * Текст сообщения.
 	 */
-	private static final String MESSAGE =
-			"На вашем счёте сумма меньше указанной '%1$s'.";
+	private static final String MESSAGE = "На вашем счёте сейчас '%1$s', это меньше указанной суммы.";
 
 	/**
 	 * Некорректное значение.

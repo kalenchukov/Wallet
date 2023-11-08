@@ -6,8 +6,7 @@
 
 package dev.kalenchukov.wallet.in.service;
 
-import dev.kalenchukov.wallet.entity.Action;
-import dev.kalenchukov.wallet.type.ActionType;
+import dev.kalenchukov.starter.fixaction.entity.Action;
 
 import java.util.List;
 
@@ -15,16 +14,6 @@ import java.util.List;
  * Интерфейс для реализации класса сервиса действий.
  */
 public interface ActionService {
-	/**
-	 * Добавляет действие.
-	 *
-	 * @param playerId         идентификатор игрока.
-	 * @param actionType       тип.
-	 * @param actionTypeStatus статус.
-	 * @return действие.
-	 */
-	Action add(long playerId, ActionType actionType, ActionType.Status actionTypeStatus);
-
 	/**
 	 * Ищет действия.
 	 *

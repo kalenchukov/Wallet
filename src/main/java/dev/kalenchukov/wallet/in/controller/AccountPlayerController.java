@@ -6,30 +6,26 @@
 
 package dev.kalenchukov.wallet.in.controller;
 
-import dev.kalenchukov.wallet.aop.annotations.FixAction;
-import dev.kalenchukov.wallet.dto.account.AccountDto;
-import dev.kalenchukov.wallet.dto.account.CreditAccountDto;
-import dev.kalenchukov.wallet.dto.account.DebitAccountDto;
-import dev.kalenchukov.wallet.dto.operation.OperationDto;
+import dev.kalenchukov.starter.fixaction.annotations.FixAction;
+import dev.kalenchukov.starter.fixaction.types.ActionType;
+import dev.kalenchukov.wallet.auth.AuthToken;
+import dev.kalenchukov.wallet.dto.*;
 import dev.kalenchukov.wallet.entity.Account;
 import dev.kalenchukov.wallet.entity.Operation;
 import dev.kalenchukov.wallet.entity.mappers.AccountMapper;
 import dev.kalenchukov.wallet.entity.mappers.OperationMapper;
 import dev.kalenchukov.wallet.exceptions.ApplicationException;
-import dev.kalenchukov.wallet.exceptions.InvalidAccessTokenException;
-import dev.kalenchukov.wallet.exceptions.InvalidAmountOperationException;
 import dev.kalenchukov.wallet.exceptions.NoAccessPlayerException;
-import dev.kalenchukov.wallet.in.controller.validation.Validation;
-import dev.kalenchukov.wallet.in.controller.validation.validators.AccessTokenValidator;
-import dev.kalenchukov.wallet.in.controller.validation.validators.AmountValidator;
 import dev.kalenchukov.wallet.in.service.AccountService;
-import dev.kalenchukov.wallet.modules.AuthToken;
-import dev.kalenchukov.wallet.type.ActionType;
-import io.swagger.annotations.Api;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.mapstruct.factory.Mappers;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -39,11 +35,8 @@ import org.springframework.web.bind.annotation.*;
  * Класс обработки HTTP-запросов по счетам игроков.
  */
 @RestController
-@RequestMapping(
-		path = "/players/{playerId}/accounts",
-		produces = MediaType.APPLICATION_JSON_VALUE
-)
-@Api(tags = "Управление счетами игроков")
+@RequestMapping(path = "/players/{playerId}/accounts", produces = MediaType.APPLICATION_JSON_VALUE)
+@Tag(name = "Управление счетами игроков")
 public class AccountPlayerController {
 	/**
 	 * Сервис счетов.
@@ -51,12 +44,20 @@ public class AccountPlayerController {
 	private final AccountService accountService;
 
 	/**
+	 * Авторизационные токены.
+	 */
+	private final AuthToken authToken;
+
+	/**
 	 * Конструирует контроллер.
 	 *
 	 * @param accountService сервис счетов.
+	 * @param authToken      авторизационные токены.
 	 */
-	public AccountPlayerController(final AccountService accountService) {
+	@Autowired
+	public AccountPlayerController(final AccountService accountService, final AuthToken authToken) {
 		this.accountService = accountService;
+		this.authToken = authToken;
 	}
 
 	/**
@@ -69,25 +70,20 @@ public class AccountPlayerController {
 	 */
 	@ApiResponses({
 			@ApiResponse(responseCode = "201", description = "Если запрос выполнен успешно"),
-			@ApiResponse(responseCode = "400", description = "Если запрос или данные некорректны"),
-			@ApiResponse(responseCode = "401", description = "Если необходимо пройти авторизацию")
+			@ApiResponse(responseCode = "400", description = "Если запрос или данные некорректны", content = {
+					@Content(schema = @Schema(implementation = ViolationDto.class))}),
+			@ApiResponse(responseCode = "401", description = "Если необходимо пройти авторизацию", content = {
+					@Content(schema = @Schema(implementation = ViolationDto.class))})
 	})
-	@io.swagger.v3.oas.annotations.Operation(
-			summary = "Добавление счёта",
-			description = "Позволяет добавить счёт"
-	)
+	@io.swagger.v3.oas.annotations.Operation(summary = "Добавление счёта", description = "Позволяет добавить счёт")
 	@FixAction(actionType = ActionType.CREATE_ACCOUNT)
 	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping
 	public ResponseEntity<AccountDto> create(
 			@Parameter(description = "Идентификатор игрока") @PathVariable final long playerId,
-			@Parameter(description = "Токен доступа") @RequestHeader("Authorization") final String accessToken)
-			throws ApplicationException {
-		if (!Validation.isValid(accessToken, new AccessTokenValidator())) {
-			throw new InvalidAccessTokenException(accessToken);
-		}
-
-		if (playerId != AuthToken.verifyToken(accessToken)) {
+			@Parameter(description = "Токен доступа") @RequestHeader("Authorization") final String accessToken
+	) throws ApplicationException {
+		if (playerId != this.authToken.verifyToken(accessToken)) {
 			throw new NoAccessPlayerException(playerId);
 		}
 
@@ -109,15 +105,16 @@ public class AccountPlayerController {
 	 */
 	@ApiResponses({
 			@ApiResponse(responseCode = "200", description = "Если запрос выполнен успешно"),
-			@ApiResponse(responseCode = "400", description = "Если запрос или данные некорректны"),
-			@ApiResponse(responseCode = "401", description = "Если необходимо пройти авторизацию"),
-			@ApiResponse(responseCode = "403", description = "Если доступ отсутствует"),
-			@ApiResponse(responseCode = "404", description = "Если счёта игрока не существует")
+			@ApiResponse(responseCode = "400", description = "Если запрос или данные некорректны", content = {
+					@Content(schema = @Schema(implementation = ViolationDto.class))}),
+			@ApiResponse(responseCode = "401", description = "Если необходимо пройти авторизацию", content = {
+					@Content(schema = @Schema(implementation = ViolationDto.class))}),
+			@ApiResponse(responseCode = "403", description = "Если доступ отсутствует", content = {
+					@Content(schema = @Schema(implementation = ViolationDto.class))}),
+			@ApiResponse(responseCode = "404", description = "Если счёта игрока не существует", content = {
+					@Content(schema = @Schema(implementation = ViolationDto.class))})
 	})
-	@io.swagger.v3.oas.annotations.Operation(
-			summary = "Пополнение счёта",
-			description = "Позволяет пополнить счёт"
-	)
+	@io.swagger.v3.oas.annotations.Operation(summary = "Пополнение счёта", description = "Позволяет пополнить счёт")
 	@FixAction(actionType = ActionType.CREDIT_ACCOUNT)
 	@ResponseStatus(HttpStatus.OK)
 	@PostMapping(path = "/{accountId}/credit", consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -125,17 +122,9 @@ public class AccountPlayerController {
 			@Parameter(description = "Идентификатор игрока") @PathVariable final long playerId,
 			@Parameter(description = "Идентификатор счёта") @PathVariable final long accountId,
 			@Parameter(description = "Токен доступа") @RequestHeader("Authorization") final String accessToken,
-			@RequestBody final CreditAccountDto creditAccountDto)
-			throws ApplicationException {
-		if (!Validation.isValid(accessToken, new AccessTokenValidator())) {
-			throw new InvalidAccessTokenException(accessToken);
-		}
-
-		if (!Validation.isValid(creditAccountDto.getAmount(), new AmountValidator())) {
-			throw new InvalidAmountOperationException(creditAccountDto.getAmount());
-		}
-
-		if (playerId != AuthToken.verifyToken(accessToken)) {
+			@Valid @RequestBody final CreditAccountDto creditAccountDto
+	) throws ApplicationException {
+		if (playerId != this.authToken.verifyToken(accessToken)) {
 			throw new NoAccessPlayerException(playerId);
 		}
 
@@ -157,15 +146,16 @@ public class AccountPlayerController {
 	 */
 	@ApiResponses({
 			@ApiResponse(responseCode = "200", description = "Если запрос выполнен успешно"),
-			@ApiResponse(responseCode = "400", description = "Если запрос или данные некорректны"),
-			@ApiResponse(responseCode = "401", description = "Если необходимо пройти авторизацию"),
-			@ApiResponse(responseCode = "403", description = "Если доступ отсутствует"),
-			@ApiResponse(responseCode = "404", description = "Если счёта игрока не существует")
+			@ApiResponse(responseCode = "400", description = "Если запрос или данные некорректны", content = {
+					@Content(schema = @Schema(implementation = ViolationDto.class))}),
+			@ApiResponse(responseCode = "401", description = "Если необходимо пройти авторизацию", content = {
+					@Content(schema = @Schema(implementation = ViolationDto.class))}),
+			@ApiResponse(responseCode = "403", description = "Если доступ отсутствует", content = {
+					@Content(schema = @Schema(implementation = ViolationDto.class))}),
+			@ApiResponse(responseCode = "404", description = "Если счёта игрока не существует", content = {
+					@Content(schema = @Schema(implementation = ViolationDto.class))})
 	})
-	@io.swagger.v3.oas.annotations.Operation(
-			summary = "Списание со счёта",
-			description = "Позволяет списать со счёта"
-	)
+	@io.swagger.v3.oas.annotations.Operation(summary = "Списание со счёта", description = "Позволяет списать со счёта")
 	@FixAction(actionType = ActionType.DEBIT_ACCOUNT)
 	@ResponseStatus(HttpStatus.OK)
 	@PostMapping(path = "/{accountId}/debit", consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -173,16 +163,9 @@ public class AccountPlayerController {
 			@Parameter(description = "Идентификатор игрока") @PathVariable final long playerId,
 			@Parameter(description = "Идентификатор счёта") @PathVariable final long accountId,
 			@Parameter(description = "Токен доступа") @RequestHeader("Authorization") final String accessToken,
-			@RequestBody final DebitAccountDto debitAccountDto) throws ApplicationException {
-		if (!Validation.isValid(accessToken, new AccessTokenValidator())) {
-			throw new InvalidAccessTokenException(accessToken);
-		}
-
-		if (!Validation.isValid(debitAccountDto.getAmount(), new AmountValidator())) {
-			throw new InvalidAmountOperationException(debitAccountDto.getAmount());
-		}
-
-		if (playerId != AuthToken.verifyToken(accessToken)) {
+			@Valid @RequestBody final DebitAccountDto debitAccountDto
+	) throws ApplicationException {
+		if (playerId != this.authToken.verifyToken(accessToken)) {
 			throw new NoAccessPlayerException(playerId);
 		}
 

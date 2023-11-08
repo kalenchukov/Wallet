@@ -6,7 +6,7 @@
 
 package dev.kalenchukov.wallet.entity.mappers;
 
-import dev.kalenchukov.wallet.dto.player.PlayerDto;
+import dev.kalenchukov.wallet.dto.PlayerDto;
 import dev.kalenchukov.wallet.entity.Player;
 import org.mapstruct.Mapper;
 

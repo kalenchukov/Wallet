@@ -22,8 +22,7 @@ public class NotFoundPlayerException extends ApplicationException {
 	/**
 	 * Текст сообщения.
 	 */
-	private static final String MESSAGE =
-			"Игрок с именем '%1$s', не найден.";
+	private static final String MESSAGE = "Игрок с именем '%1$s', не найден.";
 
 	/**
 	 * Некорректное значение.

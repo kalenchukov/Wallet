@@ -62,9 +62,7 @@ public class AccountServiceImpl implements AccountService {
 	 */
 	@Override
 	public Account add(final long playerId) {
-		return this.accountRepository.save(
-				new Account(0L, playerId, BigDecimal.ZERO)
-		);
+		return this.accountRepository.save(new Account(0L, playerId, BigDecimal.ZERO));
 	}
 
 	/**
@@ -122,7 +120,8 @@ public class AccountServiceImpl implements AccountService {
 	 */
 	@Override
 	public Operation debit(final long playerId, final long accountId, final BigDecimal amount)
-			throws NotFoundAccountException, NoAccessAccountException, NegativeAmountOperationException, OutOfAmountAccountException {
+			throws NotFoundAccountException, NoAccessAccountException, NegativeAmountOperationException,
+			OutOfAmountAccountException {
 		Objects.requireNonNull(amount);
 
 		Optional<Account> account = this.accountRepository.findById(playerId, accountId);

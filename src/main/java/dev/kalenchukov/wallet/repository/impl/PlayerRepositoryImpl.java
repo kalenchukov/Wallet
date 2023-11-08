@@ -9,10 +9,13 @@ package dev.kalenchukov.wallet.repository.impl;
 import dev.kalenchukov.wallet.entity.Player;
 import dev.kalenchukov.wallet.repository.PlayerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
-import javax.sql.DataSource;
-import java.sql.*;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -24,17 +27,17 @@ public class PlayerRepositoryImpl implements PlayerRepository {
 	/**
 	 * Источник данных.
 	 */
-	private final DataSource dataSource;
+	private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
 	/**
 	 * Конструирует хранилище игроков.
 	 *
-	 * @param dataSource источник данных.
+	 * @param namedParameterJdbcTemplate источник данных.
 	 */
 	@Autowired
-	public PlayerRepositoryImpl(final DataSource dataSource) {
-		Objects.requireNonNull(dataSource);
-		this.dataSource = dataSource;
+	public PlayerRepositoryImpl(final NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
+		Objects.requireNonNull(namedParameterJdbcTemplate);
+		this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
 	}
 
 	/**
@@ -47,27 +50,21 @@ public class PlayerRepositoryImpl implements PlayerRepository {
 	public Player save(final Player player) {
 		Objects.requireNonNull(player);
 
-		String query = "INSERT INTO players (name, password) VALUES (?, ?)";
+		String query = """
+				INSERT INTO players (name, password)
+				VALUES (:name, :password)
+				""";
 
-		try (Connection connection = this.dataSource.getConnection();
-			 PreparedStatement preparedStatement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
-			preparedStatement.setString(1, player.getName());
-			preparedStatement.setString(2, player.getPassword());
-			preparedStatement.executeUpdate();
+		MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
+		mapSqlParameterSource.addValue("name", player.getName());
+		mapSqlParameterSource.addValue("password", player.getPassword());
 
-			try (ResultSet resultSet = preparedStatement.getGeneratedKeys()) {
-				resultSet.next();
-				long playerId = resultSet.getLong(1);
+		KeyHolder keyHolder = new GeneratedKeyHolder();
 
-				return new Player(
-						playerId,
-						player.getName(),
-						player.getPassword()
-				);
-			}
-		} catch (SQLException exception) {
-			throw new RuntimeException("Возникла ошибка при работе с базой данных");
-		}
+		this.namedParameterJdbcTemplate.update(query, mapSqlParameterSource, keyHolder);
+		long playerId = (long) Objects.requireNonNull(keyHolder.getKeys()).get("player_id");
+
+		return new Player(playerId, player.getName(), player.getPassword());
 	}
 
 	/**
@@ -80,24 +77,19 @@ public class PlayerRepositoryImpl implements PlayerRepository {
 	public boolean existsByName(final String name) {
 		Objects.requireNonNull(name);
 
-		boolean result = false;
-		String query = "SELECT EXISTS (SELECT * FROM players WHERE name = ?)";
+		String query = """
+				SELECT COUNT(*)
+				FROM players
+				WHERE name = :name
+				""";
 
-		try (Connection connection = this.dataSource.getConnection();
-			 PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-			preparedStatement.setString(1, name);
-			preparedStatement.execute();
+		MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
+		mapSqlParameterSource.addValue("name", name);
 
-			try (ResultSet resultSet = preparedStatement.getResultSet()) {
-				if (resultSet.next()) {
-					result = resultSet.getBoolean(1);
-				}
-			}
-		} catch (SQLException exception) {
-			throw new RuntimeException("Возникла ошибка при работе с базой данных");
-		}
+		long countObject = Objects.requireNonNull(
+				this.namedParameterJdbcTemplate.queryForObject(query, mapSqlParameterSource, Long.class));
 
-		return result;
+		return (countObject > 0);
 	}
 
 	/**
@@ -112,30 +104,26 @@ public class PlayerRepositoryImpl implements PlayerRepository {
 		Objects.requireNonNull(name);
 		Objects.requireNonNull(password);
 
-		Optional<Player> player = Optional.empty();
-		String query = "SELECT * FROM players WHERE name = ? AND password = ?";
+		String query = """
+				SELECT *
+				FROM players
+				WHERE name = :name AND password = :password
+				""";
 
-		try (Connection connection = this.dataSource.getConnection();
-			 PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-			preparedStatement.setString(1, name);
-			preparedStatement.setString(2, password);
-			preparedStatement.execute();
+		MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
+		mapSqlParameterSource.addValue("name", name);
+		mapSqlParameterSource.addValue("password", password);
 
-			try (ResultSet resultSet = preparedStatement.getResultSet()) {
-				if (resultSet.next()) {
-					Player playerEntity = new Player(
-							resultSet.getLong("player_id"),
-							resultSet.getString("name"),
-							resultSet.getString("password")
-					);
-
-					player = Optional.of(playerEntity);
-				}
-			}
-		} catch (SQLException exception) {
-			throw new RuntimeException("Возникла ошибка при работе с базой данных");
+		try {
+			return this.namedParameterJdbcTemplate.queryForObject(query, mapSqlParameterSource,
+					(rs, row) -> Optional.of(
+							new Player(rs.getLong("player_id"),
+									rs.getString("name"),
+									rs.getString("password")
+							))
+			);
+		} catch (EmptyResultDataAccessException exception) {
+			return Optional.empty();
 		}
-
-		return player;
 	}
 }

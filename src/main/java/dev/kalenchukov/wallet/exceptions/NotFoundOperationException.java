@@ -22,8 +22,7 @@ public class NotFoundOperationException extends ApplicationException {
 	/**
 	 * Текст сообщения.
 	 */
-	private static final String MESSAGE =
-			"Операция с идентификатором '%1$s' не найдена.";
+	private static final String MESSAGE = "Операция с идентификатором '%1$s' не найдена.";
 
 	/**
 	 * Некорректное значение.

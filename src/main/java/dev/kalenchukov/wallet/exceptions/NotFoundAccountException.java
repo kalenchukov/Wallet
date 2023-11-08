@@ -22,8 +22,7 @@ public class NotFoundAccountException extends ApplicationException {
 	/**
 	 * Текст сообщения.
 	 */
-	private static final String MESSAGE =
-			"Счёт с идентификатором '%1$s' не найден.";
+	private static final String MESSAGE = "Счёт с идентификатором '%1$s' не найден.";
 
 	/**
 	 * Некорректное значение.

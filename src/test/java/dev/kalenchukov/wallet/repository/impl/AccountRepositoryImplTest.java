@@ -6,19 +6,15 @@
 
 package dev.kalenchukov.wallet.repository.impl;
 
+import dev.kalenchukov.wallet.WalletApplicationTest;
 import dev.kalenchukov.wallet.entity.Account;
-import dev.kalenchukov.wallet.modules.Liquibase;
-import dev.kalenchukov.wallet.properties.Props;
 import dev.kalenchukov.wallet.repository.AccountRepository;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.postgresql.ds.PGSimpleDataSource;
-import org.testcontainers.containers.PostgreSQLContainer;
-import org.testcontainers.junit.jupiter.Testcontainers;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 
-import javax.sql.DataSource;
 import java.math.BigDecimal;
 import java.util.Optional;
 
@@ -27,56 +23,19 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-/**
- * Класс проверки методов класса {@link AccountRepositoryImpl}.
- */
-@Testcontainers
+@SpringBootTest(classes = WalletApplicationTest.class)
 public class AccountRepositoryImplTest {
-	private static final PostgreSQLContainer<?> POSTGRES =
-			new PostgreSQLContainer<>(Props.get().getTest().getDockerImage());
+	@Autowired
+	private AccountRepository accountRepository;
 
-	private static DataSource DATA_SOURCE;
-
-	@BeforeAll
-	public static void beforeAll() {
-		POSTGRES.withDatabaseName(Props.get().getDatabase().getName());
-		POSTGRES.withUsername(Props.get().getDatabase().getUsername());
-		POSTGRES.withPassword(Props.get().getDatabase().getPassword());
-		POSTGRES.start();
-
-		PGSimpleDataSource dataSource = new PGSimpleDataSource();
-		dataSource.setUrl(POSTGRES.getJdbcUrl());
-		dataSource.setUser(POSTGRES.getUsername());
-		dataSource.setPassword(POSTGRES.getPassword());
-		dataSource.setCurrentSchema(Props.get().getLiquibase().getSchemaApp());
-		DATA_SOURCE = dataSource;
-
-		Liquibase.init(
-				POSTGRES.getJdbcUrl(),
-				POSTGRES.getUsername(),
-				POSTGRES.getPassword()
-		);
-	}
-
-	@AfterAll
-	public static void afterAll() {
-		POSTGRES.stop();
-	}
-
-	/**
-	 * Класс проверки метода {@link AccountRepositoryImpl#save(Account)}.
-	 */
 	@Nested
 	public class Save {
-		/**
-		 * Проверка метода {@link AccountRepositoryImpl#save(Account)}.
-		 */
+		@DisplayName("Проверка с корректными данными.")
 		@Test
-		public void save() {
+		public void saveValid() {
 			Account account = mock(Account.class);
 			when(account.getPlayerId()).thenReturn(1L);
 			when(account.getAmount()).thenReturn(BigDecimal.TEN);
-			AccountRepository accountRepository = new AccountRepositoryImpl(DATA_SOURCE);
 
 			Account actualAccount = accountRepository.save(account);
 
@@ -85,63 +44,44 @@ public class AccountRepositoryImplTest {
 			assertThat(actualAccount.getAmount()).isEqualTo(account.getAmount());
 		}
 
-		/**
-		 * Проверка метода {@link AccountRepositoryImpl#save(Account)}
-		 * с {@code null} в качестве счёта.
-		 */
+		@DisplayName("Проверка с null в качестве счёта.")
 		@Test
 		public void saveWithNull() {
-			AccountRepository accountRepository = new AccountRepositoryImpl(DATA_SOURCE);
-
 			assertThatExceptionOfType(NullPointerException.class).isThrownBy(() -> {
 				accountRepository.save(null);
 			});
 		}
 	}
 
-	/**
-	 * Класс проверки метода {@link AccountRepositoryImpl#updateAmount(long, long, BigDecimal)}.
-	 */
 	@Nested
 	public class UpdateAmount {
-		/**
-		 * Проверка метода {@link AccountRepositoryImpl#updateAmount(long, long, BigDecimal)}.
-		 */
+		@DisplayName("Проверка с корректными данными.")
 		@Test
-		public void updateAmount() {
+		public void updateAmountValid() {
 			long playerId = 1L;
 			long accountId = 2L;
-			AccountRepository accountRepository = new AccountRepositoryImpl(DATA_SOURCE);
 
 			boolean actual = accountRepository.updateAmount(playerId, accountId, new BigDecimal("97.88"));
 
 			assertThat(actual).isTrue();
 		}
 
-		/**
-		 * Проверка метода {@link AccountRepositoryImpl#updateAmount(long, long, BigDecimal)}
-		 * с отсутствующим счётом.
-		 */
+		@DisplayName("Проверка с отсутствующим счётом.")
 		@Test
 		public void updateAmountNotFoundAccountId() {
 			long playerId = 32L;
 			long accountId = 24565464L;
-			AccountRepository accountRepository = new AccountRepositoryImpl(DATA_SOURCE);
 
 			boolean actual = accountRepository.updateAmount(playerId, accountId, new BigDecimal("97.88"));
 
 			assertThat(actual).isFalse();
 		}
 
-		/**
-		 * Проверка метода {@link AccountRepositoryImpl#updateAmount(long, long, BigDecimal)}
-		 * с {@code null} в качестве суммы.
-		 */
+		@DisplayName("Проверка с null в качестве суммы.")
 		@Test
 		public void updateAmountWithNullAmount() {
 			long playerId = 32L;
 			long accountId = 11L;
-			AccountRepository accountRepository = new AccountRepositoryImpl(DATA_SOURCE);
 
 			assertThatExceptionOfType(NullPointerException.class).isThrownBy(() -> {
 				accountRepository.updateAmount(playerId, accountId, null);
@@ -149,19 +89,13 @@ public class AccountRepositoryImplTest {
 		}
 	}
 
-	/**
-	 * Класс проверки метода {@link AccountRepositoryImpl#findById(long, long)}.
-	 */
 	@Nested
 	public class FindById {
-		/**
-		 * Проверка метода {@link AccountRepositoryImpl#findById(long, long)}.
-		 */
+		@DisplayName("Проверка с корректными данными.")
 		@Test
-		public void findById() {
+		public void findByIdValid() {
 			long playerId = 2L;
 			long accountId = 4L;
-			AccountRepository accountRepository = new AccountRepositoryImpl(DATA_SOURCE);
 
 			Optional<Account> actualAccount = accountRepository.findById(playerId, accountId);
 
@@ -171,15 +105,11 @@ public class AccountRepositoryImplTest {
 			assertThat(actualAccount.get().getAmount()).isEqualTo(new BigDecimal("40.0"));
 		}
 
-		/**
-		 * Проверка метода {@link AccountRepositoryImpl#findById(long, long)}
-		 * с отсутствующим счётом.
-		 */
+		@DisplayName("Проверка с отсутствующим счётом.")
 		@Test
 		public void findByIdWithNotFound() {
 			long playerId = 91L;
 			long accountId = 7897894L;
-			AccountRepository accountRepository = new AccountRepositoryImpl(DATA_SOURCE);
 
 			Optional<Account> actualAccount = accountRepository.findById(playerId, accountId);
 

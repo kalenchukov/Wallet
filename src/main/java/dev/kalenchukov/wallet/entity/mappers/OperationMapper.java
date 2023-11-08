@@ -6,7 +6,7 @@
 
 package dev.kalenchukov.wallet.entity.mappers;
 
-import dev.kalenchukov.wallet.dto.operation.OperationDto;
+import dev.kalenchukov.wallet.dto.OperationDto;
 import dev.kalenchukov.wallet.entity.Operation;
 import org.mapstruct.Mapper;
 

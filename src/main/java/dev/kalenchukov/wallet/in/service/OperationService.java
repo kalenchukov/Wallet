@@ -37,8 +37,7 @@ public interface OperationService {
 	 * @return операцию.
 	 * @throws NotFoundOperationException если операция не найдена.
 	 */
-	Operation findById(long playerId, long accountId, long operationId)
-			throws NotFoundOperationException;
+	Operation findById(long playerId, long accountId, long operationId) throws NotFoundOperationException;
 
 	/**
 	 * Ищет операции.

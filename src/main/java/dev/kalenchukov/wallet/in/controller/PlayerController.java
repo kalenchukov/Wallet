@@ -6,27 +6,23 @@
 
 package dev.kalenchukov.wallet.in.controller;
 
-import dev.kalenchukov.wallet.dto.player.AuthPlayerDto;
-import dev.kalenchukov.wallet.dto.player.CreatePlayerDto;
-import dev.kalenchukov.wallet.dto.player.PlayerDto;
-import dev.kalenchukov.wallet.dto.token.AccessTokenDto;
+import dev.kalenchukov.wallet.auth.AuthToken;
+import dev.kalenchukov.wallet.dto.*;
 import dev.kalenchukov.wallet.entity.AccessToken;
 import dev.kalenchukov.wallet.entity.Player;
 import dev.kalenchukov.wallet.entity.mappers.AccessTokenMapper;
 import dev.kalenchukov.wallet.entity.mappers.PlayerMapper;
 import dev.kalenchukov.wallet.exceptions.ApplicationException;
-import dev.kalenchukov.wallet.exceptions.InvalidNamePlayerException;
-import dev.kalenchukov.wallet.exceptions.InvalidPasswordPlayerException;
-import dev.kalenchukov.wallet.in.controller.validation.Validation;
-import dev.kalenchukov.wallet.in.controller.validation.validators.NameValidator;
-import dev.kalenchukov.wallet.in.controller.validation.validators.PasswordValidator;
 import dev.kalenchukov.wallet.in.service.PlayerService;
-import dev.kalenchukov.wallet.modules.AuthToken;
-import io.swagger.annotations.Api;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.mapstruct.factory.Mappers;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -36,11 +32,8 @@ import org.springframework.web.bind.annotation.*;
  * Класс обработки HTTP-запросов по игрокам.
  */
 @RestController
-@RequestMapping(
-		path = "/players",
-		produces = MediaType.APPLICATION_JSON_VALUE
-)
-@Api(tags = "Игроки")
+@RequestMapping(path = "/players", produces = MediaType.APPLICATION_JSON_VALUE)
+@Tag(name = "Игроки")
 public class PlayerController {
 	/**
 	 * Сервис игроков.
@@ -48,12 +41,20 @@ public class PlayerController {
 	private final PlayerService playerService;
 
 	/**
+	 * Авторизационные токены.
+	 */
+	private final AuthToken authToken;
+
+	/**
 	 * Конструирует контроллер.
 	 *
 	 * @param playerService сервис игроков.
+	 * @param authToken     авторизационные токены.
 	 */
-	public PlayerController(final PlayerService playerService) {
+	@Autowired
+	public PlayerController(final PlayerService playerService, final AuthToken authToken) {
 		this.playerService = playerService;
+		this.authToken = authToken;
 	}
 
 	/**
@@ -65,25 +66,16 @@ public class PlayerController {
 	 */
 	@ApiResponses({
 			@ApiResponse(responseCode = "201", description = "Если запрос выполнен успешно"),
-			@ApiResponse(responseCode = "400", description = "Если запрос или данные некорректны"),
-			@ApiResponse(responseCode = "409", description = "Если имя игрока уже занято")
+			@ApiResponse(responseCode = "400", description = "Если запрос или данные некорректны", content = {
+					@Content(schema = @Schema(implementation = ViolationDto.class))}),
+			@ApiResponse(responseCode = "409", description = "Если имя игрока уже занято", content = {
+					@Content(schema = @Schema(implementation = ViolationDto.class))})
 	})
-	@io.swagger.v3.oas.annotations.Operation(
-			summary = "Добавление игрока",
-			description = "Позволяет добавить игрока"
-	)
+	@io.swagger.v3.oas.annotations.Operation(summary = "Добавление игрока", description = "Позволяет добавить игрока")
 	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<PlayerDto> create(@RequestBody final CreatePlayerDto createPlayerDto)
+	public ResponseEntity<PlayerDto> create(@Valid @RequestBody final CreatePlayerDto createPlayerDto)
 			throws ApplicationException {
-		if (!Validation.isValid(createPlayerDto.getName(), new NameValidator())) {
-			throw new InvalidNamePlayerException(createPlayerDto.getName());
-		}
-
-		if (!Validation.isValid(createPlayerDto.getPassword(), new PasswordValidator())) {
-			throw new InvalidPasswordPlayerException(createPlayerDto.getPassword());
-		}
-
 		Player player = this.playerService.add(createPlayerDto.getName(), createPlayerDto.getPassword());
 		PlayerDto playerDto = Mappers.getMapper(PlayerMapper.class).toDto(player);
 
@@ -99,30 +91,20 @@ public class PlayerController {
 	 */
 	@ApiResponses({
 			@ApiResponse(responseCode = "200", description = "Если запрос выполнен успешно"),
-			@ApiResponse(responseCode = "400", description = "Если запрос или данные некорректны"),
-			@ApiResponse(responseCode = "404", description = "Если игрок не существует")
+			@ApiResponse(responseCode = "400", description = "Если запрос или данные некорректны", content = {
+					@Content(schema = @Schema(implementation = ViolationDto.class))}),
+			@ApiResponse(responseCode = "404", description = "Если игрок не существует", content = {
+					@Content(schema = @Schema(implementation = ViolationDto.class))})
 	})
-	@io.swagger.v3.oas.annotations.Operation(
-			summary = "Авторизация игрока",
-			description = "Позволяет выполнить авторизацию игрока"
-	)
+	@io.swagger.v3.oas.annotations.Operation(summary = "Авторизация игрока", description = "Позволяет выполнить авторизацию игрока")
 	@ResponseStatus(HttpStatus.OK)
 	@PostMapping(path = "/auth", consumes = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<AccessTokenDto> auth(@RequestBody final AuthPlayerDto authPlayerDto)
+	public ResponseEntity<AccessTokenDto> auth(@Valid @RequestBody final AuthPlayerDto authPlayerDto)
 			throws ApplicationException {
-		if (!Validation.isValid(authPlayerDto.getName(), new NameValidator())) {
-			throw new InvalidNamePlayerException(authPlayerDto.getName());
-		}
-
-		if (!Validation.isValid(authPlayerDto.getPassword(), new PasswordValidator())) {
-			throw new InvalidPasswordPlayerException(authPlayerDto.getPassword());
-		}
-
-		Player player = this.playerService.find(
-				authPlayerDto.getName(),
+		Player player = this.playerService.find(authPlayerDto.getName(),
 				DigestUtils.md5Hex(authPlayerDto.getPassword())
 		);
-		AccessToken accessToken = new AccessToken(AuthToken.createToken(player.getPlayerId()));
+		AccessToken accessToken = new AccessToken(this.authToken.createToken(player.getPlayerId()));
 		AccessTokenDto accessTokenDto = Mappers.getMapper(AccessTokenMapper.class).toDto(accessToken);
 
 		return ResponseEntity.status(HttpStatus.OK).body(accessTokenDto);

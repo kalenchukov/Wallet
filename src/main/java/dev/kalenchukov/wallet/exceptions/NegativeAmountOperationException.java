@@ -24,8 +24,7 @@ public class NegativeAmountOperationException extends ApplicationException {
 	/**
 	 * Текст сообщения.
 	 */
-	private static final String MESSAGE =
-			"Сумма должна быть больше или равна 0 а не '%1$s'.";
+	private static final String MESSAGE = "Сумма должна быть больше или равна 0 а не '%1$s'.";
 
 	/**
 	 * Некорректное значение.

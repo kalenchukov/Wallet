@@ -6,7 +6,7 @@
 
 package dev.kalenchukov.wallet.repository;
 
-import dev.kalenchukov.wallet.entity.Action;
+import dev.kalenchukov.starter.fixaction.entity.Action;
 
 import java.util.List;
 
@@ -14,14 +14,6 @@ import java.util.List;
  * Интерфейс для реализации класса хранилища действий.
  */
 public interface ActionRepository {
-	/**
-	 * Сохраняет действие.
-	 *
-	 * @param action действие.
-	 * @return действие.
-	 */
-	Action save(Action action);
-
 	/**
 	 * Ищет действия.
 	 *

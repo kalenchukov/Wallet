@@ -6,10 +6,9 @@
 
 package dev.kalenchukov.wallet.in.service.impl;
 
-import dev.kalenchukov.wallet.entity.Action;
+import dev.kalenchukov.starter.fixaction.entity.Action;
 import dev.kalenchukov.wallet.in.service.ActionService;
 import dev.kalenchukov.wallet.repository.ActionRepository;
-import dev.kalenchukov.wallet.type.ActionType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -36,24 +35,6 @@ public class ActionServiceImpl implements ActionService {
 		Objects.requireNonNull(actionRepository);
 
 		this.actionRepository = actionRepository;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 *
-	 * @param playerId         {@inheritDoc}
-	 * @param actionType       {@inheritDoc}
-	 * @param actionTypeStatus {@inheritDoc}
-	 * @return {@inheritDoc}
-	 */
-	@Override
-	public Action add(final long playerId, final ActionType actionType, final ActionType.Status actionTypeStatus) {
-		Objects.requireNonNull(actionType);
-		Objects.requireNonNull(actionTypeStatus);
-
-		return this.actionRepository.save(
-				new Action(0L, playerId, actionType, actionTypeStatus)
-		);
 	}
 
 	/**

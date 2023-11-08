@@ -34,12 +34,9 @@ docker ps -a
 mvn clean install
 ```
 
-# Запуск
-
-Запуск осуществляется с помощью Tomcat. Я использовал Tomcat 9.0.70.
-
 # Использование
 
 ## Документация
 
-http://{domain}:{port}/swagger-ui/index.html
+[http://localhost:1111/swagger-ui/index.html](http://localhost:1111/swagger-ui/index.html)
+
