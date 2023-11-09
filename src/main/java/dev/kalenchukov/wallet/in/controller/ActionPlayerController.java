@@ -36,7 +36,7 @@ import java.util.List;
  * Класс обработки HTTP-запросов по действиям игроков.
  */
 @RestController
-@RequestMapping(path = "/players/{playerId}/actions", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(path = "/players/{playerId}/actions")
 @Tag(name = "Управление действиями игроков")
 public class ActionPlayerController {
 	/**

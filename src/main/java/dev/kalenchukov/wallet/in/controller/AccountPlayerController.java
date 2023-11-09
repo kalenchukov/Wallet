@@ -35,7 +35,7 @@ import org.springframework.web.bind.annotation.*;
  * Класс обработки HTTP-запросов по счетам игроков.
  */
 @RestController
-@RequestMapping(path = "/players/{playerId}/accounts", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(path = "/players/{playerId}/accounts")
 @Tag(name = "Управление счетами игроков")
 public class AccountPlayerController {
 	/**

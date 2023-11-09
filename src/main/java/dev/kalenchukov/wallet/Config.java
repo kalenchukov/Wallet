@@ -29,7 +29,8 @@ public class Config {
 	 */
 	@Bean
 	public OpenAPI openAPI(final Info info) {
-		return new OpenAPI().info(info);
+		return new OpenAPI()
+				.info(info);
 	}
 
 	/**
@@ -40,8 +41,11 @@ public class Config {
 	 */
 	@Bean
 	public Info info(final Contact contact) {
-		return new Info().title("Wallet API").description("Документация проекта по управлению счетами игроков").version(
-				"5.0.0").contact(contact);
+		return new Info()
+				.title("Wallet API")
+				.description("Документация проекта по управлению счетами игроков")
+				.version("5.0.0")
+				.contact(contact);
 	}
 
 	/**
@@ -51,7 +55,9 @@ public class Config {
 	 */
 	@Bean
 	public Contact contact() {
-		return new Contact().name("Алексей Каленчуков").email("aleksey.kalenchukov@yandex.ru").url(
-				"https://github.com/kalenchukov");
+		return new Contact()
+				.name("Алексей Каленчуков")
+				.email("aleksey.kalenchukov@yandex.ru")
+				.url("https://github.com/kalenchukov");
 	}
 }

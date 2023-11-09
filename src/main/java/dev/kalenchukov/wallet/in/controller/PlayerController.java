@@ -32,7 +32,7 @@ import org.springframework.web.bind.annotation.*;
  * Класс обработки HTTP-запросов по игрокам.
  */
 @RestController
-@RequestMapping(path = "/players", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(path = "/players")
 @Tag(name = "Игроки")
 public class PlayerController {
 	/**

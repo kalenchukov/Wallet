@@ -37,7 +37,7 @@ import java.util.List;
  * Класс обработки HTTP-запросов по операциям счетов игроков.
  */
 @RestController
-@RequestMapping(path = "/players/{playerId}/accounts/{accountId}/operations", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(path = "/players/{playerId}/accounts/{accountId}/operations")
 @Tag(name = "Управление операциями счетов игроков")
 public class OperationAccountPlayerController {
 	/**
