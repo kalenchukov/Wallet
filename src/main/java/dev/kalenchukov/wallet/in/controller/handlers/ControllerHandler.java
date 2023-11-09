@@ -6,25 +6,34 @@
 
 package dev.kalenchukov.wallet.in.controller.handlers;
 
-import dev.kalenchukov.wallet.dto.violation.ViolationDto;
+import dev.kalenchukov.wallet.dto.ViolationDto;
 import dev.kalenchukov.wallet.exceptions.ApplicationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingRequestHeaderException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Класс обработчика исключений контроллеров.
  */
 @RestControllerAdvice
-public class ControllerHandler extends ResponseEntityExceptionHandler {
+public class ControllerHandler {
 	/**
-	 * Конструирует {@code ControllerHandler}.
+	 * Возвращает информацию о нарушении.
+	 *
+	 * @param exception исключение.
+	 * @return нарушение.
 	 */
-	public ControllerHandler() {
-		super();
+	@ExceptionHandler(ApplicationException.class)
+	public ResponseEntity<ViolationDto> handleApplicationException(
+			final ApplicationException exception
+	) {
+		return ResponseEntity.status(exception.getHttpCode()).body(new ViolationDto(exception.getMessage()));
 	}
 
 	/**
@@ -33,9 +42,28 @@ public class ControllerHandler extends ResponseEntityExceptionHandler {
 	 * @param exception исключение.
 	 * @return нарушение.
 	 */
-	@ExceptionHandler(ApplicationException.class)
-	public ResponseEntity<ViolationDto> handleApplicationException(final ApplicationException exception) {
-		return ResponseEntity.status(exception.getHttpCode())
-				.body(new ViolationDto(exception.getMessage()));
+	@ExceptionHandler(MissingRequestHeaderException.class)
+	public ResponseEntity<ViolationDto> handleMissingRequestHeaderException(
+			final MissingRequestHeaderException exception
+	) {
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ViolationDto(exception.getMessage()));
+	}
+
+	/**
+	 * Возвращает информацию о нарушении.
+	 *
+	 * @param exception исключение.
+	 * @return нарушения.
+	 */
+	@ExceptionHandler(MethodArgumentNotValidException.class)
+	public ResponseEntity<List<ViolationDto>> handleMethodArgumentNotValidException(
+			final MethodArgumentNotValidException exception
+	) {
+		List<ViolationDto> violations = new ArrayList<>();
+		exception.getBindingResult().getAllErrors().forEach(violation -> {
+			violations.add(new ViolationDto(violation.getDefaultMessage()));
+		});
+
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(violations);
 	}
 }

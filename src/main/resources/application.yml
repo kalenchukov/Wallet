@@ -4,33 +4,29 @@
 # E-mail: mailto:aleksey.kalenchukov@yandex.ru
 #
 
-context: production
+# Сервер
+server:
+  port: 1111
 
-# Database
-database:
-  # URL базы данных.
-  url: jdbc:postgresql://localhost:1313/wallet
-  # Пользователь.
-  username: walletadmin
-  # Пароль.
-  password: walletadmin
-
-# Liquibase
-liquibase:
-  # Путь к файлам миграции.
-  changeLogFile: db/changelog/changelog.xml
-  # Схема для служебных таблиц.
-  schema: migration
-  # Схема для таблиц приложения.
-  schemaApp: wallet
-  # Необходимые миграции.
-  contexts: production
+spring:
+  # База данных
+  datasource:
+    url: jdbc:postgresql://localhost:1313/wallet
+    username: walletadmin
+    password: walletadmin
+  # SQL
+  sql:
+    init:
+      schema-locations: classpath:/preliquibase/default.sql
+  # Liquibase
+  liquibase:
+    change-log: classpath:db/changelog/changelog.xml
+    default-schema: wallet
+    liquibase-schema: migration
+    contexts: production
 
 # AccessToken
-accessToken:
-  # Сервер авторизации выдавший токен доступа.
+access-token:
   server: WalletAuth
-  # Время жизни токена доступа в секундах.
   ttl: 1800
-  # Строка для формирования токенов доступа.
   secret: WalletSecretCode123

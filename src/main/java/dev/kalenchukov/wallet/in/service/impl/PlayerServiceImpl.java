@@ -57,9 +57,7 @@ public class PlayerServiceImpl implements PlayerService {
 			throw new DuplicateNamePlayerException(name);
 		}
 
-		return this.playerRepository.save(
-				new Player(0L, name, DigestUtils.md5Hex(password))
-		);
+		return this.playerRepository.save(new Player(0L, name, DigestUtils.md5Hex(password)));
 	}
 
 	/**

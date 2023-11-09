@@ -22,8 +22,7 @@ public class DuplicateNamePlayerException extends ApplicationException {
 	/**
 	 * Текст сообщения.
 	 */
-	private static final String MESSAGE =
-			"Игрок с именем '%1$s' уже существует.";
+	private static final String MESSAGE = "Игрок с именем '%1$s' уже существует.";
 
 	/**
 	 * Некорректное значение.

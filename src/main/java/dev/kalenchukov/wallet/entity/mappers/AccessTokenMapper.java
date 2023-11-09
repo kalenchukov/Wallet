@@ -6,7 +6,7 @@
 
 package dev.kalenchukov.wallet.entity.mappers;
 
-import dev.kalenchukov.wallet.dto.token.AccessTokenDto;
+import dev.kalenchukov.wallet.dto.AccessTokenDto;
 import dev.kalenchukov.wallet.entity.AccessToken;
 import org.mapstruct.Mapper;
 

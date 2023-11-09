@@ -1,4 +1,10 @@
 #!/bin/bash
 
-curl -v -X GET http://localhost:1111/wallet_war/players/1/actions \
--H "Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJXYWxsZXRBdXRoIiwicGxheWVySWQiOjEsImV4cCI6MTY5ODg2NDcyNH0.QamTCQ0sS2hNKWUnU405V8KeuvwEceaa9nSLW4nuXCQ" \
+#
+# Copyright © 2023 Алексей Каленчуков
+# GitHub: https://github.com/kalenchukov
+# E-mail: mailto:aleksey.kalenchukov@yandex.ru
+#
+
+curl -v -X GET http://localhost:1111/players/1/actions \
+-H "Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJXYWxsZXRBdXRoIiwicGxheWVySWQiOjEsImV4cCI6MTY5OTQzNTEwNn0.My2fkwXAYskQlbKwsGWtMGPCaYPN-apUXEd2ocGDeYU" \

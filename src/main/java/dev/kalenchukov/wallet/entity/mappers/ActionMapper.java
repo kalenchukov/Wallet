@@ -6,8 +6,8 @@
 
 package dev.kalenchukov.wallet.entity.mappers;
 
-import dev.kalenchukov.wallet.dto.action.ActionDto;
-import dev.kalenchukov.wallet.entity.Action;
+import dev.kalenchukov.starter.fixaction.entity.Action;
+import dev.kalenchukov.wallet.dto.ActionDto;
 import org.mapstruct.Mapper;
 
 /**

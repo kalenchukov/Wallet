@@ -55,9 +55,7 @@ public class OperationServiceImpl implements OperationService {
 		Objects.requireNonNull(operationType);
 		Objects.requireNonNull(amount);
 
-		return this.operationRepository.save(
-				new Operation(0L, playerId, accountId, operationType, amount)
-		);
+		return this.operationRepository.save(new Operation(0L, playerId, accountId, operationType, amount));
 	}
 
 	/**
@@ -69,7 +67,8 @@ public class OperationServiceImpl implements OperationService {
 	 * @return {@inheritDoc}
 	 * @throws NotFoundOperationException {@inheritDoc}
 	 */
-	public Operation findById(final long playerId, final long accountId, final long operationId) throws NotFoundOperationException {
+	public Operation findById(final long playerId, final long accountId, final long operationId)
+			throws NotFoundOperationException {
 		Optional<Operation> operation = this.operationRepository.findById(playerId, accountId, operationId);
 		return operation.orElseThrow(() -> new NotFoundOperationException(operationId));
 	}

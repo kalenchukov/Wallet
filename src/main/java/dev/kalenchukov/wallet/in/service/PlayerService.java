@@ -22,8 +22,7 @@ public interface PlayerService {
 	 * @return игрока.
 	 * @throws DuplicateNamePlayerException если игрок с указанным именем уже существует.
 	 */
-	Player add(String name, String password)
-			throws DuplicateNamePlayerException;
+	Player add(String name, String password) throws DuplicateNamePlayerException;
 
 	/**
 	 * Возвращает игрока.
@@ -33,6 +32,5 @@ public interface PlayerService {
 	 * @return игрока.
 	 * @throws NotFoundPlayerException если игрок не найден.
 	 */
-	Player find(String name, String password)
-			throws NotFoundPlayerException;
+	Player find(String name, String password) throws NotFoundPlayerException;
 }

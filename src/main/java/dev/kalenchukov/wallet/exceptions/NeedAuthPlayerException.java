@@ -22,8 +22,7 @@ public class NeedAuthPlayerException extends ApplicationException {
 	/**
 	 * Текст сообщения.
 	 */
-	private static final String MESSAGE =
-			"Необходимо пройти авторизацию.";
+	private static final String MESSAGE = "Необходимо пройти авторизацию.";
 
 	/**
 	 * Некорректное значение.
